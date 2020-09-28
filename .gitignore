@@ -1,3 +1,11 @@
+
+engine/
+libs/
+obj/
+projects/osx/
+projects/VS2015/
+bin/write_directory/
+*.pdb
 # Prerequisites
 *.d
 
