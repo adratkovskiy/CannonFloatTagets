@@ -183,8 +183,8 @@ void TestWidget::Draw()
 
 	Render::BindFont("arial");
 	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(Destination.X) + ", Y:" + utils::lexical_cast(Destination.Y), 1.f, CenterAlign);
-	Render::PrintString(924 + 100 / 2, 65, "x:" + utils::lexical_cast(Machine.X) + ", Y:" + utils::lexical_cast(Machine.Y), 1.f, CenterAlign);
-	Render::PrintString(924 + 100 / 2, 95, "angle:" + utils::lexical_cast(_angle), 1.f, CenterAlign);
+	// Render::PrintString(924 + 100 / 2, 65, "x:" + utils::lexical_cast(Machine.X) + ", Y:" + utils::lexical_cast(Machine.Y), 1.f, CenterAlign);
+	// Render::PrintString(924 + 100 / 2, 95, "angle:" + utils::lexical_cast(_angle), 1.f, CenterAlign);
 
 }
 
@@ -237,9 +237,8 @@ void TestWidget::Update(float dt)
 	Machine.Y = _cannonPosY - _cannonRotatePointY;
 	Destination.X = mouse_pos.x;
 	Destination.Y = mouse_pos.y;
-	double A = atan2(Machine.Y - Destination.Y, Machine.X - Destination.X) / 3.1415 * 180;
-	A = (A < 0) ? A + 360 : A;
-	_angle = A + 90;
+	_angle = atan2(Machine.Y - Destination.Y, Machine.X - Destination.X) / 3.1415 * 180 + 90;
+	_angle = (_angle < 0) ? _angle + 360 : _angle;
 }
 
 bool TestWidget::MouseDown(const IPoint &mouse_pos)
