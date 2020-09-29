@@ -4,6 +4,13 @@
 /// Виджет - основной визуальный элемент на экране.
 /// Он отрисовывает себя, а также может содержать другие виджеты.
 ///
+/// 
+
+struct pointsXY {
+	float X;
+	float Y;
+};
+
 class TestWidget : public GUI::Widget
 {
 public:
@@ -29,6 +36,18 @@ private:
 	
 	float _scale;
 	float _angle;
+	float _standScale = 0.125f;
+	int _standPosX = 480;
+	int _standPosY = 10;
+	float _cannonScale = 0.125f;
+	int _cannonPosX = 495;
+	int _cannonPosY = 30;
+	int _cannonRotatePointX = -40;
+	int _cannonRotatePointY = -32;
+	int _pointX = 0;
+	int _pointY = 0;
+	pointsXY Machine;
+	pointsXY Destination;
 	
 	Render::Texture* _cannon;
 	Render::Texture* _stand;

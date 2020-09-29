@@ -40,6 +40,7 @@ void TestWidget::Draw()
 	// Получаем текущее положение курсора мыши.
 	//
 	IPoint mouse_pos = Core::mainInput.GetMousePos();
+
 	Render::device.PushMatrix();
 	Render::device.MatrixTranslate((float)mouse_pos.x, (float)mouse_pos.y, 0);
 	IRect texRect = _aim->getBitmapRect();
@@ -47,16 +48,34 @@ void TestWidget::Draw()
 	_aim->Draw();
 	Render::device.PopMatrix();
 
+	Render::device.PushMatrix();
+	Render::device.MatrixTranslate(_standPosX, _standPosY, 0);
+	Render::device.MatrixScale(_standScale);
+	_stand->Draw();
+	Render::device.PopMatrix();
+	////////////////////////////////////////////////////////
+
+	Render::device.PushMatrix();
+	Render::device.MatrixTranslate(_cannonPosX - _cannonRotatePointX, _cannonPosY - _cannonRotatePointY, 0);
+	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _angle);
+	Render::device.MatrixTranslate(_cannonRotatePointX, _cannonRotatePointY, 0);
+	Render::device.MatrixScale(_cannonScale);
+	
+	_cannon->Draw();
+	Render::device.PopMatrix();
+
+	////////////////////////////////////////////////////////
+
 	//
 	// Проталкиваем в стек текущее преобразование координат, чтобы в дальнейшем
 	// можно было восстановить это преобразование вызовом PopMatrix.
-	//
-	Render::device.PushMatrix();
+	
 	
 	//
 	// Изменяем текущее преобразование координат, перемещая центр координат в позицию мыши
 	// и поворачивая координаты относительно этого центра вокруг оси z на угол _angle.
 	//
+	Render::device.PushMatrix();
 	Render::device.MatrixTranslate((float)mouse_pos.x, (float)mouse_pos.y, 0);
 	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _angle);
 
@@ -147,7 +166,6 @@ void TestWidget::Draw()
 	// иначе визуальный результат будет непредсказуемым.
 	//
 	Render::DrawRect(924, 0, 100, 100);
-	
 	//
 	// Метод EndColor() снимает со стека текущий цвет вершин, восстанавливая прежний.
 	//
@@ -164,7 +182,9 @@ void TestWidget::Draw()
 	_effCont.Draw();
 
 	Render::BindFont("arial");
-	Render::PrintString(924 + 100 / 2, 35, utils::lexical_cast(mouse_pos.x) + ", " + utils::lexical_cast(mouse_pos.y), 1.f, CenterAlign);
+	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(Destination.X) + ", Y:" + utils::lexical_cast(Destination.Y), 1.f, CenterAlign);
+	Render::PrintString(924 + 100 / 2, 65, "x:" + utils::lexical_cast(Machine.X) + ", Y:" + utils::lexical_cast(Machine.Y), 1.f, CenterAlign);
+	Render::PrintString(924 + 100 / 2, 95, "angle:" + utils::lexical_cast(_angle), 1.f, CenterAlign);
 
 }
 
@@ -205,6 +225,21 @@ void TestWidget::Update(float dt)
 	// Анимирование параметра масштабирования в зависимости от таймера.
 	//
 	_scale = 0.8f + 0.25f * sinf(_timer);
+	if (_angle >= 360) {
+		_angle -= 360;
+	}
+
+	///////////////////////////////////////////
+	//Render::device.MatrixTranslate(_cannonPosX - _cannonRotatePointX, _cannonPosY - _cannonRotatePointY, 0);
+	IPoint mouse_pos = Core::mainInput.GetMousePos();
+
+	Machine.X = _cannonPosX - _cannonRotatePointX;
+	Machine.Y = _cannonPosY - _cannonRotatePointY;
+	Destination.X = mouse_pos.x;
+	Destination.Y = mouse_pos.y;
+	double A = atan2(Machine.Y - Destination.Y, Machine.X - Destination.X) / 3.1415 * 180;
+	A = (A < 0) ? A + 360 : A;
+	_angle = A + 90;
 }
 
 bool TestWidget::MouseDown(const IPoint &mouse_pos)
@@ -290,6 +325,25 @@ void TestWidget::KeyPressed(int keyCode)
 	if (keyCode == VK_A) {
 		// Реакция на нажатие кнопки A
 		_angle -= 25;
+	}
+	
+	if (keyCode == VK_UP) {
+		_pointY += 1;
+	}
+	if (keyCode == VK_DOWN) {
+		_pointY -= 1;
+	}
+	if (keyCode == VK_RIGHT) {
+		_pointX += 1;
+	}
+	if (keyCode == VK_LEFT) {
+		_pointX -= 1;
+	}
+	if (keyCode == VK_HOME) {
+		_standScale *= 2;
+	}
+	if (keyCode == VK_END) {
+		_standScale /= 2;
 	}
 }
 
