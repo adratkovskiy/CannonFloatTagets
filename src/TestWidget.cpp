@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "TestWidget.h"
 
+void DrawCross(int x, int y)
+{
+	Render::DrawLine(math::Vector3(x - 10, y, 1), math::Vector3(x + 10, y, 1));
+	Render::DrawLine(math::Vector3(x, y - 10, 1), math::Vector3(x, y + 10, 1));
+}
+
 TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 	: Widget(name)
 	, _curTex(0)
@@ -23,14 +29,14 @@ void TestWidget::Init()
 	_tex3 = Core::resourceManager.Get<Render::Texture>("Star");
 
 	_curTex = 0;
-	_angle = 0;
+	_angle = 0;*/
 
 	spline.addKey(0.0f, FPoint(100.0f, 100.0f));
 	spline.addKey(0.25f, FPoint(150.0f, 300.0f));
 	spline.addKey(0.5f, FPoint(500.0f, 300.0f));
 	spline.addKey(0.75f, FPoint(630.0f, 450.0f));
 	spline.addKey(1.0f, FPoint(600.0f, 550.0f));
-	spline.CalculateGradient();*/
+	spline.CalculateGradient();
 }
 
 void TestWidget::Draw()
@@ -137,13 +143,14 @@ void TestWidget::Draw()
 	//
 	// Получаем текущие координаты объекта, двигающегося по сплайну
 	//
-	// FPoint currentPosition = spline.getGlobalFrame(math::clamp(0.0f, 1.0f, _timer / 6.0f));
+	FPoint currentPosition = spline.getGlobalFrame(math::clamp(0.0f, 1.0f, _timer / 6.0f));
 
 	//
 	// И рисуем объект в этих координатах
 	//
 	Render::device.PushMatrix();
-	// Render::device.MatrixTranslate(currentPosition.x, currentPosition.y, 0);
+	Render::device.MatrixTranslate(currentPosition.x, currentPosition.y, 0);
+	_aim->Draw();
 	// _tex3->Draw();
 	Render::device.PopMatrix();
 
@@ -166,8 +173,22 @@ void TestWidget::Draw()
 	// иначе визуальный результат будет непредсказуемым.
 	//
 	Render::DrawRect(924, 0, 100, 100);
+
+	DrawCross(100, 100);
+	DrawCross(150, 300);
+	DrawCross(500, 300);
+	DrawCross(630, 450);
+	DrawCross(600, 550);
 	//
 	// Метод EndColor() снимает со стека текущий цвет вершин, восстанавливая прежний.
+
+	/*
+	spline.addKey(0.0f, FPoint(100.0f, 100.0f));
+	spline.addKey(0.25f, FPoint(150.0f, 300.0f));
+	spline.addKey(0.5f, FPoint(500.0f, 300.0f));
+	spline.addKey(0.75f, FPoint(630.0f, 450.0f));
+	spline.addKey(1.0f, FPoint(600.0f, 550.0f));
+	*/
 	//
 	Render::EndColor();
 	
