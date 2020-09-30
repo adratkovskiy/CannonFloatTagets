@@ -20,57 +20,61 @@ TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 
 void TestWidget::Init()
 {
+	//_gControl = new GameController(GameController::START_SCREEN);
 	_cannon = Core::resourceManager.Get<Render::Texture>("Cannon");
 	_stand = Core::resourceManager.Get<Render::Texture>("Stand");
 	_background = Core::resourceManager.Get<Render::Texture>("Background");
 	_aim = Core::resourceManager.Get<Render::Texture>("Aim");
-	/*_tex1 = Core::resourceManager.Get<Render::Texture>("btnStart_Text");
-	_tex2 = Core::resourceManager.Get<Render::Texture>("Circle");
-	_tex3 = Core::resourceManager.Get<Render::Texture>("Star");
+	_point = Core::resourceManager.Get<Render::Texture>("TestPoint");
 
-	_curTex = 0;
-	_angle = 0;*/
-
+	
+	/*
 	spline.addKey(0.0f, FPoint(100.0f, 100.0f));
 	spline.addKey(0.25f, FPoint(150.0f, 300.0f));
 	spline.addKey(0.5f, FPoint(500.0f, 300.0f));
 	spline.addKey(0.75f, FPoint(630.0f, 450.0f));
 	spline.addKey(1.0f, FPoint(600.0f, 550.0f));
 	spline.CalculateGradient();
+	*/
 }
 
 void TestWidget::Draw()
 {
+	_mouse_pos = Core::mainInput.GetMousePos();
 	_background->Draw();
+	/*switch (_gControl->getGameState())
+	{
+	case GameController::START_SCREEN:
+		Render::device.PushMatrix();
+		Render::device.MatrixTranslate((float)_mouse_pos.x, (float)_mouse_pos.y, 0);
+		IRect texRect = _aim->getBitmapRect();
+		Render::device.MatrixTranslate(-texRect.width * 0.5f, -texRect.height * 0.5f, 0.0f);
+		_aim->Draw();
+		Render::device.PopMatrix();
+		break;
+	}*/
+	
 	//
 	// Получаем текущее положение курсора мыши.
 	//
-	IPoint mouse_pos = Core::mainInput.GetMousePos();
+
+	
 
 	Render::device.PushMatrix();
-	Render::device.MatrixTranslate((float)mouse_pos.x, (float)mouse_pos.y, 0);
-	IRect texRect = _aim->getBitmapRect();
-	Render::device.MatrixTranslate(-texRect.width * 0.5f, -texRect.height * 0.5f, 0.0f);
-	_aim->Draw();
-	Render::device.PopMatrix();
-
-	Render::device.PushMatrix();
-	Render::device.MatrixTranslate(_standPosX, _standPosY, 0);
-	Render::device.MatrixScale(_standScale);
+	Render::device.MatrixTranslate(_standPos.x, _standPos.y, 0);
+	Render::device.MatrixScale(_gunScale);
 	_stand->Draw();
 	Render::device.PopMatrix();
-	////////////////////////////////////////////////////////
 
 	Render::device.PushMatrix();
-	Render::device.MatrixTranslate(_cannonPosX - _cannonRotatePointX, _cannonPosY - _cannonRotatePointY, 0);
+	Render::device.MatrixTranslate(_cannonCenter.x, _cannonCenter.y, 0);
 	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _angle);
-	Render::device.MatrixTranslate(_cannonRotatePointX, _cannonRotatePointY, 0);
-	Render::device.MatrixScale(_cannonScale);
+	Render::device.MatrixTranslate(_cannonRotatePoint.x, _cannonRotatePoint.y, 0);
+	Render::device.MatrixScale(_gunScale);
 	
 	_cannon->Draw();
-	Render::device.PopMatrix();
 
-	////////////////////////////////////////////////////////
+	Render::device.PopMatrix();
 
 	//
 	// Проталкиваем в стек текущее преобразование координат, чтобы в дальнейшем
@@ -82,7 +86,7 @@ void TestWidget::Draw()
 	// и поворачивая координаты относительно этого центра вокруг оси z на угол _angle.
 	//
 	Render::device.PushMatrix();
-	Render::device.MatrixTranslate((float)mouse_pos.x, (float)mouse_pos.y, 0);
+	Render::device.MatrixTranslate((float)_mouse_pos.x, (float)_mouse_pos.y, 0);
 	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _angle);
 
 	if (!_curTex)
@@ -114,7 +118,7 @@ void TestWidget::Draw()
 
 		// _tex2->TranslateUV(rect, uv);
 
-		Render::device.MatrixScale(_scale);
+		// Render::device.MatrixScale(_scale);
 		//Render::device.MatrixTranslate(-texRect.width * 0.5f, -texRect.height * 0.5f, 0.0f);
 
 		//
@@ -150,7 +154,7 @@ void TestWidget::Draw()
 	//
 	Render::device.PushMatrix();
 	Render::device.MatrixTranslate(currentPosition.x, currentPosition.y, 0);
-	_aim->Draw();
+	_point->Draw();
 	// _tex3->Draw();
 	Render::device.PopMatrix();
 
@@ -203,10 +207,7 @@ void TestWidget::Draw()
 	_effCont.Draw();
 
 	Render::BindFont("arial");
-	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(Destination.X) + ", Y:" + utils::lexical_cast(Destination.Y), 1.f, CenterAlign);
-	// Render::PrintString(924 + 100 / 2, 65, "x:" + utils::lexical_cast(Machine.X) + ", Y:" + utils::lexical_cast(Machine.Y), 1.f, CenterAlign);
-	// Render::PrintString(924 + 100 / 2, 95, "angle:" + utils::lexical_cast(_angle), 1.f, CenterAlign);
-
+	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_mouse_pos.x) + ", Y:" + utils::lexical_cast(_mouse_pos.y), 1.f, CenterAlign);
 }
 
 void TestWidget::Update(float dt)
@@ -249,16 +250,8 @@ void TestWidget::Update(float dt)
 	if (_angle >= 360) {
 		_angle -= 360;
 	}
-
-	///////////////////////////////////////////
-	//Render::device.MatrixTranslate(_cannonPosX - _cannonRotatePointX, _cannonPosY - _cannonRotatePointY, 0);
-	IPoint mouse_pos = Core::mainInput.GetMousePos();
-
-	Machine.X = _cannonPosX - _cannonRotatePointX;
-	Machine.Y = _cannonPosY - _cannonRotatePointY;
-	Destination.X = mouse_pos.x;
-	Destination.Y = mouse_pos.y;
-	_angle = atan2(Machine.Y - Destination.Y, Machine.X - Destination.X) / 3.1415 * 180 + 90;
+	
+	_angle = atan2(_cannonCenter.y - _mouse_pos.y, _cannonCenter.x - _mouse_pos.x) / 3.1415 * 180 + 90;
 	_angle = (_angle < 0) ? _angle + 360 : _angle;
 }
 
@@ -346,7 +339,7 @@ void TestWidget::KeyPressed(int keyCode)
 		// Реакция на нажатие кнопки A
 		_angle -= 25;
 	}
-	
+	/*
 	if (keyCode == VK_UP) {
 		_pointY += 1;
 	}
@@ -359,11 +352,12 @@ void TestWidget::KeyPressed(int keyCode)
 	if (keyCode == VK_LEFT) {
 		_pointX -= 1;
 	}
+	*/
 	if (keyCode == VK_HOME) {
-		_standScale *= 2;
+		_gunScale *= 2;
 	}
 	if (keyCode == VK_END) {
-		_standScale /= 2;
+		_gunScale /= 2;
 	}
 }
 

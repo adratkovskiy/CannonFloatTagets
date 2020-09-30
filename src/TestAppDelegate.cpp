@@ -53,6 +53,7 @@ void TestAppDelegate::OnResourceLoaded() {
 }
 
 void TestAppDelegate::OnPostDraw() {
+
 	if (!Render::isFontLoaded("arial"))
 		return;
 

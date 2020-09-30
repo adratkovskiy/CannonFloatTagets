@@ -1,4 +1,5 @@
 #pragma once
+#include "GameController.h"
 
 ///
 /// Виджет - основной визуальный элемент на экране.
@@ -6,10 +7,6 @@
 ///
 /// 
 
-struct pointsXY {
-	float X;
-	float Y;
-};
 
 class TestWidget : public GUI::Widget
 {
@@ -33,30 +30,24 @@ private:
 
 private:
 	float _timer;
-	
 	float _scale;
 	float _angle;
-	float _standScale = 0.125f;
-	int _standPosX = 480;
-	int _standPosY = 10;
-	float _cannonScale = 0.125f;
-	int _cannonPosX = 495;
-	int _cannonPosY = 30;
-	int _cannonRotatePointX = -40;
-	int _cannonRotatePointY = -32;
-	int _pointX = 0;
-	int _pointY = 0;
-	pointsXY Machine;
-	pointsXY Destination;
+	float _gunScale = 0.125f;
+	IPoint _standPos = { 480, 10 };
+	IPoint _cannonRotatePoint = { -40, -32 };
+	IPoint _cannonCenter = { 535, 62 };
+	IPoint _mouse_pos;
 	
 	Render::Texture* _cannon;
 	Render::Texture* _stand;
 	Render::Texture* _background;
 	Render::Texture* _aim;
+	Render::Texture* _point;
 	int _curTex;
 
 	EffectsContainer _effCont;
 	ParticleEffectPtr _eff;
 
 	TimedSpline<FPoint> spline;
+	GameController* _gControl;
 };
