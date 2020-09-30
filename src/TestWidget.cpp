@@ -20,12 +20,14 @@ TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 
 void TestWidget::Init()
 {
-	//_gControl = new GameController(GameController::START_SCREEN);
+	_gControl = new GameController(GameController::GameStates::START_SCREEN);
+	_cannonball = new Cannonball({ 200, 200 });
 	_cannon = Core::resourceManager.Get<Render::Texture>("Cannon");
 	_stand = Core::resourceManager.Get<Render::Texture>("Stand");
 	_background = Core::resourceManager.Get<Render::Texture>("Background");
 	_aim = Core::resourceManager.Get<Render::Texture>("Aim");
 	_point = Core::resourceManager.Get<Render::Texture>("TestPoint");
+	_cannonbalPic = Core::resourceManager.Get<Render::Texture>("Cannonball");
 
 	
 	/*
@@ -42,17 +44,24 @@ void TestWidget::Draw()
 {
 	_mouse_pos = Core::mainInput.GetMousePos();
 	_background->Draw();
-	/*switch (_gControl->getGameState())
+	switch (_gControl->getGameState())
 	{
-	case GameController::START_SCREEN:
+	case GameController::GameStates::START_SCREEN:
 		Render::device.PushMatrix();
 		Render::device.MatrixTranslate((float)_mouse_pos.x, (float)_mouse_pos.y, 0);
 		IRect texRect = _aim->getBitmapRect();
 		Render::device.MatrixTranslate(-texRect.width * 0.5f, -texRect.height * 0.5f, 0.0f);
 		_aim->Draw();
 		Render::device.PopMatrix();
+
+		Render::device.PushMatrix();
+		Render::device.MatrixTranslate((float)_cannonball_pos.x, (float)_cannonball_pos.y, 0);
+		Render::device.MatrixScale(_weaponScale);
+		_cannonbalPic->Draw();
+		Render::device.PopMatrix();
+
 		break;
-	}*/
+	}
 	
 	//
 	// Получаем текущее положение курсора мыши.
@@ -62,7 +71,7 @@ void TestWidget::Draw()
 
 	Render::device.PushMatrix();
 	Render::device.MatrixTranslate(_standPos.x, _standPos.y, 0);
-	Render::device.MatrixScale(_gunScale);
+	Render::device.MatrixScale(_weaponScale);
 	_stand->Draw();
 	Render::device.PopMatrix();
 
@@ -70,7 +79,7 @@ void TestWidget::Draw()
 	Render::device.MatrixTranslate(_cannonCenter.x, _cannonCenter.y, 0);
 	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _angle);
 	Render::device.MatrixTranslate(_cannonRotatePoint.x, _cannonRotatePoint.y, 0);
-	Render::device.MatrixScale(_gunScale);
+	Render::device.MatrixScale(_weaponScale);
 	
 	_cannon->Draw();
 
@@ -85,6 +94,7 @@ void TestWidget::Draw()
 	// Изменяем текущее преобразование координат, перемещая центр координат в позицию мыши
 	// и поворачивая координаты относительно этого центра вокруг оси z на угол _angle.
 	//
+	
 	Render::device.PushMatrix();
 	Render::device.MatrixTranslate((float)_mouse_pos.x, (float)_mouse_pos.y, 0);
 	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _angle);
@@ -147,7 +157,7 @@ void TestWidget::Draw()
 	//
 	// Получаем текущие координаты объекта, двигающегося по сплайну
 	//
-	FPoint currentPosition = spline.getGlobalFrame(math::clamp(0.0f, 1.0f, _timer / 6.0f));
+	/*FPoint currentPosition = spline.getGlobalFrame(math::clamp(0.0f, 1.0f, _timer / 6.0f));
 
 	//
 	// И рисуем объект в этих координатах
@@ -156,7 +166,7 @@ void TestWidget::Draw()
 	Render::device.MatrixTranslate(currentPosition.x, currentPosition.y, 0);
 	_point->Draw();
 	// _tex3->Draw();
-	Render::device.PopMatrix();
+	Render::device.PopMatrix();*/
 
 	//
 	// Этот вызов отключает текстурирование при отрисовке.
@@ -178,11 +188,11 @@ void TestWidget::Draw()
 	//
 	Render::DrawRect(924, 0, 100, 100);
 
-	DrawCross(100, 100);
+	/*DrawCross(100, 100);
 	DrawCross(150, 300);
 	DrawCross(500, 300);
 	DrawCross(630, 450);
-	DrawCross(600, 550);
+	DrawCross(600, 550);*/
 	//
 	// Метод EndColor() снимает со стека текущий цвет вершин, восстанавливая прежний.
 
@@ -201,6 +211,23 @@ void TestWidget::Draw()
 	//
 	Render::device.SetTexturing(true);
 
+	/////////////////////////////////////////
+	Render::device.SetTexturing(false);
+	Render::BeginColor(Color(0, 0, 0, 255));
+	DrawCross(_cannonCenter.x, _cannonCenter.y);
+	DrawCross(_mouse_pos.x, _mouse_pos.y);
+	DrawCross(_mouse_pos.x + 2 * (_mouse_pos.x - _cannonCenter.x), _mouse_pos.y);
+	DrawCross(_mouse_pos.x + (_mouse_pos.x - _cannonCenter.x), _mouse_pos.y);
+	DrawCross(_mouse_pos.x + (_mouse_pos.x - _cannonCenter.x), _mouse_pos.y + 0.5 * (_mouse_pos.y - _cannonCenter.y));
+	Render::EndColor();
+	Render::BeginColor(Color(255, 0, 0, 255));
+	DrawCross(_mouse_pos.x + 0.1 * (_mouse_pos.x - _cannonCenter.x), _mouse_pos.y + 0.1 * (_mouse_pos.y - _cannonCenter.y));
+	DrawCross(_cannonCenter.x + 1.75 * (_mouse_pos.x + (_mouse_pos.x - _cannonCenter.x) - _cannonCenter.x), _cannonCenter.y);
+	Render::EndColor();
+	Render::device.SetTexturing(true);
+	/////////////////////////////////////////
+
+
 	//
 	// Рисуем все эффекты, которые добавили в контейнер (Update() для контейнера вызывать не нужно).
 	//
@@ -208,10 +235,12 @@ void TestWidget::Draw()
 
 	Render::BindFont("arial");
 	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_mouse_pos.x) + ", Y:" + utils::lexical_cast(_mouse_pos.y), 1.f, CenterAlign);
+	Render::PrintString(924 + 100 / 2, 65, "gameState:" + utils::lexical_cast(static_cast<int>(_gControl->getGameState())), 1.f, CenterAlign);
 }
 
 void TestWidget::Update(float dt)
 {
+	_cannonball_pos = _cannonball->getPos();
 	//
 	// Обновим контейнер с эффектами
 	//
@@ -281,6 +310,7 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 		//
 		// При нажатии на левую кнопку мыши, создаём временный эффект, который завершится сам.
 		//
+		//_gControl->setGameState(static_cast<GameController::GameStates>(static_cast<int>(_gControl->getGameState()) + 1));
 		ParticleEffectPtr eff = _effCont.AddEffect("FindItem2");
 		eff->posX = mouse_pos.x + 0.f;
 		eff->posY = mouse_pos.y + 0.f;
@@ -354,10 +384,10 @@ void TestWidget::KeyPressed(int keyCode)
 	}
 	*/
 	if (keyCode == VK_HOME) {
-		_gunScale *= 2;
+		_weaponScale *= 2;
 	}
 	if (keyCode == VK_END) {
-		_gunScale /= 2;
+		_weaponScale /= 2;
 	}
 }
 
