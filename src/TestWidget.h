@@ -31,16 +31,20 @@ private:
 
 private:
 	float _timer;
+	float _cannonTimer = 2;
 	float _scale;
 	float _angle;
 	float _weaponScale = 0.125;
+	float _shotLenth;
 	IPoint _standPos = { 480, 10 };
 	IPoint _cannonRotatePoint = { -40, -32 };
 	IPoint _cannonCenter = { 535, 62 };
-	IPoint _mouse_pos;
-	IPoint _cannonball_pos;
+	IPoint _mousePos;
+	IPoint _cannonballPos;
+	IPoint _cannonballCenter = { -20, -20 };
 	
-	Render::Texture* _cannon;
+	Render::Texture* _cannonBack;
+	Render::Texture* _cannonFront;
 	Render::Texture* _stand;
 	Render::Texture* _background;
 	Render::Texture* _aim;

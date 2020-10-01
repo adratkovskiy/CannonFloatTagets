@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "TestWidget.h"
 
-void DrawCross(int x, int y)
+void DrawCross(int x, int y, std::string title)
 {
 	Render::DrawLine(math::Vector3(x - 10, y, 1), math::Vector3(x + 10, y, 1));
 	Render::DrawLine(math::Vector3(x, y - 10, 1), math::Vector3(x, y + 10, 1));
+	Render::BindFont("arial");
+	//Render::PrintString(x + 100, y + 100, title, 1.f, LeftAlign);
 }
 
 TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
@@ -22,45 +24,56 @@ void TestWidget::Init()
 {
 	_gControl = new GameController(GameController::GameStates::START_SCREEN);
 	_cannonball = new Cannonball({ 200, 200 });
-	_cannon = Core::resourceManager.Get<Render::Texture>("Cannon");
+	_cannonBack = Core::resourceManager.Get<Render::Texture>("Cannon_back");
+	_cannonFront = Core::resourceManager.Get<Render::Texture>("Cannon_front");
 	_stand = Core::resourceManager.Get<Render::Texture>("Stand");
 	_background = Core::resourceManager.Get<Render::Texture>("Background");
 	_aim = Core::resourceManager.Get<Render::Texture>("Aim");
 	_point = Core::resourceManager.Get<Render::Texture>("TestPoint");
 	_cannonbalPic = Core::resourceManager.Get<Render::Texture>("Cannonball");
-
-	
-	/*
-	spline.addKey(0.0f, FPoint(100.0f, 100.0f));
-	spline.addKey(0.25f, FPoint(150.0f, 300.0f));
-	spline.addKey(0.5f, FPoint(500.0f, 300.0f));
-	spline.addKey(0.75f, FPoint(630.0f, 450.0f));
-	spline.addKey(1.0f, FPoint(600.0f, 550.0f));
-	spline.CalculateGradient();
-	*/
 }
 
 void TestWidget::Draw()
 {
-	_mouse_pos = Core::mainInput.GetMousePos();
+	_mousePos = Core::mainInput.GetMousePos();
 	_background->Draw();
+
+	Render::device.PushMatrix();
+	Render::device.MatrixTranslate(_cannonCenter.x, _cannonCenter.y, 0);
+	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _angle);
+	Render::device.MatrixTranslate(_cannonRotatePoint.x, _cannonRotatePoint.y, 0);
+	Render::device.MatrixScale(_weaponScale);
+	_cannonBack->Draw();
+	Render::device.PopMatrix();
+
 	switch (_gControl->getGameState())
 	{
 	case GameController::GameStates::START_SCREEN:
 		Render::device.PushMatrix();
-		Render::device.MatrixTranslate((float)_mouse_pos.x, (float)_mouse_pos.y, 0);
+		Render::device.MatrixTranslate((float)_mousePos.x, (float)_mousePos.y, 0);
 		IRect texRect = _aim->getBitmapRect();
 		Render::device.MatrixTranslate(-texRect.width * 0.5f, -texRect.height * 0.5f, 0.0f);
 		_aim->Draw();
 		Render::device.PopMatrix();
 
-		Render::device.PushMatrix();
+		/*Render::device.PushMatrix();
 		Render::device.MatrixTranslate((float)_cannonball_pos.x, (float)_cannonball_pos.y, 0);
 		Render::device.MatrixScale(_weaponScale);
 		_cannonbalPic->Draw();
-		Render::device.PopMatrix();
+		Render::device.PopMatrix();*/
 
 		break;
+		
+	}
+	if (!_gControl->getReadyToShot())
+	{
+		FPoint currentPosition = spline.getGlobalFrame(math::clamp(0.0f, 1.0f, _timer / 6.0f));
+		Render::device.PushMatrix();
+		Render::device.MatrixTranslate(currentPosition.x + _cannonballCenter.x, currentPosition.y + _cannonballCenter.y, 0);
+		Render::device.MatrixScale(_weaponScale);
+		//Render::device.MatrixTranslate(currentPosition, 0);
+		_cannonbalPic->Draw();
+		Render::device.PopMatrix();
 	}
 	
 	//
@@ -80,9 +93,7 @@ void TestWidget::Draw()
 	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _angle);
 	Render::device.MatrixTranslate(_cannonRotatePoint.x, _cannonRotatePoint.y, 0);
 	Render::device.MatrixScale(_weaponScale);
-	
-	_cannon->Draw();
-
+	_cannonFront->Draw();
 	Render::device.PopMatrix();
 
 	//
@@ -96,7 +107,7 @@ void TestWidget::Draw()
 	//
 	
 	Render::device.PushMatrix();
-	Render::device.MatrixTranslate((float)_mouse_pos.x, (float)_mouse_pos.y, 0);
+	Render::device.MatrixTranslate((float)_mousePos.x, (float)_mousePos.y, 0);
 	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _angle);
 
 	if (!_curTex)
@@ -157,16 +168,12 @@ void TestWidget::Draw()
 	//
 	// Получаем текущие координаты объекта, двигающегося по сплайну
 	//
-	/*FPoint currentPosition = spline.getGlobalFrame(math::clamp(0.0f, 1.0f, _timer / 6.0f));
+	
 
 	//
 	// И рисуем объект в этих координатах
 	//
-	Render::device.PushMatrix();
-	Render::device.MatrixTranslate(currentPosition.x, currentPosition.y, 0);
-	_point->Draw();
-	// _tex3->Draw();
-	Render::device.PopMatrix();*/
+	
 
 	//
 	// Этот вызов отключает текстурирование при отрисовке.
@@ -212,35 +219,35 @@ void TestWidget::Draw()
 	Render::device.SetTexturing(true);
 
 	/////////////////////////////////////////
-	Render::device.SetTexturing(false);
+	/*Render::device.SetTexturing(false);
 	Render::BeginColor(Color(0, 0, 0, 255));
-	DrawCross(_cannonCenter.x, _cannonCenter.y);
-	DrawCross(_mouse_pos.x, _mouse_pos.y);
-	DrawCross(_mouse_pos.x + 2 * (_mouse_pos.x - _cannonCenter.x), _mouse_pos.y);
-	DrawCross(_mouse_pos.x + (_mouse_pos.x - _cannonCenter.x), _mouse_pos.y);
-	DrawCross(_mouse_pos.x + (_mouse_pos.x - _cannonCenter.x), _mouse_pos.y + 0.5 * (_mouse_pos.y - _cannonCenter.y));
+	DrawCross(_cannonCenter.x, _cannonCenter.y, "1");
+	DrawCross(_mouse_pos.x, _mouse_pos.y, "2");
+	DrawCross(_mouse_pos.x + 2 * (_mouse_pos.x - _cannonCenter.x), _mouse_pos.y, "3");
+	DrawCross(_mouse_pos.x + (_mouse_pos.x - _cannonCenter.x), _mouse_pos.y, "4");
+	DrawCross(_mouse_pos.x + (_mouse_pos.x - _cannonCenter.x), _mouse_pos.y + 0.5 * (_mouse_pos.y - _cannonCenter.y), "5");
 	Render::EndColor();
 	Render::BeginColor(Color(255, 0, 0, 255));
-	DrawCross(_mouse_pos.x + 0.1 * (_mouse_pos.x - _cannonCenter.x), _mouse_pos.y + 0.1 * (_mouse_pos.y - _cannonCenter.y));
-	DrawCross(_cannonCenter.x + 1.75 * (_mouse_pos.x + (_mouse_pos.x - _cannonCenter.x) - _cannonCenter.x), _cannonCenter.y);
+	DrawCross(_mouse_pos.x + 0.1 * (_mouse_pos.x - _cannonCenter.x), _mouse_pos.y + 0.1 * (_mouse_pos.y - _cannonCenter.y), "6");
+	DrawCross(_cannonCenter.x + 1.75 * (_mouse_pos.x + (_mouse_pos.x - _cannonCenter.x) - _cannonCenter.x), _cannonCenter.y, "7");
 	Render::EndColor();
-	Render::device.SetTexturing(true);
+	Render::device.SetTexturing(true);*/
 	/////////////////////////////////////////
-
-
+	
 	//
 	// Рисуем все эффекты, которые добавили в контейнер (Update() для контейнера вызывать не нужно).
 	//
 	_effCont.Draw();
 
 	Render::BindFont("arial");
-	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_mouse_pos.x) + ", Y:" + utils::lexical_cast(_mouse_pos.y), 1.f, CenterAlign);
+	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_mousePos.x) + ", Y:" + utils::lexical_cast(_mousePos.y), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 65, "gameState:" + utils::lexical_cast(static_cast<int>(_gControl->getGameState())), 1.f, CenterAlign);
+	Render::PrintString(924 + 100 / 2, 95, "_shot_lenth:" + utils::lexical_cast(_shotLenth), 1.f, CenterAlign);
 }
 
 void TestWidget::Update(float dt)
 {
-	_cannonball_pos = _cannonball->getPos();
+	//_cannonball_pos = _cannonball->getPos();
 	//
 	// Обновим контейнер с эффектами
 	//
@@ -256,7 +263,7 @@ void TestWidget::Update(float dt)
 	//
 	// Увеличиваем наш таймер с удвоенной скоростью.
 	//
-	_timer += dt * 2;
+	_timer += dt * _cannonTimer;
 	
 	//
 	// Зацикливаем таймер в диапазоне (0, 2п).
@@ -270,25 +277,29 @@ void TestWidget::Update(float dt)
 	while (_timer > 2 * math::PI)
 	{
 		_timer -= 2 * math::PI;
+		_gControl->setReadyToShot(true);
+		spline.Clear();
 	}
+		
 	
 	//
 	// Анимирование параметра масштабирования в зависимости от таймера.
 	//
+	/*
 	_scale = 0.8f + 0.25f * sinf(_timer);
 	if (_angle >= 360) {
 		_angle -= 360;
-	}
+	}*/
 	
-	_angle = atan2(_cannonCenter.y - _mouse_pos.y, _cannonCenter.x - _mouse_pos.x) / 3.1415 * 180 + 90;
-	_angle = (_angle < 0) ? _angle + 360 : _angle;
+	_angle = atan2(_cannonCenter.y - _mousePos.y, _cannonCenter.x - _mousePos.x) / math::PI * 180 + 90;
+	//_angle = math::GetXYVectorAngle({ (float)_cannonCenter.x, (float)_cannonCenter.y, 0.0f } , { (float)_mouse_pos.x, (float)_mouse_pos.y, 0.0f });
+	//_angle = (_angle < 0) ? _angle + 360 : _angle;
 }
 
 bool TestWidget::MouseDown(const IPoint &mouse_pos)
 {
 	if (Core::mainInput.GetMouseRightButton())
 	{
-		//
 		// При нажатии на правую кнопку мыши, создаём эффект шлейфа за мышкой.
 		//
 		_eff = _effCont.AddEffect("Iskra");
@@ -307,13 +318,28 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 	}
 	else
 	{
+		if (_gControl->getReadyToShot())
+		{
+			_gControl->setReadyToShot(false);
+			_shotLenth = math::sqrt(math::abs(math::sqr(_mousePos.x - _cannonCenter.x) + math::sqr(_mousePos.y - _cannonCenter.y)));
+			_cannonTimer = 4 /_shotLenth * 500;
+			
+			spline.addKey(0.0f, _cannonCenter);
+			spline.addKey(0.3f, _mousePos);
+			spline.addKey(0.5f, { (float)(_mousePos.x + (_mousePos.x - _cannonCenter.x)), (float)(_mousePos.y + 0.3 * (_mousePos.y - _cannonCenter.y)) });
+			spline.addKey(0.7f, { (float)(_mousePos.x + 2 * (_mousePos.x - _cannonCenter.x)), (float)(_mousePos.y) });
+			spline.addKey(1.0f, { (float)(_cannonCenter.x + 1.75 * (_mousePos.x + (_mousePos.x - _cannonCenter.x) - _cannonCenter.x)), (float)(-30) });
+			spline.CalculateGradient();
+			_timer = 0;
+		}
+		//
 		//
 		// При нажатии на левую кнопку мыши, создаём временный эффект, который завершится сам.
 		//
 		//_gControl->setGameState(static_cast<GameController::GameStates>(static_cast<int>(_gControl->getGameState()) + 1));
 		ParticleEffectPtr eff = _effCont.AddEffect("FindItem2");
-		eff->posX = mouse_pos.x + 0.f;
-		eff->posY = mouse_pos.y + 0.f;
+		eff->posX = _mousePos.x + 0.f;
+		eff->posY = _mousePos.y + 0.f;
 		eff->Reset();
 
 		//

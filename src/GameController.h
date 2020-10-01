@@ -15,7 +15,7 @@ public:
 	void setGameState(GameStates gameState);
 	
 private:
-	bool _readyToShot = false;
+	bool _readyToShot = true;
 	GameStates _gameState;
 };
 
