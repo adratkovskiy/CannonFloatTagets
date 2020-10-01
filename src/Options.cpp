@@ -3,14 +3,18 @@
 
 Options::Options()
 {
-	rapidxml::xml_document<char> doc;
+	/*rapidxml::xml_document<char> doc;
 	try {
-        std::string fname_xml = "base_p/Options.xml";
+        std::string fname_xml = "base_p/options.xml";*/
+    //IO::InputStream* stream;
+    //stream->ReadAllBytes()
 		//std::ifstream file(fname_xml.c_str());
         //IO::InputStream stream = Core::fileSystem.OpenRead(fname_xml);
         //IO::InputStream file;
 
-        IO::InputStreamPtr file = Core::fileSystem.OpenRead(fname_xml);
+        /*IO::InputStreamPtr file = Core::fileSystem.OpenRead(fname_xml);
+        file->
+        IO::TextReader()
         std::vector<char> buffer((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
         buffer.push_back('\0');
 
@@ -42,7 +46,7 @@ Options::Options()
     {
         std::cout << i->first << "\t= " << i->second << std::endl;
     }
-    std::cout << "Configuration loaded" << std::endl;
+    std::cout << "Configuration loaded" << std::endl;*/
 }
 
 std::string Options::getStr()
