@@ -122,6 +122,7 @@
     <ClCompile Include="..\..\src\Cannonball.cpp" />
     <ClCompile Include="..\..\src\GameController.cpp" />
     <ClCompile Include="..\..\src\Main.cpp" />
+    <ClCompile Include="..\..\src\Options.cpp" />
     <ClCompile Include="..\..\src\TestAppDelegate.cpp" />
     <ClCompile Include="..\..\src\TestWidget.cpp" />
     <ClCompile Include="..\..\src\stdafx.cpp">
@@ -133,6 +134,7 @@
     <ClInclude Include="..\..\src\Cannon.h" />
     <ClInclude Include="..\..\src\Cannonball.h" />
     <ClInclude Include="..\..\src\GameController.h" />
+    <ClInclude Include="..\..\src\Options.h" />
     <ClInclude Include="..\..\src\TestAppDelegate.h" />
     <ClInclude Include="..\..\src\TestWidget.h" />
     <ClInclude Include="..\..\src\stdafx.h" />
@@ -141,6 +143,7 @@
     <Xml Include="..\..\bin\base_p\Layers.xml">
       <SubType>Designer</SubType>
     </Xml>
+    <Xml Include="..\..\bin\base_p\Options.xml" />
     <Xml Include="..\..\bin\base_p\Resources.xml" />
   </ItemGroup>
   <ItemGroup>

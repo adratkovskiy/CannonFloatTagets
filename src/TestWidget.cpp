@@ -11,7 +11,6 @@ TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 	: Widget(name)
 	, _curTex(0)
 	, _timer(0)
-	, _angle(0)
 	, _eff(NULL)
 {
 	Init();
@@ -19,7 +18,10 @@ TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 
 void TestWidget::Init()
 {
+	//IO::InputStreamPtr stream = Core::fileSystem.OpenRead("asd");
+	_options = new Options();
 	_gControl = new GameController(GameController::GameStates::START_SCREEN, true, 0.125);
+	_cannon = new Cannon(90.0f);
 	_cannonball = new Cannonball({ 200, 200 });
 	_cannonBack = Core::resourceManager.Get<Render::Texture>("Cannon_back");
 	_cannonFront = Core::resourceManager.Get<Render::Texture>("Cannon_front");
@@ -32,12 +34,12 @@ void TestWidget::Init()
 
 void TestWidget::Draw()
 {
-	_mousePos = Core::mainInput.GetMousePos();
+	_gControl->setMousePos(Core::mainInput.GetMousePos());
 	_background->Draw();
 
 	Render::device.PushMatrix();
 	Render::device.MatrixTranslate(_cannonCenter.x, _cannonCenter.y, 0);
-	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _angle);
+	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _cannon->getAngle());
 	Render::device.MatrixTranslate(_cannonRotatePoint.x, _cannonRotatePoint.y, 0);
 	Render::device.MatrixScale(_gControl->getWeaponScale());
 	_cannonBack->Draw();
@@ -47,7 +49,7 @@ void TestWidget::Draw()
 	{
 	case GameController::GameStates::START_SCREEN:
 		Render::device.PushMatrix();
-		Render::device.MatrixTranslate((float)_mousePos.x, (float)_mousePos.y, 0);
+		Render::device.MatrixTranslate((float)_gControl->getMousePos().x, (float)_gControl->getMousePos().y, 0);
 		IRect texRect = _aim->getBitmapRect();
 		Render::device.MatrixTranslate(-texRect.width * 0.5f, -texRect.height * 0.5f, 0.0f);
 		_aim->Draw();
@@ -81,7 +83,7 @@ void TestWidget::Draw()
 
 	Render::device.PushMatrix();
 	Render::device.MatrixTranslate(_cannonCenter.x, _cannonCenter.y, 0);
-	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _angle);
+	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _cannon->getAngle());
 	Render::device.MatrixTranslate(_cannonRotatePoint.x, _cannonRotatePoint.y, 0);
 	Render::device.MatrixScale(_gControl->getWeaponScale());
 	_cannonFront->Draw();
@@ -98,8 +100,8 @@ void TestWidget::Draw()
 	//
 	
 	Render::device.PushMatrix();
-	Render::device.MatrixTranslate((float)_mousePos.x, (float)_mousePos.y, 0);
-	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _angle);
+	Render::device.MatrixTranslate((float)_gControl->getMousePos().x, (float)_gControl->getMousePos().y, 0);
+	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _cannon->getAngle());
 
 	if (!_curTex)
 	{
@@ -231,9 +233,9 @@ void TestWidget::Draw()
 	_effCont.Draw();
 
 	Render::BindFont("arial");
-	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_mousePos.x) + ", Y:" + utils::lexical_cast(_mousePos.y), 1.f, CenterAlign);
+	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_gControl->getMousePos().x) + ", Y:" + utils::lexical_cast(_gControl->getMousePos().y), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 65, "gameState:" + utils::lexical_cast(static_cast<int>(_gControl->getGameState())), 1.f, CenterAlign);
-	Render::PrintString(924 + 100 / 2, 95, "_shot_lenth:" + utils::lexical_cast(_shotLenth), 1.f, CenterAlign);
+	Render::PrintString(924 + 100 / 2, 95, "options:" + _options->getStr(), 1.f, CenterAlign);
 }
 
 void TestWidget::Update(float dt)
@@ -282,7 +284,7 @@ void TestWidget::Update(float dt)
 		_angle -= 360;
 	}*/
 	
-	_angle = atan2(_cannonCenter.y - _mousePos.y, _cannonCenter.x - _mousePos.x) / math::PI * 180 + 90;
+	_cannon->getAngle() = atan2(_cannonCenter.y - _gControl->getMousePos().y, _cannonCenter.x - _gControl->getMousePos().x) / math::PI * 180 + 90;
 	//_angle = math::GetXYVectorAngle({ (float)_cannonCenter.x, (float)_cannonCenter.y, 0.0f } , { (float)_mouse_pos.x, (float)_mouse_pos.y, 0.0f });
 	//_angle = (_angle < 0) ? _angle + 360 : _angle;
 }
@@ -315,14 +317,14 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 			logStr = logStr + "ready ";
 			_gControl->setReadyToShot(false);
 			bool stat = _gControl->getReadyToShot();
-			_shotLenth = math::sqrt(math::abs(math::sqr(_mousePos.x - _cannonCenter.x) + math::sqr(_mousePos.y - _cannonCenter.y)));
+			_shotLenth = math::sqrt(math::abs(math::sqr(_gControl->getMousePos().x - _cannonCenter.x) + math::sqr(_gControl->getMousePos().y - _cannonCenter.y)));
 			_cannonTimer = 4 /_shotLenth * 500;
 			
 			spline.addKey(0.0f, _cannonCenter);
-			spline.addKey(0.3f, _mousePos);
-			spline.addKey(0.5f, { (float)(_mousePos.x + (_mousePos.x - _cannonCenter.x)), (float)(_mousePos.y + 0.3 * (_mousePos.y - _cannonCenter.y)) });
-			spline.addKey(0.7f, { (float)(_mousePos.x + 2 * (_mousePos.x - _cannonCenter.x)), (float)(_mousePos.y) });
-			spline.addKey(1.0f, { (float)(_cannonCenter.x + 1.75 * (_mousePos.x + (_mousePos.x - _cannonCenter.x) - _cannonCenter.x)), (float)(-30) });
+			spline.addKey(0.3f, _gControl->getMousePos());
+			spline.addKey(0.5f, { (float)(_gControl->getMousePos().x + (_gControl->getMousePos().x - _cannonCenter.x)), (float)(_gControl->getMousePos().y + 0.3 * (_gControl->getMousePos().y - _cannonCenter.y)) });
+			spline.addKey(0.7f, { (float)(_gControl->getMousePos().x + 2 * (_gControl->getMousePos().x - _cannonCenter.x)), (float)(_gControl->getMousePos().y) });
+			spline.addKey(1.0f, { (float)(_cannonCenter.x + 1.75 * (_gControl->getMousePos().x + (_gControl->getMousePos().x - _cannonCenter.x) - _cannonCenter.x)), (float)(-30) });
 			spline.CalculateGradient();
 			_timer = 0;
 		}
@@ -387,7 +389,7 @@ void TestWidget::KeyPressed(int keyCode)
 
 	if (keyCode == VK_A) {
 		// Реакция на нажатие кнопки A
-		_angle -= 25;
+		// _cannon->getAngle() -= 25;
 	}
 	/*
 	if (keyCode == VK_UP) {

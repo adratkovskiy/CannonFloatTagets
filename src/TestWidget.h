@@ -1,6 +1,8 @@
 #pragma once
 #include "GameController.h"
 #include "Cannonball.h"
+#include "Cannon.h"
+#include "Options.h"
 
 ///
 /// Виджет - основной визуальный элемент на экране.
@@ -34,15 +36,12 @@ private:
 private:
 	float _timer;
 	float _cannonTimer = 2;
-	float _angle;
 	float _shotLenth;
 	IPoint _standPos = { 480, 10 };
 	IPoint _cannonRotatePoint = { -40, -32 };
 	IPoint _cannonCenter = { 535, 62 };
-	IPoint _mousePos;
 	IPoint _cannonballPos;
 	IPoint _cannonballCenter = { -20, -20 };
-	
 	
 	Render::Texture* _cannonBack;
 	Render::Texture* _cannonFront;
@@ -59,4 +58,6 @@ private:
 	TimedSpline<FPoint> spline;
 	GameController* _gControl;
 	Cannonball* _cannonball;
+	Cannon* _cannon;
+	Options* _options;
 };
