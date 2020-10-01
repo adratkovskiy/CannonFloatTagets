@@ -1,4 +1,7 @@
 #pragma once
+
+
+
 class GameController
 {
 public:
@@ -7,15 +10,23 @@ public:
 		GAME,
 		STOP
 	};
-	GameController(GameStates gameState) : _gameState(gameState) {};
 
-	bool getReadyToShot() const { return _readyToShot; };
-	GameStates getGameState() const { return _gameState; };
+	GameController(GameStates gameState, bool readyToShot, float weaponScale);
+	
+	bool& getReadyToShot();
+	GameController::GameStates& getGameState();
+	IPoint& getMousePos();
+	float& getWeaponScale();
+
 	void setReadyToShot(bool readyToShot);
 	void setGameState(GameStates gameState);
+	void setMousePos(IPoint mousePos);
 	
 private:
-	bool _readyToShot = true;
+	IPoint _mousePos;
+	bool _readyToShot;
 	GameStates _gameState;
+	float _weaponScale;
+
 };
 

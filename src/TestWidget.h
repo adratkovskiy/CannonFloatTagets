@@ -26,15 +26,15 @@ public:
 	void KeyPressed(int keyCode) override;
 	void CharPressed(int unicodeChar) override;
 
+	std::string logStr;
+
 private:
 	void Init();
 
 private:
 	float _timer;
 	float _cannonTimer = 2;
-	float _scale;
 	float _angle;
-	float _weaponScale = 0.125;
 	float _shotLenth;
 	IPoint _standPos = { 480, 10 };
 	IPoint _cannonRotatePoint = { -40, -32 };
@@ -42,6 +42,7 @@ private:
 	IPoint _mousePos;
 	IPoint _cannonballPos;
 	IPoint _cannonballCenter = { -20, -20 };
+	
 	
 	Render::Texture* _cannonBack;
 	Render::Texture* _cannonFront;

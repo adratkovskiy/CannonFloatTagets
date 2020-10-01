@@ -5,8 +5,6 @@ void DrawCross(int x, int y, std::string title)
 {
 	Render::DrawLine(math::Vector3(x - 10, y, 1), math::Vector3(x + 10, y, 1));
 	Render::DrawLine(math::Vector3(x, y - 10, 1), math::Vector3(x, y + 10, 1));
-	Render::BindFont("arial");
-	//Render::PrintString(x + 100, y + 100, title, 1.f, LeftAlign);
 }
 
 TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
@@ -15,14 +13,13 @@ TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 	, _timer(0)
 	, _angle(0)
 	, _eff(NULL)
-	, _scale(0.f)
 {
 	Init();
 }
 
 void TestWidget::Init()
 {
-	_gControl = new GameController(GameController::GameStates::START_SCREEN);
+	_gControl = new GameController(GameController::GameStates::START_SCREEN, true, 0.125);
 	_cannonball = new Cannonball({ 200, 200 });
 	_cannonBack = Core::resourceManager.Get<Render::Texture>("Cannon_back");
 	_cannonFront = Core::resourceManager.Get<Render::Texture>("Cannon_front");
@@ -42,7 +39,7 @@ void TestWidget::Draw()
 	Render::device.MatrixTranslate(_cannonCenter.x, _cannonCenter.y, 0);
 	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _angle);
 	Render::device.MatrixTranslate(_cannonRotatePoint.x, _cannonRotatePoint.y, 0);
-	Render::device.MatrixScale(_weaponScale);
+	Render::device.MatrixScale(_gControl->getWeaponScale());
 	_cannonBack->Draw();
 	Render::device.PopMatrix();
 
@@ -56,12 +53,6 @@ void TestWidget::Draw()
 		_aim->Draw();
 		Render::device.PopMatrix();
 
-		/*Render::device.PushMatrix();
-		Render::device.MatrixTranslate((float)_cannonball_pos.x, (float)_cannonball_pos.y, 0);
-		Render::device.MatrixScale(_weaponScale);
-		_cannonbalPic->Draw();
-		Render::device.PopMatrix();*/
-
 		break;
 		
 	}
@@ -70,7 +61,7 @@ void TestWidget::Draw()
 		FPoint currentPosition = spline.getGlobalFrame(math::clamp(0.0f, 1.0f, _timer / 6.0f));
 		Render::device.PushMatrix();
 		Render::device.MatrixTranslate(currentPosition.x + _cannonballCenter.x, currentPosition.y + _cannonballCenter.y, 0);
-		Render::device.MatrixScale(_weaponScale);
+		Render::device.MatrixScale(_gControl->getWeaponScale());
 		//Render::device.MatrixTranslate(currentPosition, 0);
 		_cannonbalPic->Draw();
 		Render::device.PopMatrix();
@@ -84,7 +75,7 @@ void TestWidget::Draw()
 
 	Render::device.PushMatrix();
 	Render::device.MatrixTranslate(_standPos.x, _standPos.y, 0);
-	Render::device.MatrixScale(_weaponScale);
+	Render::device.MatrixScale(_gControl->getWeaponScale());
 	_stand->Draw();
 	Render::device.PopMatrix();
 
@@ -92,7 +83,7 @@ void TestWidget::Draw()
 	Render::device.MatrixTranslate(_cannonCenter.x, _cannonCenter.y, 0);
 	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _angle);
 	Render::device.MatrixTranslate(_cannonRotatePoint.x, _cannonRotatePoint.y, 0);
-	Render::device.MatrixScale(_weaponScale);
+	Render::device.MatrixScale(_gControl->getWeaponScale());
 	_cannonFront->Draw();
 	Render::device.PopMatrix();
 
@@ -302,25 +293,28 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 	{
 		// При нажатии на правую кнопку мыши, создаём эффект шлейфа за мышкой.
 		//
-		_eff = _effCont.AddEffect("Iskra");
+		/*_eff = _effCont.AddEffect("Iskra");
 		_eff->posX = mouse_pos.x + 0.f;
 		_eff->posY = mouse_pos.y + 0.f;
-		_eff->Reset();
+		_eff->Reset();*/
 		
 		//
 		// И изменяем угол наклона текстуры.
 		//
+		/*
 		_angle += 25;
 		while (_angle > 360)
 		{
 			_angle -= 360;
-		}
+		}*/
 	}
 	else
 	{
 		if (_gControl->getReadyToShot())
 		{
+			logStr = logStr + "ready ";
 			_gControl->setReadyToShot(false);
+			bool stat = _gControl->getReadyToShot();
 			_shotLenth = math::sqrt(math::abs(math::sqr(_mousePos.x - _cannonCenter.x) + math::sqr(_mousePos.y - _cannonCenter.y)));
 			_cannonTimer = 4 /_shotLenth * 500;
 			
@@ -337,15 +331,15 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 		// При нажатии на левую кнопку мыши, создаём временный эффект, который завершится сам.
 		//
 		//_gControl->setGameState(static_cast<GameController::GameStates>(static_cast<int>(_gControl->getGameState()) + 1));
-		ParticleEffectPtr eff = _effCont.AddEffect("FindItem2");
+		/*ParticleEffectPtr eff = _effCont.AddEffect("FindItem2");
 		eff->posX = _mousePos.x + 0.f;
 		eff->posY = _mousePos.y + 0.f;
-		eff->Reset();
+		eff->Reset();*/
 
 		//
 		// Изменяем значение с 0 на 1 и наоборот.
 		//
-		_curTex = 1 - _curTex;
+		//_curTex = 1 - _curTex;
 	}
 	return false;
 }
@@ -410,10 +404,10 @@ void TestWidget::KeyPressed(int keyCode)
 	}
 	*/
 	if (keyCode == VK_HOME) {
-		_weaponScale *= 2;
+		_gControl->getWeaponScale() *= 2;
 	}
 	if (keyCode == VK_END) {
-		_weaponScale /= 2;
+		_gControl->getWeaponScale() /= 2;
 	}
 }
 
