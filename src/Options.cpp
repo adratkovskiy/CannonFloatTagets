@@ -3,6 +3,11 @@
 
 Options::Options()
 {
+    std::string fname_xml = "base_p/Options.xml";
+    IO::FileStream file(fname_xml);
+    IO::TextReader reader(&file);
+    std::string tmpStr = reader.ReadAsciiLine();
+    std::cout << tmpStr << std::endl;
 	/*rapidxml::xml_document<char> doc;
 	try {
         std::string fname_xml = "base_p/options.xml";*/
