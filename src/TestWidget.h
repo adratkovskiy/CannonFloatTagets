@@ -32,7 +32,7 @@ private:
 	void Init();
 
 private:
-	float _timer;
+	//float _timer;
 	float _cannonTimer = 2;
 	float _shotLenth;
 	

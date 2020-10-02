@@ -8,7 +8,6 @@ Options::Options()
     xmlDoc.parse<0>(xmlFile.data());
     for (rapidxml::xml_node<>* node = xmlDoc.first_node()->first_node(); node; node = node->next_sibling())
     {
-        const char* ca = "FPoint";
         if (!strcmp(node->last_attribute("type")->value(), (const char*) "FPoint")) {
             FPoint multy;
             multy.x = atof(node->first_attribute("x")->value());

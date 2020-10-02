@@ -10,7 +10,6 @@ void DrawCross(int x, int y, std::string title)
 TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 	: Widget(name)
 	, _curTex(0)
-	, _timer(0)
 	, _eff(NULL)
 {
 	Init();
@@ -19,7 +18,7 @@ TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 void TestWidget::Init()
 {
 	_options = new Options();
-	_gControl = new GameController(GameController::GameStates::START_SCREEN, true);
+	_gControl = new GameController(GameController::GameStates::START_SCREEN, true, _options->getParamFloat("sys_timer"));
 	_cannon = new Cannon(_options->getParamFloat("cannon_angle")
 		, _options->getParamFloat("gun_scale")
 		, _options->getParamFPoint("cannon_stand_pos")
@@ -63,7 +62,7 @@ void TestWidget::Draw()
 	}
 	if (!_gControl->getReadyToShot())
 	{
-		FPoint currentPosition = spline.getGlobalFrame(math::clamp(0.0f, 1.0f, _timer / 6.0f));
+		FPoint currentPosition = spline.getGlobalFrame(math::clamp(0.0f, 1.0f, _gControl->getTimer() / 6.0f));
 		Render::device.PushMatrix();
 		Render::device.MatrixTranslate(currentPosition.x + _cannonball->getPos().x, currentPosition.y + _cannonball->getPos().y, 0);
 		Render::device.MatrixScale(_cannon->getScale());
@@ -237,7 +236,7 @@ void TestWidget::Draw()
 	Render::BindFont("arial");
 	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_gControl->getMousePos().x) + ", Y:" + utils::lexical_cast(_gControl->getMousePos().y), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 65, "gameState:" + utils::lexical_cast(static_cast<int>(_gControl->getGameState())), 1.f, CenterAlign);
-	//Render::PrintString(924 + 100 / 2, 95, "options:" + utils::lexical_cast(_options->getParam("scale")), 1.f, CenterAlign);
+	Render::PrintString(924 + 100 / 2, 95, "timer:" + utils::lexical_cast(_gControl->getTimer()), 1.f, CenterAlign);
 }
 
 void TestWidget::Update(float dt)
@@ -258,7 +257,8 @@ void TestWidget::Update(float dt)
 	//
 	// Увеличиваем наш таймер с удвоенной скоростью.
 	//
-	_timer += dt * _cannonTimer;
+	_gControl->changeTimer() += dt * _cannonTimer;
+	//_timer += dt * _cannonTimer;
 	
 	//
 	// Зацикливаем таймер в диапазоне (0, 2п).
@@ -269,12 +269,18 @@ void TestWidget::Update(float dt)
 	// Диапазон значений выбран равным (0, 2п), потому что мы используем это значение
 	// для расчёта синуса, и большие значения будут просто периодически повторять результат.
 	//
-	while (_timer > 2 * math::PI)
+	while (_gControl->getTimer() > 2 * math::PI)
+	{
+		_gControl->changeTimer() -= 2 * math::PI;
+		_gControl->setReadyToShot(true);
+		spline.Clear();
+	}
+	/*while (_timer > 2 * math::PI)
 	{
 		_timer -= 2 * math::PI;
 		_gControl->setReadyToShot(true);
 		spline.Clear();
-	}
+	}*/
 		
 	
 	//
@@ -316,7 +322,7 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 			spline.addKey(0.7f, { (float)(_gControl->getMousePos().x + 2 * (_gControl->getMousePos().x - _cannon->getCannonCenter().x)), (float)(_gControl->getMousePos().y) });
 			spline.addKey(1.0f, { (float)(_cannon->getCannonCenter().x + 1.75 * (_gControl->getMousePos().x + (_gControl->getMousePos().x - _cannon->getCannonCenter().x) - _cannon->getCannonCenter().x)), (float)(-30) });
 			spline.CalculateGradient();
-			_timer = 0;
+			_gControl->setTimer(0);
 		}
 		//
 		//
