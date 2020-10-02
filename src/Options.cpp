@@ -3,64 +3,26 @@
 
 Options::Options()
 {
-    std::string fname_xml = "base_p/Options.xml";
-    IO::FileStream file(fname_xml);
-    IO::TextReader reader(&file);
-    std::string tmpStr = reader.ReadAsciiLine();
-    std::cout << tmpStr << std::endl;
-	/*rapidxml::xml_document<char> doc;
-	try {
-        std::string fname_xml = "base_p/options.xml";*/
-    //IO::InputStream* stream;
-    //stream->ReadAllBytes()
-		//std::ifstream file(fname_xml.c_str());
-        //IO::InputStream stream = Core::fileSystem.OpenRead(fname_xml);
-        //IO::InputStream file;
-
-        /*IO::InputStreamPtr file = Core::fileSystem.OpenRead(fname_xml);
-        file->
-        IO::TextReader()
-        std::vector<char> buffer((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-        buffer.push_back('\0');
-
-        doc.parse<0>(&buffer[0]);
-    }
-    catch (rapidxml::parse_error e) {
-        e.what();
-    }
-    rapidxml::xml_node<>* root_node = doc.first_node();
-
-    if (root_node != NULL)
+    rapidxml::xml_document<> xmlDoc;
+    rapidxml::file<> xmlFile("base_p/Options.xml");
+    xmlDoc.parse<0>(xmlFile.data());
+    std::string opt0, opt1;
+    for (rapidxml::xml_node<>* node = xmlDoc.first_node()->first_node(); node; node = node->next_sibling())
     {
-        rapidxml::xml_node<>* node = root_node->first_node("section");
-        if (node) node = node->first_node("parameter");
-        while (node != NULL)
-        {
-            rapidxml::xml_attribute<>* a = node->first_attribute("id");
-            if (a != NULL)
-            {
-                config[a->value()] = node->value();
-            }
-
-            node = node->next_sibling();
-        }
+        _config.insert({ node->name(), atof(node->first_attribute()->value()) });
     }
-
-    typedef std::map<std::string, std::string>::const_iterator it;
-    for (it i = config.begin(); i != config.end(); i++)
-    {
-        std::cout << i->first << "\t= " << i->second << std::endl;
-    }
-    std::cout << "Configuration loaded" << std::endl;*/
 }
 
-std::string Options::getStr()
+float Options::getParam(std::string paramName)
 {
-    config;
-    std::map<std::string, std::string>::iterator it;
-    for (it = config.begin(); it != config.end(); ++it)
+    auto search = _config.find(paramName);
+    if (search != _config.end())
     {
-        it->first;
+        return search->second;
     }
-    return "asd";
+    else
+    {
+        return 0.0f;
+    }
 }
+

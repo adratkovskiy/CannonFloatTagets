@@ -18,9 +18,8 @@ TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 
 void TestWidget::Init()
 {
-	//IO::InputStreamPtr stream = Core::fileSystem.OpenRead("asd");
 	_options = new Options();
-	_gControl = new GameController(GameController::GameStates::START_SCREEN, true, 0.125);
+	_gControl = new GameController(GameController::GameStates::START_SCREEN, true, _options->getParam("gun_scale"));
 	_cannon = new Cannon(90.0f);
 	_cannonball = new Cannonball({ 200, 200 });
 	_cannonBack = Core::resourceManager.Get<Render::Texture>("Cannon_back");
@@ -235,7 +234,7 @@ void TestWidget::Draw()
 	Render::BindFont("arial");
 	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_gControl->getMousePos().x) + ", Y:" + utils::lexical_cast(_gControl->getMousePos().y), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 65, "gameState:" + utils::lexical_cast(static_cast<int>(_gControl->getGameState())), 1.f, CenterAlign);
-	Render::PrintString(924 + 100 / 2, 95, "options:" + _options->getStr(), 1.f, CenterAlign);
+	Render::PrintString(924 + 100 / 2, 95, "options:" + utils::lexical_cast(_options->getParam("scale")), 1.f, CenterAlign);
 }
 
 void TestWidget::Update(float dt)

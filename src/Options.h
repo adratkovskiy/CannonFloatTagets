@@ -3,8 +3,8 @@ class Options
 {
 public:
 	Options();
-	std::string getStr();
+	float getParam(std::string paramName);
 private:
-	std::map<std::string, std::string> config;
+	std::map<std::string, float> _config;
 };
 
