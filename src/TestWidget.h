@@ -33,8 +33,8 @@ private:
 
 private:
 	//float _timer;
-	float _cannonTimer = 2;
-	float _shotLenth;
+	//float _cannonTimer = 2;
+	//float _shotLength;
 	
 	Render::Texture* _cannonBack;
 	Render::Texture* _cannonFront;

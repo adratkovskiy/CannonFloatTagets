@@ -24,7 +24,7 @@ void TestWidget::Init()
 		, _options->getParamFPoint("cannon_stand_pos")
 		, _options->getParamFPoint("cannon_rotate_point")
 		, _options->getParamFPoint("cannon_center"));
-	_cannonball = new Cannonball(_options->getParamFPoint("cannonball_center"));
+	_cannonball = new Cannonball(_options->getParamFPoint("cannonball_center"), _options->getParamFloat("cannonball_speed"));
 	_cannonBack = Core::resourceManager.Get<Render::Texture>("Cannon_back");
 	_cannonFront = Core::resourceManager.Get<Render::Texture>("Cannon_front");
 	_stand = Core::resourceManager.Get<Render::Texture>("Stand");
@@ -188,45 +188,12 @@ void TestWidget::Draw()
 	// иначе визуальный результат будет непредсказуемым.
 	//
 	Render::DrawRect(924, 0, 100, 100);
-
-	/*DrawCross(100, 100);
-	DrawCross(150, 300);
-	DrawCross(500, 300);
-	DrawCross(630, 450);
-	DrawCross(600, 550);*/
-	//
-	// Метод EndColor() снимает со стека текущий цвет вершин, восстанавливая прежний.
-
-	/*
-	spline.addKey(0.0f, FPoint(100.0f, 100.0f));
-	spline.addKey(0.25f, FPoint(150.0f, 300.0f));
-	spline.addKey(0.5f, FPoint(500.0f, 300.0f));
-	spline.addKey(0.75f, FPoint(630.0f, 450.0f));
-	spline.addKey(1.0f, FPoint(600.0f, 550.0f));
-	*/
-	//
 	Render::EndColor();
 	
 	//
 	// Опять включаем текстурирование.
 	//
 	Render::device.SetTexturing(true);
-
-	/////////////////////////////////////////
-	/*Render::device.SetTexturing(false);
-	Render::BeginColor(Color(0, 0, 0, 255));
-	DrawCross(_cannonCenter.x, _cannonCenter.y, "1");
-	DrawCross(_mouse_pos.x, _mouse_pos.y, "2");
-	DrawCross(_mouse_pos.x + 2 * (_mouse_pos.x - _cannonCenter.x), _mouse_pos.y, "3");
-	DrawCross(_mouse_pos.x + (_mouse_pos.x - _cannonCenter.x), _mouse_pos.y, "4");
-	DrawCross(_mouse_pos.x + (_mouse_pos.x - _cannonCenter.x), _mouse_pos.y + 0.5 * (_mouse_pos.y - _cannonCenter.y), "5");
-	Render::EndColor();
-	Render::BeginColor(Color(255, 0, 0, 255));
-	DrawCross(_mouse_pos.x + 0.1 * (_mouse_pos.x - _cannonCenter.x), _mouse_pos.y + 0.1 * (_mouse_pos.y - _cannonCenter.y), "6");
-	DrawCross(_cannonCenter.x + 1.75 * (_mouse_pos.x + (_mouse_pos.x - _cannonCenter.x) - _cannonCenter.x), _cannonCenter.y, "7");
-	Render::EndColor();
-	Render::device.SetTexturing(true);*/
-	/////////////////////////////////////////
 	
 	//
 	// Рисуем все эффекты, которые добавили в контейнер (Update() для контейнера вызывать не нужно).
@@ -257,8 +224,7 @@ void TestWidget::Update(float dt)
 	//
 	// Увеличиваем наш таймер с удвоенной скоростью.
 	//
-	_gControl->changeTimer() += dt * _cannonTimer;
-	//_timer += dt * _cannonTimer;
+	_gControl->changeTimer() += dt * _cannonball->getCannonTimer();
 	
 	//
 	// Зацикливаем таймер в диапазоне (0, 2п).
@@ -313,8 +279,8 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 		{
 			_gControl->setReadyToShot(false);
 			bool stat = _gControl->getReadyToShot();
-			_shotLenth = math::sqrt(math::abs(math::sqr(_gControl->getMousePos().x - _cannon->getCannonCenter().x) + math::sqr(_gControl->getMousePos().y - _cannon->getCannonCenter().y)));
-			_cannonTimer = 4 /_shotLenth * 500;
+			float shotLength = math::sqrt(math::abs(math::sqr(_gControl->getMousePos().x - _cannon->getCannonCenter().x) + math::sqr(_gControl->getMousePos().y - _cannon->getCannonCenter().y)));
+			_cannonball->setCannonTimer( 1 / shotLength * _cannonball->getSpeed() );
 			
 			spline.addKey(0.0f, _cannon->getCannonCenter());
 			spline.addKey(0.3f, _gControl->getMousePos());
