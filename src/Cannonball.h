@@ -4,7 +4,7 @@ class Cannonball
 public:
 	Cannonball(FPoint pos);
 
-	FPoint& getPos();
+	const FPoint& getPos();
 	bool& getShow();
 	void setShow(bool show);
 	

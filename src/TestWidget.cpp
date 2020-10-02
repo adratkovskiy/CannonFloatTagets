@@ -305,18 +305,11 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 		//
 		// И изменяем угол наклона текстуры.
 		//
-		/*
-		_angle += 25;
-		while (_angle > 360)
-		{
-			_angle -= 360;
-		}*/
 	}
 	else
 	{
 		if (_gControl->getReadyToShot())
 		{
-			logStr = logStr + "ready ";
 			_gControl->setReadyToShot(false);
 			bool stat = _gControl->getReadyToShot();
 			_shotLenth = math::sqrt(math::abs(math::sqr(_gControl->getMousePos().x - _cannon->getCannonCenter().x) + math::sqr(_gControl->getMousePos().y - _cannon->getCannonCenter().y)));

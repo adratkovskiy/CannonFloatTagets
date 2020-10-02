@@ -5,7 +5,7 @@ Cannonball::Cannonball(FPoint pos) : _pos(pos)
 {
 }
 
-FPoint& Cannonball::getPos()
+const FPoint& Cannonball::getPos()
 {
 	return _pos;
 }
