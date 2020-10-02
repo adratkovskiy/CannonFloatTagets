@@ -6,12 +6,10 @@ Options::Options()
     rapidxml::xml_document<> xmlDoc;
     rapidxml::file<> xmlFile("base_p/Options.xml");
     xmlDoc.parse<0>(xmlFile.data());
-    std::string opt0, opt1;
     for (rapidxml::xml_node<>* node = xmlDoc.first_node()->first_node(); node; node = node->next_sibling())
     {
         const char* ca = "FPoint";
-        const char* typeName = node->last_attribute("type")->value();
-        if (!strcmp(node->last_attribute("type")->value(), ca)) {
+        if (!strcmp(node->last_attribute("type")->value(), (const char*) "FPoint")) {
             FPoint multy;
             multy.x = atof(node->first_attribute("x")->value());
             multy.y = atof(node->first_attribute("y")->value());
