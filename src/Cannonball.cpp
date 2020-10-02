@@ -5,12 +5,12 @@ Cannonball::Cannonball(FPoint pos) : _pos(pos)
 {
 }
 
-const FPoint& Cannonball::getPos()
+const FPoint& Cannonball::getPos() const noexcept
 {
 	return _pos;
 }
 
-bool& Cannonball::getShow()
+const bool& Cannonball::getShow() const noexcept
 {
 	return _show;
 }

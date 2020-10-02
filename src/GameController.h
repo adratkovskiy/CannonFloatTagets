@@ -13,9 +13,9 @@ public:
 
 	GameController(GameStates gameState, bool readyToShot);
 	
-	bool& getReadyToShot();
-	GameController::GameStates& getGameState();
-	IPoint& getMousePos();
+	const bool& getReadyToShot() const noexcept;
+	const GameController::GameStates& getGameState() const noexcept;
+	const IPoint& getMousePos() const noexcept;
 
 	void setReadyToShot(bool readyToShot);
 	void setGameState(GameStates gameState);

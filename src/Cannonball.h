@@ -4,8 +4,9 @@ class Cannonball
 public:
 	Cannonball(FPoint pos);
 
-	const FPoint& getPos();
-	bool& getShow();
+	const FPoint& getPos() const noexcept;
+	const bool& getShow() const noexcept;
+
 	void setShow(bool show);
 	
 private:

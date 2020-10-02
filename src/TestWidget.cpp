@@ -280,13 +280,8 @@ void TestWidget::Update(float dt)
 	//
 	// Анимирование параметра масштабирования в зависимости от таймера.
 	//
-	/*
-	_scale = 0.8f + 0.25f * sinf(_timer);
-	if (_angle >= 360) {
-		_angle -= 360;
-	}*/
-	
-	_cannon->getAngle() = atan2(_cannon->getCannonCenter().y - _gControl->getMousePos().y, _cannon->getCannonCenter().x - _gControl->getMousePos().x) / math::PI * 180 + 90;
+		
+	_cannon->setAngle(atan2(_cannon->getCannonCenter().y - _gControl->getMousePos().y, _cannon->getCannonCenter().x - _gControl->getMousePos().x) / math::PI * 180 + 90);
 	//_angle = math::GetXYVectorAngle({ (float)_cannonCenter.x, (float)_cannonCenter.y, 0.0f } , { (float)_mouse_pos.x, (float)_mouse_pos.y, 0.0f });
 	//_angle = (_angle < 0) ? _angle + 360 : _angle;
 }

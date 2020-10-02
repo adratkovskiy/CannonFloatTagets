@@ -7,7 +7,7 @@ GameController::GameController(GameStates gameState, bool readyToShot) :
 {
 }
 
-bool& GameController::getReadyToShot()
+const bool& GameController::getReadyToShot() const noexcept
 {
 	if (!_readyToShot) {
 		bool popo = _readyToShot;
@@ -15,12 +15,12 @@ bool& GameController::getReadyToShot()
 	return _readyToShot;
 }
 
-GameController::GameStates& GameController::getGameState()
+const GameController::GameStates& GameController::getGameState() const noexcept
 {
 	return _gameState;
 }
 
-IPoint& GameController::getMousePos()
+const IPoint& GameController::getMousePos()  const noexcept
 {
 	return _mousePos;
 }

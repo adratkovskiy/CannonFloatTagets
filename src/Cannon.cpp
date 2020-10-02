@@ -16,27 +16,27 @@ Cannon::Cannon(float angle
 
 }
 
-float& Cannon::getAngle()
+const float& Cannon::getAngle() const noexcept
 {
     return _angle;
 }
 
-float& Cannon::getScale()
+const float& Cannon::getScale() const noexcept
 {
     return _scale;
 }
 
-FPoint& Cannon::getCannonCenter()
+const FPoint& Cannon::getCannonCenter() const noexcept
 {
 	return _cannonCenter;
 }
 
-FPoint& Cannon::getCannonRotatePoint()
+const FPoint& Cannon::getCannonRotatePoint() const noexcept
 {
 	return _cannonRotatePoint;
 }
 
-FPoint& Cannon::getStandPos()
+const FPoint& Cannon::getStandPos() const noexcept
 {
 	return _standPos;
 }

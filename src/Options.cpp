@@ -24,7 +24,7 @@ Options::Options()
     }
 }
 
-float& Options::getParamFloat(std::string paramName)
+const float& Options::getParamFloat(std::string paramName) noexcept
 {
     std::map<std::string, float>::iterator it;
     it = _configFloat.find(paramName);
@@ -34,7 +34,7 @@ float& Options::getParamFloat(std::string paramName)
     }
 }
 
-FPoint& Options::getParamFPoint(std::string paramName)
+const FPoint& Options::getParamFPoint(std::string paramName) noexcept
 {
     std::map<std::string, FPoint>::iterator it;
     it = _configFPoint.find(paramName);
