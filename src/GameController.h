@@ -11,12 +11,11 @@ public:
 		STOP
 	};
 
-	GameController(GameStates gameState, bool readyToShot, float weaponScale);
+	GameController(GameStates gameState, bool readyToShot);
 	
 	bool& getReadyToShot();
 	GameController::GameStates& getGameState();
 	IPoint& getMousePos();
-	float& getWeaponScale();
 
 	void setReadyToShot(bool readyToShot);
 	void setGameState(GameStates gameState);
@@ -26,7 +25,5 @@ private:
 	IPoint _mousePos;
 	bool _readyToShot;
 	GameStates _gameState;
-	float _weaponScale;
-
 };
 

@@ -1,10 +1,9 @@
 #include "stdafx.h"
 #include "GameController.h"
 
-GameController::GameController(GameStates gameState, bool readyToShot, float weaponScale) : 
+GameController::GameController(GameStates gameState, bool readyToShot) : 
 	_gameState(gameState)
 	, _readyToShot(readyToShot)
-	, _weaponScale(weaponScale)
 {
 }
 
@@ -24,11 +23,6 @@ GameController::GameStates& GameController::getGameState()
 IPoint& GameController::getMousePos()
 {
 	return _mousePos;
-}
-
-float& GameController::getWeaponScale()
-{
-	return _weaponScale;
 }
 
 void GameController::setReadyToShot(bool readyToShot)

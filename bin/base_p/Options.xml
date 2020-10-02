@@ -1,4 +1,11 @@
 <?xml version="1.0"?>
 <options>
-  <gun_scale val="0.125" />
+  <gun_scale type="float" val="0.125"/>
+  <cannon_rotate_point type="FPoint" x="-40" y="-32" />
+  <cannon_stand_pos type="FPoint" x="480" y="10" />
+  <cannon_angle type="float" val="90" />
+  <cannon_center type="FPoint" x="535" y="62" />
+  <cannonball_center type="FPoint" x="-20" y="-20" />
+  <screen_width type="float" val="1024" />
+  <screen_height type="float" val="768" />
 </options>

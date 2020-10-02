@@ -3,8 +3,10 @@ class Options
 {
 public:
 	Options();
-	float getParam(std::string paramName);
+	float& getParamFloat(std::string paramName);
+	FPoint& getParamFPoint(std::string paramName);
 private:
-	std::map<std::string, float> _config;
+	std::map<std::string, float> _configFloat;
+	std::map<std::string, FPoint> _configFPoint;
 };
 

@@ -1,7 +1,18 @@
 #include "stdafx.h"
 #include "Cannonball.h"
 
-Cannonball::Cannonball(IPoint pos) : _pos(pos)
+Cannonball::Cannonball(FPoint pos) : _pos(pos)
 {
 }
+
+FPoint& Cannonball::getPos()
+{
+	return _pos;
+}
+
+bool& Cannonball::getShow()
+{
+	return _show;
+}
+
 
