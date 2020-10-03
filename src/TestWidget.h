@@ -33,18 +33,17 @@ private:
 
 private:
 	
-	Render::Texture* _cannonBack;
-	Render::Texture* _cannonFront;
-	Render::Texture* _stand;
-	Render::Texture* _background;
-	Render::Texture* _aim;
-	Render::Texture* _point;
-	Render::Texture* _cannonbalPic;
+	Render::Texture* _cannonBackTexture;
+	Render::Texture* _cannonFrontTexture;
+	Render::Texture* _standTexture;
+	Render::Texture* _backgroundTexture;
+	Render::Texture* _aimTexture;
+	Render::Texture* _pointTexture;
+	Render::Texture* _cannonballTexture;
 	int _curTex;
 
 	EffectsContainer _effCont;
 	ParticleEffectPtr _eff;
-
 	TimedSpline<FPoint> spline;
 	GameController* _gControl;
 	Cannonball* _cannonball;

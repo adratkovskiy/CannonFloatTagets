@@ -10,4 +10,5 @@
   <screen_height type="float" val="768" />
   <sys_timer type="float" val="0" />
   <cannonball_speed type="float" val="2000" />
+  <cannonball_spline_points type="vector" p0="0.0" p1="0.3" p2="0.5" p3="0.7" p4="1.0" />
 </options>

@@ -14,6 +14,14 @@ Options::Options()
             multy.y = atof(node->first_attribute("y")->value());
             _configFPoint.insert({ node->name(), multy });
         }
+        else if (!strcmp(node->last_attribute("type")->value(), (const char*)"vector")) {
+            const int points_size = 5;
+            for (int i = 0; i < points_size; i++)
+            {
+                std::string paramNumber = "p" + std::to_string(i);
+                _configSplinePoints.push_back(atof(node->first_attribute(paramNumber.c_str())->value()));
+            }
+        }
         else {
             std::string naname = node->name();
             _configFloat.insert({ node->name(), atof(node->first_attribute("val")->value()) });
@@ -39,5 +47,10 @@ const FPoint& Options::getParamFPoint(std::string paramName) noexcept
     {
         return it->second;
     }
+}
+
+const std::vector<float>& Options::getSplinePoints() noexcept
+{
+    return _configSplinePoints;
 }
 

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TestWidget.h"
 
-void DrawCross(int x, int y, std::string title)
+void DrawCross(int x, int y) // инструмент, чтобы понять, про какие координаты идет речь
 {
 	Render::DrawLine(math::Vector3(x - 10, y, 1), math::Vector3(x + 10, y, 1));
 	Render::DrawLine(math::Vector3(x, y - 10, 1), math::Vector3(x, y + 10, 1));
@@ -17,79 +17,85 @@ TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 
 void TestWidget::Init()
 {
-	_options = new Options();
+	_options = new Options(); // гружу настройки из xml
+
+	//контроллер для игры
 	_gControl = new GameController(GameController::GameStates::START_SCREEN, true, _options->getParamFloat("sys_timer"));
+	
 	_cannon = new Cannon(_options->getParamFloat("cannon_angle")
 		, _options->getParamFloat("gun_scale")
 		, _options->getParamFPoint("cannon_stand_pos")
 		, _options->getParamFPoint("cannon_rotate_point")
 		, _options->getParamFPoint("cannon_center"));
-	_cannonball = new Cannonball(_options->getParamFPoint("cannonball_center"), _options->getParamFloat("cannonball_speed"));
-	_cannonBack = Core::resourceManager.Get<Render::Texture>("Cannon_back");
-	_cannonFront = Core::resourceManager.Get<Render::Texture>("Cannon_front");
-	_stand = Core::resourceManager.Get<Render::Texture>("Stand");
-	_background = Core::resourceManager.Get<Render::Texture>("Background");
-	_aim = Core::resourceManager.Get<Render::Texture>("Aim");
-	_point = Core::resourceManager.Get<Render::Texture>("TestPoint");
-	_cannonbalPic = Core::resourceManager.Get<Render::Texture>("Cannonball");
+	_cannonball = new Cannonball(_options->getParamFPoint("cannonball_center")
+		, _options->getParamFloat("cannonball_speed")
+		, _options->getSplinePoints());
+
+	//гружу текстуры
+	_cannonBackTexture = Core::resourceManager.Get<Render::Texture>("Cannon_back");
+	_cannonFrontTexture = Core::resourceManager.Get<Render::Texture>("Cannon_front");
+	_standTexture = Core::resourceManager.Get<Render::Texture>("Stand");
+	_backgroundTexture = Core::resourceManager.Get<Render::Texture>("Background");
+	_aimTexture = Core::resourceManager.Get<Render::Texture>("Aim");
+	_cannonballTexture = Core::resourceManager.Get<Render::Texture>("Cannonball");
 }
 
 void TestWidget::Draw()
 {
 	_gControl->setMousePos(Core::mainInput.GetMousePos());
-	_background->Draw();
-
-	Render::device.PushMatrix();
-	Render::device.MatrixTranslate(_cannon->getCannonCenter());
-	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _cannon->getAngle());
-	Render::device.MatrixTranslate(_cannon->getCannonRotatePoint());
-	Render::device.MatrixScale(_cannon->getScale());
-	_cannonBack->Draw();
-	Render::device.PopMatrix();
-
-	switch (_gControl->getGameState()) // Пашка: Будущие режимы игры (заставка, игра, финальный счет)
+	
+	switch (_gControl->getGameState()) // Будущие режимы игры (заставка, игра, финальный счет)
 	{
-	case GameController::GameStates::START_SCREEN:
+	case GameController::GameStates::START_SCREEN: // режим: игра
+		_backgroundTexture->Draw();		// фон
+
+		Render::device.PushMatrix();		// подставка под пушку
+		Render::device.MatrixTranslate(_cannon->getStandPos());
+		Render::device.MatrixScale(_cannon->getScale());
+		_standTexture->Draw();
+		Render::device.PopMatrix();
+
+		//обрати внимание, как рисую
+		Render::device.PushMatrix();	//задняя (фоновая часть пушки) 
+		Render::device.MatrixTranslate(_cannon->getCannonCenter()); //транслирую матрицу с местоположением рассчетным
+		Render::device.MatrixRotate(math::Vector3(0, 0, 1), _cannon->getAngle()); //поворачиваю на угол
+		Render::device.MatrixTranslate(_cannon->getCannonRotatePoint()); //еще раз транслирую, чтобы сдвинуть от центра, но при этом после поворота, чтобы центр объекта остался на месте
+		Render::device.MatrixScale(_cannon->getScale()); // скейл
+		_cannonBackTexture->Draw(); //рисую
+		Render::device.PopMatrix();
+
+		if (!_gControl->getReadyToShot())
+		{
+			FPoint currentPosition = spline.getGlobalFrame(math::clamp(0.0f, 1.0f, _gControl->getTimer() / 6.0f));
+			//_cannonball->updPosition(_gControl->getTimer());
+			Render::device.PushMatrix();
+			Render::device.MatrixTranslate(_cannonball->getPos() + currentPosition);
+			//Render::device.MatrixTranslate(currentPosition.x + _cannonball->getPos().x, currentPosition.y + _cannonball->getPos().y, 0);
+			//Render::device.MatrixTranslate(currentPosition);
+			Render::device.MatrixScale(_cannon->getScale());
+			_cannonballTexture->Draw();
+			Render::device.PopMatrix();
+		}
+
+		Render::device.PushMatrix();
+		Render::device.MatrixTranslate(_cannon->getCannonCenter());
+		Render::device.MatrixRotate(math::Vector3(0, 0, 1), _cannon->getAngle());
+		Render::device.MatrixTranslate(_cannon->getCannonRotatePoint());
+		Render::device.MatrixScale(_cannon->getScale());
+		_cannonFrontTexture->Draw();
+		Render::device.PopMatrix();
+
 		Render::device.PushMatrix();
 		Render::device.MatrixTranslate((float)_gControl->getMousePos().x, (float)_gControl->getMousePos().y, 0);
-		IRect texRect = _aim->getBitmapRect();
+		IRect texRect = _aimTexture->getBitmapRect();
 		Render::device.MatrixTranslate(-texRect.width * 0.5f, -texRect.height * 0.5f, 0.0f);
-		_aim->Draw();
+		_aimTexture->Draw();
 		Render::device.PopMatrix();
 
 		break;
 		
 	}
-	if (!_gControl->getReadyToShot())
-	{
-		FPoint currentPosition = spline.getGlobalFrame(math::clamp(0.0f, 1.0f, _gControl->getTimer() / 6.0f));
-		Render::device.PushMatrix();
-		Render::device.MatrixTranslate(currentPosition.x + _cannonball->getPos().x, currentPosition.y + _cannonball->getPos().y, 0);
-		Render::device.MatrixScale(_cannon->getScale());
-		_cannonbalPic->Draw();
-		Render::device.PopMatrix();
-	}
 	
-	//
-	// Получаем текущее положение курсора мыши.
-	//
-
-	
-
-	Render::device.PushMatrix();
-	Render::device.MatrixTranslate(_cannon->getStandPos());
-	Render::device.MatrixScale(_cannon->getScale());
-	_stand->Draw();
-	Render::device.PopMatrix();
-
-	Render::device.PushMatrix();
-	Render::device.MatrixTranslate(_cannon->getCannonCenter());
-	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _cannon->getAngle());
-	Render::device.MatrixTranslate(_cannon->getCannonRotatePoint());
-	Render::device.MatrixScale(_cannon->getScale());
-	_cannonFront->Draw();
-	Render::device.PopMatrix();
-
 	//
 	// Проталкиваем в стек текущее преобразование координат, чтобы в дальнейшем
 	// можно было восстановить это преобразование вызовом PopMatrix.
@@ -239,6 +245,7 @@ void TestWidget::Update(float dt)
 	{
 		_gControl->changeTimer() -= 2 * math::PI;
 		_gControl->setReadyToShot(true);
+		//_cannonball->splineClear();
 		spline.Clear();
 	}	
 	
