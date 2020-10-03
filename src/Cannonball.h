@@ -12,6 +12,7 @@ public:
 	const bool& getShow() const noexcept;
 	const float& getSpeed() const noexcept;
 	const float& getCannonTimer() const noexcept;
+	const FPoint getCurrentPosition() const noexcept;
 	TimedSpline<FPoint>& getSpline();
 
 	void setShow(bool show);

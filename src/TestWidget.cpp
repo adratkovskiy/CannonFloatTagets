@@ -66,12 +66,9 @@ void TestWidget::Draw()
 
 		if (!_gControl->getReadyToShot())
 		{
-			FPoint currentPosition = spline.getGlobalFrame(math::clamp(0.0f, 1.0f, _gControl->getTimer() / 6.0f));
-			//_cannonball->updPosition(_gControl->getTimer());
+			_cannonball->updPosition(_gControl->getTimer());
 			Render::device.PushMatrix();
-			Render::device.MatrixTranslate(_cannonball->getPos() + currentPosition);
-			//Render::device.MatrixTranslate(currentPosition.x + _cannonball->getPos().x, currentPosition.y + _cannonball->getPos().y, 0);
-			//Render::device.MatrixTranslate(currentPosition);
+			Render::device.MatrixTranslate(_cannonball->getCurrentPosition());
 			Render::device.MatrixScale(_cannon->getScale());
 			_cannonballTexture->Draw();
 			Render::device.PopMatrix();
@@ -245,8 +242,7 @@ void TestWidget::Update(float dt)
 	{
 		_gControl->changeTimer() -= 2 * math::PI;
 		_gControl->setReadyToShot(true);
-		//_cannonball->splineClear();
-		spline.Clear();
+		_cannonball->splineClear();
 	}	
 	
 	//
@@ -279,13 +275,7 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 			bool stat = _gControl->getReadyToShot();
 			float shotLength = math::sqrt(math::abs(math::sqr(_gControl->getMousePos().x - _cannon->getCannonCenter().x) + math::sqr(_gControl->getMousePos().y - _cannon->getCannonCenter().y)));
 			_cannonball->setCannonTimer( 1 / shotLength * _cannonball->getSpeed() );
-			
-			spline.addKey(0.0f, _cannon->getCannonCenter());
-			spline.addKey(0.3f, _gControl->getMousePos());
-			spline.addKey(0.5f, { (float)(_gControl->getMousePos().x + (_gControl->getMousePos().x - _cannon->getCannonCenter().x)), (float)(_gControl->getMousePos().y + 0.3 * (_gControl->getMousePos().y - _cannon->getCannonCenter().y)) });
-			spline.addKey(0.7f, { (float)(_gControl->getMousePos().x + 2 * (_gControl->getMousePos().x - _cannon->getCannonCenter().x)), (float)(_gControl->getMousePos().y) });
-			spline.addKey(1.0f, { (float)(_cannon->getCannonCenter().x + 1.75 * (_gControl->getMousePos().x + (_gControl->getMousePos().x - _cannon->getCannonCenter().x) - _cannon->getCannonCenter().x)), (float)(-30) });
-			spline.CalculateGradient();
+			_cannonball->setSpline(_cannon->getCannonCenter(), _gControl->getMousePos());
 			_gControl->setTimer(0);
 		}
 		//

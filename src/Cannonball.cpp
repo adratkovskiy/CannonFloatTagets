@@ -30,6 +30,11 @@ const float& Cannonball::getCannonTimer() const noexcept
 	return _cannonTimer;
 }
 
+const FPoint Cannonball::getCurrentPosition() const noexcept
+{
+	return _currentPosition + _pos;
+}
+
 TimedSpline<FPoint>& Cannonball::getSpline()
 {
 	return _spline;
@@ -47,8 +52,7 @@ void Cannonball::setCannonTimer(float cannonTimer)
 
 void Cannonball::updPosition(float globalTimer)
 {
-	_spline.Clear();
-	_spline.getGlobalFrame(math::clamp(0.0f, 1.0f, globalTimer / 6.0f));
+	_currentPosition = _spline.getGlobalFrame(math::clamp(0.0f, 1.0f, globalTimer / 6.0f));
 }
 
 void Cannonball::setSpline(FPoint cannonCenter, FPoint mousePos)
@@ -63,7 +67,7 @@ void Cannonball::setSpline(FPoint cannonCenter, FPoint mousePos)
 
 void Cannonball::splineClear()
 {
-	
+	_spline.Clear();
 }
 
 

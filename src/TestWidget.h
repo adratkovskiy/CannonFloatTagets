@@ -44,7 +44,6 @@ private:
 
 	EffectsContainer _effCont;
 	ParticleEffectPtr _eff;
-	TimedSpline<FPoint> spline;
 	GameController* _gControl;
 	Cannonball* _cannonball;
 	Cannon* _cannon;
