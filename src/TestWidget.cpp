@@ -84,7 +84,7 @@ void TestWidget::Draw()
 
 		Render::device.PushMatrix();
 		Render::device.MatrixTranslate((float)_gControl->getMousePos().x, (float)_gControl->getMousePos().y, 0);
-		IRect texRect = _aimTexture->getBitmapRect();
+		IRect texRect = _aimTexture->getBitmapRect(); // вообще по идее текстуру ядра так же надо обсчитывать, но я только сейчас увидел, потом поправлю.
 		Render::device.MatrixTranslate(-texRect.width * 0.5f, -texRect.height * 0.5f, 0.0f);
 		_aimTexture->Draw();
 		Render::device.PopMatrix();
@@ -242,7 +242,7 @@ void TestWidget::Update(float dt)
 	{
 		_gControl->changeTimer() -= 2 * math::PI;
 		_gControl->setReadyToShot(true);
-		_cannonball->splineClear();
+		_cannonball->splineClear(); // зря вызываю каждый раз, потом буду вызывать в конце пути ядра
 	}	
 	
 	//
@@ -296,7 +296,7 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 	return false;
 }
 
-void TestWidget::MouseMove(const IPoint &mouse_pos)
+void TestWidget::MouseMove(const IPoint &mouse_pos) // можно не смотреть, это было в демке.
 {
 	if (_eff)
 	{
@@ -308,7 +308,7 @@ void TestWidget::MouseMove(const IPoint &mouse_pos)
 	}
 }
 
-void TestWidget::MouseUp(const IPoint &mouse_pos)
+void TestWidget::MouseUp(const IPoint &mouse_pos) // можно не смотреть, это было в демке.
 {
 	if (_eff)
 	{
@@ -320,7 +320,7 @@ void TestWidget::MouseUp(const IPoint &mouse_pos)
 	}
 }
 
-void TestWidget::AcceptMessage(const Message& message)
+void TestWidget::AcceptMessage(const Message& message) // можно не смотреть, это было в демке.
 {
 	//
 	// Виджету могут посылаться сообщения с параметрами.
@@ -330,7 +330,7 @@ void TestWidget::AcceptMessage(const Message& message)
 	const std::string& data = message.getData();
 }
 
-void TestWidget::KeyPressed(int keyCode)
+void TestWidget::KeyPressed(int keyCode) // можно не смотреть, это было в демке.
 {
 	//
 	// keyCode - виртуальный код клавиши.
@@ -341,23 +341,9 @@ void TestWidget::KeyPressed(int keyCode)
 		// Реакция на нажатие кнопки A
 		// _cannon->getAngle() -= 25;
 	}
-	/*
-	if (keyCode == VK_UP) {
-		_pointY += 1;
-	}
-	if (keyCode == VK_DOWN) {
-		_pointY -= 1;
-	}
-	if (keyCode == VK_RIGHT) {
-		_pointX += 1;
-	}
-	if (keyCode == VK_LEFT) {
-		_pointX -= 1;
-	}
-	*/
 }
 
-void TestWidget::CharPressed(int unicodeChar)
+void TestWidget::CharPressed(int unicodeChar) // можно не смотреть, это было в демке.
 {
 	//
 	// unicodeChar - Unicode код введённого символа

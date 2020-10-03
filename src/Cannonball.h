@@ -5,7 +5,6 @@ public:
 	Cannonball(FPoint pos, float speed, std::vector<float> splinePoints);
 
 	void updPosition(float globalTimer);
-	void setSpline(FPoint cannonCenter, FPoint mousePos);
 	void splineClear();
 
 	const FPoint& getPosition() const noexcept;
@@ -16,6 +15,7 @@ public:
 
 	void setShow(bool show);
 	void setCannonTimer(float cannonTimer);
+	void setSpline(FPoint cannonCenter, FPoint mousePos);
 	
 private:
 	float _scale;
