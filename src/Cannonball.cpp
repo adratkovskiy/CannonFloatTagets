@@ -2,17 +2,16 @@
 #include "Cannonball.h"
 
 Cannonball::Cannonball(FPoint pos, float speed, std::vector<float> splinePoints) :
-	_pos(pos)
+	_centerPos(pos)
 	, _speed(speed)
 	, _splinePoints(splinePoints)
 	, _cannonTimer(0)
 {
 }
 
-const FPoint& Cannonball::getPos() const noexcept
+const FPoint& Cannonball::getPosition() const noexcept
 {
-	return _pos;
-	//return { 0, 0 };
+	return _currentPosition;
 }
 
 const bool& Cannonball::getShow() const noexcept
@@ -28,11 +27,6 @@ const float& Cannonball::getSpeed() const noexcept
 const float& Cannonball::getCannonTimer() const noexcept
 {
 	return _cannonTimer;
-}
-
-const FPoint Cannonball::getCurrentPosition() const noexcept
-{
-	return _currentPosition + _pos;
 }
 
 TimedSpline<FPoint>& Cannonball::getSpline()
@@ -52,7 +46,7 @@ void Cannonball::setCannonTimer(float cannonTimer)
 
 void Cannonball::updPosition(float globalTimer)
 {
-	_currentPosition = _spline.getGlobalFrame(math::clamp(0.0f, 1.0f, globalTimer / 6.0f));
+	_currentPosition = _spline.getGlobalFrame(math::clamp(0.0f, 1.0f, globalTimer / 6.0f)) + _centerPos;
 }
 
 void Cannonball::setSpline(FPoint cannonCenter, FPoint mousePos)

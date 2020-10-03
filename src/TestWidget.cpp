@@ -68,7 +68,7 @@ void TestWidget::Draw()
 		{
 			_cannonball->updPosition(_gControl->getTimer());
 			Render::device.PushMatrix();
-			Render::device.MatrixTranslate(_cannonball->getCurrentPosition());
+			Render::device.MatrixTranslate(_cannonball->getPosition());
 			Render::device.MatrixScale(_cannon->getScale());
 			_cannonballTexture->Draw();
 			Render::device.PopMatrix();

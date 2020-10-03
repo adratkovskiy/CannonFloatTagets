@@ -8,11 +8,10 @@ public:
 	void setSpline(FPoint cannonCenter, FPoint mousePos);
 	void splineClear();
 
-	const FPoint& getPos() const noexcept;
+	const FPoint& getPosition() const noexcept;
 	const bool& getShow() const noexcept;
 	const float& getSpeed() const noexcept;
 	const float& getCannonTimer() const noexcept;
-	const FPoint getCurrentPosition() const noexcept;
 	TimedSpline<FPoint>& getSpline();
 
 	void setShow(bool show);
@@ -21,7 +20,7 @@ public:
 private:
 	float _scale;
 	bool _show;
-	FPoint _pos;
+	FPoint _centerPos;
 	float _speed;
 	float _cannonTimer;
 	FPoint _currentPosition;
