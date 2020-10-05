@@ -118,6 +118,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\Aim.cpp" />
     <ClCompile Include="..\..\src\Cannon.cpp" />
     <ClCompile Include="..\..\src\Cannonball.cpp" />
     <ClCompile Include="..\..\src\GameController.cpp" />
@@ -131,6 +132,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\Aim.h" />
     <ClInclude Include="..\..\src\Cannon.h" />
     <ClInclude Include="..\..\src\Cannonball.h" />
     <ClInclude Include="..\..\src\GameController.h" />

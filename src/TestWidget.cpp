@@ -17,10 +17,16 @@ TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 
 void TestWidget::Init()
 {
-	_options = new Options(); // гружу настройки из xml
+	_cannonBackTexture = Core::resourceManager.Get<Render::Texture>("Cannon_back");
+	_cannonFrontTexture = Core::resourceManager.Get<Render::Texture>("Cannon_front");
+	_standTexture = Core::resourceManager.Get<Render::Texture>("Stand");
+	_backgroundTexture = Core::resourceManager.Get<Render::Texture>("Background");
+	_aimTexture = Core::resourceManager.Get<Render::Texture>("Aim");
+	_cannonballTexture = Core::resourceManager.Get<Render::Texture>("Cannonball");
 
-	//контроллер для игры
+	_options = new Options(); // гружу настройки из xml
 	_gControl = new GameController(GameController::GameStates::START_SCREEN, true, _options->getParamFloat("sys_timer"));
+	_aim = new Aim(_options->getParamFloat("aim_scale"), _aimTexture->getBitmapRect());
 	
 	_cannon = new Cannon(_options->getParamFloat("cannon_angle")
 		, _options->getParamFloat("gun_scale")
@@ -32,12 +38,7 @@ void TestWidget::Init()
 		, _options->getSplinePoints());
 
 	//гружу текстуры
-	_cannonBackTexture = Core::resourceManager.Get<Render::Texture>("Cannon_back");
-	_cannonFrontTexture = Core::resourceManager.Get<Render::Texture>("Cannon_front");
-	_standTexture = Core::resourceManager.Get<Render::Texture>("Stand");
-	_backgroundTexture = Core::resourceManager.Get<Render::Texture>("Background");
-	_aimTexture = Core::resourceManager.Get<Render::Texture>("Aim");
-	_cannonballTexture = Core::resourceManager.Get<Render::Texture>("Cannonball");
+	
 }
 
 void TestWidget::Draw()
@@ -86,6 +87,7 @@ void TestWidget::Draw()
 		Render::device.MatrixTranslate(static_cast<int>(_gControl->getMousePos().x), static_cast<int>(_gControl->getMousePos().y), 0);
 		IRect texRect = _aimTexture->getBitmapRect(); // вообще по идее текстуру ядра так же надо обсчитывать, но я только сейчас увидел, потом поправлю.
 		Render::device.MatrixTranslate(-texRect.width * 0.5f, -texRect.height * 0.5f, 0.0f);
+		Render::device.MatrixScale(_aim->getScale());
 		_aimTexture->Draw();
 		Render::device.PopMatrix();
 

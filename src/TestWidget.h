@@ -3,6 +3,7 @@
 #include "Cannonball.h"
 #include "Cannon.h"
 #include "Options.h"
+#include "Aim.h"
 
 ///
 /// Виджет - основной визуальный элемент на экране.
@@ -48,4 +49,5 @@ private:
 	Cannonball* _cannonball;
 	Cannon* _cannon;
 	Options* _options;
+	Aim* _aim;
 };

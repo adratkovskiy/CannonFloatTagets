@@ -6,6 +6,7 @@
   <cannon_angle type="float" val="90" />
   <cannon_center type="FPoint" x="535" y="62" />
   <cannonball_center type="FPoint" x="-20" y="-20" />
+  <aim_scale type="float" val="0.5" />
   <screen_width type="float" val="1024" />
   <screen_height type="float" val="768" />
   <sys_timer type="float" val="0" />
