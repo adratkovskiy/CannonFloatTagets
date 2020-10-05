@@ -2,10 +2,10 @@
 class Cannonball
 {
 public:
-	Cannonball(FPoint pos, float speed, std::vector<float> splinePoints);
+	Cannonball(const FPoint& pos, float speed, const std::vector<float>& splinePoints);
 
-	void updPosition(float globalTimer);
-	void splineClear();
+	void updPosition(const float globalTimer);
+	void splineClear() noexcept;
 
 	const FPoint& getPosition() const noexcept;
 	const bool& getShow() const noexcept;

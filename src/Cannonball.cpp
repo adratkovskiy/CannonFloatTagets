@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "Cannonball.h"
 
-Cannonball::Cannonball(FPoint pos, float speed, std::vector<float> splinePoints) :
+Cannonball::Cannonball(const FPoint& pos, float speed, const std::vector<float>& splinePoints) :
 	_centerPos(pos)
 	, _speed(speed)
-	, _splinePoints(splinePoints)
+	, _splinePoints(std::move(splinePoints))
 	, _cannonTimer(0)
 {
 }
@@ -44,7 +44,7 @@ void Cannonball::setCannonTimer(float cannonTimer)
 	_cannonTimer = cannonTimer;
 }
 
-void Cannonball::updPosition(float globalTimer)
+void Cannonball::updPosition(const float globalTimer)
 {
 	_currentPosition = _spline.getGlobalFrame(math::clamp(0.0f, 1.0f, globalTimer / 6.0f)) + _centerPos;
 }
@@ -59,7 +59,7 @@ void Cannonball::setSpline(FPoint cannonCenter, FPoint mousePos)
 	_spline.CalculateGradient();
 }
 
-void Cannonball::splineClear()
+void Cannonball::splineClear() noexcept
 {
 	_spline.Clear();
 }

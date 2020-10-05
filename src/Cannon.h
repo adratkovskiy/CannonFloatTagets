@@ -2,25 +2,25 @@
 class Cannon
 {
 public:
-	Cannon(float angle
-		, float scale
-		, FPoint standPos
-		, FPoint cannonRotatePoint
-		, FPoint cannonCenter
+	Cannon(const float angle
+		, const float scale
+		, const FPoint& standPos
+		, const FPoint& cannonRotatePoint
+		, const FPoint& cannonCenter
 	);
 
-	const float& getAngle() const noexcept;
-	const float& getScale() const noexcept;
+	const float getAngle() const noexcept;
+	const float getScale() const noexcept;
 	const FPoint& getCannonCenter() const noexcept;
 	const FPoint& getCannonRotatePoint() const noexcept;
 	const FPoint& getStandPos() const noexcept;
 
-	void setAngle(float angle);
+	void setAngle(const float angle);
 private:
 	float _angle;
-	float _scale;
-	FPoint _standPos;
-	FPoint _cannonRotatePoint;
-	FPoint _cannonCenter;
+	const float _scale;
+	const FPoint _standPos;
+	const FPoint _cannonRotatePoint;
+	const FPoint _cannonCenter;
 };
 

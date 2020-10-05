@@ -13,15 +13,15 @@ public:
 
 	GameController(GameStates gameState, bool readyToShot, float timer);
 	
-	const bool& getReadyToShot() const noexcept;
+	const bool getReadyToShot() const noexcept;
 	const GameController::GameStates& getGameState() const noexcept;
 	const IPoint& getMousePos() const noexcept;
-	const float& getTimer() const noexcept;
+	const float getTimer() const noexcept;
 
-	void setReadyToShot(bool readyToShot);
-	void setGameState(GameStates gameState);
-	void setMousePos(IPoint mousePos);
-	void setTimer(float timer);
+	void setReadyToShot(const bool readyToShot);
+	void setGameState(const GameStates gameState);
+	void setMousePos(const IPoint& mousePos);
+	void setTimer(const float timer);
 	float& changeTimer();
 	
 private:

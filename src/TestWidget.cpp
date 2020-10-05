@@ -83,7 +83,7 @@ void TestWidget::Draw()
 		Render::device.PopMatrix();
 
 		Render::device.PushMatrix();
-		Render::device.MatrixTranslate((float)_gControl->getMousePos().x, (float)_gControl->getMousePos().y, 0);
+		Render::device.MatrixTranslate(static_cast<int>(_gControl->getMousePos().x), static_cast<int>(_gControl->getMousePos().y), 0);
 		IRect texRect = _aimTexture->getBitmapRect(); // вообще по идее текстуру ядра так же надо обсчитывать, но я только сейчас увидел, потом поправлю.
 		Render::device.MatrixTranslate(-texRect.width * 0.5f, -texRect.height * 0.5f, 0.0f);
 		_aimTexture->Draw();
@@ -104,7 +104,7 @@ void TestWidget::Draw()
 	//
 	
 	Render::device.PushMatrix();
-	Render::device.MatrixTranslate((float)_gControl->getMousePos().x, (float)_gControl->getMousePos().y, 0);
+	Render::device.MatrixTranslate(static_cast<int>(_gControl->getMousePos().x), static_cast<int>(_gControl->getMousePos().y), 0);
 	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _cannon->getAngle());
 
 	if (!_curTex)

@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "Cannon.h"
 
-Cannon::Cannon(float angle
-	, float scale
-	, FPoint standPos
-	, FPoint cannonRotatePoint
-	, FPoint cannonCenter
+Cannon::Cannon(const float angle
+	, const float scale
+	, const FPoint& standPos
+	, const FPoint& cannonRotatePoint
+	, const FPoint& cannonCenter
 ) :
 	_angle(angle)
 	, _scale(scale)
@@ -16,12 +16,12 @@ Cannon::Cannon(float angle
 
 }
 
-const float& Cannon::getAngle() const noexcept
+const float Cannon::getAngle() const noexcept
 {
     return _angle;
 }
 
-const float& Cannon::getScale() const noexcept
+const float Cannon::getScale() const noexcept
 {
     return _scale;
 }
@@ -41,7 +41,7 @@ const FPoint& Cannon::getStandPos() const noexcept
 	return _standPos;
 }
 
-void Cannon::setAngle(float angle)
+void Cannon::setAngle(const float angle)
 {
     _angle = angle;
 }

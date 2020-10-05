@@ -8,11 +8,8 @@ GameController::GameController(GameStates gameState, bool readyToShot, float tim
 {
 }
 
-const bool& GameController::getReadyToShot() const noexcept
+const bool GameController::getReadyToShot() const noexcept
 {
-	if (!_readyToShot) {
-		bool popo = _readyToShot;
-	}
 	return _readyToShot;
 }
 
@@ -26,28 +23,27 @@ const IPoint& GameController::getMousePos()  const noexcept
 	return _mousePos;
 }
 
-const float& GameController::getTimer() const noexcept
+const float GameController::getTimer() const noexcept
 {
 	return _timer;
 }
 
-void GameController::setReadyToShot(bool readyToShot)
+void GameController::setReadyToShot(const bool readyToShot)
 {
-	if (readyToShot != _readyToShot)
-		_readyToShot = readyToShot;
+	_readyToShot = readyToShot;
 }
 
-void GameController::setGameState(GameStates gameState)
+void GameController::setGameState(const GameStates gameState)
 {
 	_gameState = gameState;
 }
 
-void GameController::setMousePos(IPoint mousePos)
+void GameController::setMousePos(const IPoint& mousePos)
 {
 	_mousePos = mousePos;
 }
 
-void GameController::setTimer(float timer)
+void GameController::setTimer(const float timer)
 {
 	_timer = timer;
 }
