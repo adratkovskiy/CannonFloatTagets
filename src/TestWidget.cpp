@@ -85,8 +85,7 @@ void TestWidget::Draw()
 
 		Render::device.PushMatrix();
 		Render::device.MatrixTranslate(static_cast<int>(_gControl->getMousePos().x), static_cast<int>(_gControl->getMousePos().y), 0);
-		IRect texRect = _aimTexture->getBitmapRect(); // вообще по идее текстуру ядра так же надо обсчитывать, но я только сейчас увидел, потом поправлю.
-		Render::device.MatrixTranslate(-texRect.width * 0.5f, -texRect.height * 0.5f, 0.0f);
+		Render::device.MatrixTranslate(_aim->getCoordCenter());
 		Render::device.MatrixScale(_aim->getScale());
 		_aimTexture->Draw();
 		Render::device.PopMatrix();
