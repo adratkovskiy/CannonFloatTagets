@@ -5,7 +5,7 @@ Cannonball::Cannonball(const FPoint& pos, float speed, const std::vector<float>&
 	_centerPos(pos)
 	, _speed(speed)
 	, _splinePoints(std::move(splinePoints))
-	, _cannonTimer(0)
+	, _flightTime(0)
 {
 }
 
@@ -24,9 +24,9 @@ const float& Cannonball::getSpeed() const noexcept
 	return _speed;
 }
 
-const float& Cannonball::getCannonTimer() const noexcept
+const float& Cannonball::getFlightTime() const noexcept
 {
-	return _cannonTimer;
+	return _flightTime;
 }
 
 TimedSpline<FPoint>& Cannonball::getSpline()
@@ -39,9 +39,9 @@ void Cannonball::setShow(bool show)
 	_show = show;
 }
 
-void Cannonball::setCannonTimer(float cannonTimer)
+void Cannonball::setFlightTime(float cannonTimer)
 {
-	_cannonTimer = cannonTimer;
+	_flightTime = cannonTimer;
 }
 
 void Cannonball::updPosition(const float globalTimer)

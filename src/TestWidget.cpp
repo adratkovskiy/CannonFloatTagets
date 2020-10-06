@@ -9,7 +9,7 @@ void DrawCross(int x, int y) // инструмент, чтобы понять, �
 
 TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 	: Widget(name)
-	, _curTex(0)
+	//, _curTex(0)
 	, _eff(NULL)
 {
 	Init();
@@ -24,7 +24,7 @@ void TestWidget::Init()
 	_aimTexture = Core::resourceManager.Get<Render::Texture>("Aim");
 	_cannonballTexture = Core::resourceManager.Get<Render::Texture>("Cannonball");
 
-	_options = new Options(); // гружу настройки из xml
+	_options = new Options();
 	_gControl = new GameController(GameController::GameStates::START_SCREEN, true, _options->getParamFloat("sys_timer"));
 	_aim = new Aim(_options->getParamFloat("aim_scale"), _aimTexture->getBitmapRect());
 	
@@ -48,7 +48,7 @@ void TestWidget::Draw()
 	switch (_gControl->getGameState()) // Будущие режимы игры (заставка, игра, финальный счет)
 	{
 	case GameController::GameStates::START_SCREEN: // режим: игра
-		_backgroundTexture->Draw();		// фон
+		_backgroundTexture->Draw();
 
 		Render::device.PushMatrix();		// подставка под пушку
 		Render::device.MatrixTranslate(_cannon->getStandPos());
@@ -56,18 +56,17 @@ void TestWidget::Draw()
 		_standTexture->Draw();
 		Render::device.PopMatrix();
 
-		//обрати внимание, как рисую
 		Render::device.PushMatrix();	//задняя (фоновая часть пушки) 
-		Render::device.MatrixTranslate(_cannon->getCannonCenter()); //транслирую матрицу с местоположением рассчетным
-		Render::device.MatrixRotate(math::Vector3(0, 0, 1), _cannon->getAngle()); //поворачиваю на угол
-		Render::device.MatrixTranslate(_cannon->getCannonRotatePoint()); //еще раз транслирую, чтобы сдвинуть от центра, но при этом после поворота, чтобы центр объекта остался на месте
-		Render::device.MatrixScale(_cannon->getScale()); // скейл
-		_cannonBackTexture->Draw(); //рисую
+		Render::device.MatrixTranslate(_cannon->getCannonCenter());
+		Render::device.MatrixRotate(math::Vector3(0, 0, 1), _cannon->getAngle());
+		Render::device.MatrixTranslate(_cannon->getCannonRotatePoint());
+		Render::device.MatrixScale(_cannon->getScale());
+		_cannonBackTexture->Draw();
 		Render::device.PopMatrix();
 
 		if (!_gControl->getReadyToShot())
 		{
-			_cannonball->updPosition(_gControl->getTimer());
+			_cannonball->updPosition(_gControl->getTimer()); //ядро
 			Render::device.PushMatrix();
 			Render::device.MatrixTranslate(_cannonball->getPosition());
 			Render::device.MatrixScale(_cannon->getScale());
@@ -75,7 +74,7 @@ void TestWidget::Draw()
 			Render::device.PopMatrix();
 		}
 
-		Render::device.PushMatrix();
+		Render::device.PushMatrix(); //передняя часть пушки
 		Render::device.MatrixTranslate(_cannon->getCannonCenter());
 		Render::device.MatrixRotate(math::Vector3(0, 0, 1), _cannon->getAngle());
 		Render::device.MatrixTranslate(_cannon->getCannonRotatePoint());
@@ -83,7 +82,7 @@ void TestWidget::Draw()
 		_cannonFrontTexture->Draw();
 		Render::device.PopMatrix();
 
-		Render::device.PushMatrix();
+		Render::device.PushMatrix(); //прицел
 		Render::device.MatrixTranslate(static_cast<int>(_gControl->getMousePos().x), static_cast<int>(_gControl->getMousePos().y), 0);
 		Render::device.MatrixTranslate(_aim->getCoordCenter());
 		Render::device.MatrixScale(_aim->getScale());
@@ -104,7 +103,7 @@ void TestWidget::Draw()
 	// и поворачивая координаты относительно этого центра вокруг оси z на угол _angle.
 	//
 	
-	Render::device.PushMatrix();
+	/*Render::device.PushMatrix();
 	Render::device.MatrixTranslate(static_cast<int>(_gControl->getMousePos().x), static_cast<int>(_gControl->getMousePos().y), 0);
 	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _cannon->getAngle());
 
@@ -161,7 +160,7 @@ void TestWidget::Draw()
 	//
 	// Воостанавливаем прежнее преобразование координат, снимая со стека изменённый фрейм.
 	//
-	Render::device.PopMatrix();
+	Render::device.PopMatrix();*/
 	
 	//
 	// Получаем текущие координаты объекта, двигающегося по сплайну
@@ -207,7 +206,8 @@ void TestWidget::Draw()
 	Render::BindFont("arial");
 	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_gControl->getMousePos().x) + ", Y:" + utils::lexical_cast(_gControl->getMousePos().y), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 65, "gameState:" + utils::lexical_cast(static_cast<int>(_gControl->getGameState())), 1.f, CenterAlign);
-	Render::PrintString(924 + 100 / 2, 95, "timer:" + utils::lexical_cast(_gControl->getTimer()), 1.f, CenterAlign);
+	Render::PrintString(924 + 100 / 2, 95, "timer sys:" + utils::lexical_cast(_gControl->getTimer()), 1.f, CenterAlign);
+	Render::PrintString(924 + 100 / 2, 125, "timer can:" + utils::lexical_cast(_cannonball->getFlightTime()), 1.f, CenterAlign);
 }
 
 void TestWidget::Update(float dt)
@@ -228,7 +228,7 @@ void TestWidget::Update(float dt)
 	//
 	// Увеличиваем наш таймер с удвоенной скоростью.
 	//
-	_gControl->changeTimer() += dt * _cannonball->getCannonTimer();
+	_gControl->changeTimer() += dt * _cannonball->getFlightTime();
 	
 	//
 	// Зацикливаем таймер в диапазоне (0, 2п).
@@ -273,9 +273,8 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 		if (_gControl->getReadyToShot())
 		{
 			_gControl->setReadyToShot(false);
-			bool stat = _gControl->getReadyToShot();
 			float shotLength = math::sqrt(math::abs(math::sqr(_gControl->getMousePos().x - _cannon->getCannonCenter().x) + math::sqr(_gControl->getMousePos().y - _cannon->getCannonCenter().y)));
-			_cannonball->setCannonTimer( 1 / shotLength * _cannonball->getSpeed() );
+			_cannonball->setFlightTime( 1 / shotLength * _cannonball->getSpeed() );
 			_cannonball->setSpline(_cannon->getCannonCenter(), _gControl->getMousePos());
 			_gControl->setTimer(0);
 		}

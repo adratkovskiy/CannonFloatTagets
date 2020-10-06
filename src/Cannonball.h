@@ -10,11 +10,11 @@ public:
 	const FPoint& getPosition() const noexcept;
 	const bool& getShow() const noexcept;
 	const float& getSpeed() const noexcept;
-	const float& getCannonTimer() const noexcept;
+	const float& getFlightTime() const noexcept;
 	TimedSpline<FPoint>& getSpline();
 
 	void setShow(bool show);
-	void setCannonTimer(float cannonTimer);
+	void setFlightTime(float cannonTimer);
 	void setSpline(FPoint cannonCenter, FPoint mousePos);
 	
 private:
@@ -22,7 +22,7 @@ private:
 	bool _show;
 	FPoint _centerPos;
 	float _speed;
-	float _cannonTimer;
+	float _flightTime;
 	FPoint _currentPosition;
 	TimedSpline<FPoint> _spline;
 	std::vector<float> _splinePoints;

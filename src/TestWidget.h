@@ -41,7 +41,7 @@ private:
 	Render::Texture* _aimTexture;
 	Render::Texture* _pointTexture;
 	Render::Texture* _cannonballTexture;
-	int _curTex;
+	//int _curTex;
 
 	EffectsContainer _effCont;
 	ParticleEffectPtr _eff;

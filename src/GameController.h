@@ -22,6 +22,7 @@ public:
 	void setGameState(const GameStates gameState);
 	void setMousePos(const IPoint& mousePos);
 	void setTimer(const float timer);
+
 	float& changeTimer();
 	
 private:
