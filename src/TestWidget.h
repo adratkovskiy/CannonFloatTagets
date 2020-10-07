@@ -4,6 +4,7 @@
 #include "Cannon.h"
 #include "Options.h"
 #include "Aim.h"
+#include "Button.h"
 
 ///
 /// Виджет - основной визуальный элемент на экране.
@@ -41,7 +42,9 @@ private:
 	Render::Texture* _aimTexture;
 	Render::Texture* _pointTexture;
 	Render::Texture* _cannonballTexture;
-	//int _curTex;
+	Render::Texture* _targetTexture;
+	Render::Texture* _buttonUpTexture;
+	Render::Texture* _buttonDownTexture;
 
 	EffectsContainer _effCont;
 	ParticleEffectPtr _eff;
@@ -50,4 +53,5 @@ private:
 	Cannon* _cannon;
 	Options* _options;
 	Aim* _aim;
+	Button* _button;
 };

@@ -119,24 +119,29 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Aim.cpp" />
+	<ClCompile Include="..\..\src\Button.cpp" />
     <ClCompile Include="..\..\src\Cannon.cpp" />
     <ClCompile Include="..\..\src\Cannonball.cpp" />
     <ClCompile Include="..\..\src\GameController.cpp" />
     <ClCompile Include="..\..\src\Main.cpp" />
     <ClCompile Include="..\..\src\Options.cpp" />
+    <ClCompile Include="..\..\src\Targets.cpp" />
     <ClCompile Include="..\..\src\TestAppDelegate.cpp" />
     <ClCompile Include="..\..\src\TestWidget.cpp" />
     <ClCompile Include="..\..\src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Aim.h" />
+    <ClInclude Include="..\..\src\Button.h" />
     <ClInclude Include="..\..\src\Cannon.h" />
     <ClInclude Include="..\..\src\Cannonball.h" />
     <ClInclude Include="..\..\src\GameController.h" />
     <ClInclude Include="..\..\src\Options.h" />
+    <ClInclude Include="..\..\src\Targets.h" />
     <ClInclude Include="..\..\src\TestAppDelegate.h" />
     <ClInclude Include="..\..\src\TestWidget.h" />
     <ClInclude Include="..\..\src\stdafx.h" />

@@ -13,6 +13,8 @@
     <texture id="Aim" path="textures/Aim.png" group="Aim" upload="false"/>
     <texture id="TestPoint" path="textures/TestPoint.png" group="TestPoint" upload="false"/>
     <texture id="Cannonball" path="textures/Cannonball.png" group="Cannonball" upload="false"/>
+    <texture id="Target" path="textures/Target.png" group="Target" upload="false"/>
+    <texture id="Button_up" path="textures/Button_up.png" group="Button" upload="false"/>
     <!-- <texture id="Star" path="textures_test/star.png" group="TestGroup" upload="false"/>
     <texture id="Circle" path="textures_test/circle.png" group="TestGroup" upload="false"/>
     <texture id="btnStart_Text" path="textures_test/Local/Buttons/Start_text.png" group="MainMenu" upload="true"/>

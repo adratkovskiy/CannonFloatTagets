@@ -23,6 +23,9 @@ void TestWidget::Init()
 	_backgroundTexture = Core::resourceManager.Get<Render::Texture>("Background");
 	_aimTexture = Core::resourceManager.Get<Render::Texture>("Aim");
 	_cannonballTexture = Core::resourceManager.Get<Render::Texture>("Cannonball");
+	_targetTexture = Core::resourceManager.Get<Render::Texture>("Target");
+	_buttonUpTexture = Core::resourceManager.Get<Render::Texture>("Button_up");
+	_buttonDownTexture = Core::resourceManager.Get<Render::Texture>("Button_down");
 
 	_options = new Options();
 	_gControl = new GameController(GameController::GameStates::START_SCREEN, true, _options->getParamFloat("sys_timer"));
@@ -36,6 +39,10 @@ void TestWidget::Init()
 	_cannonball = new Cannonball(_options->getParamFPoint("cannonball_center")
 		, _options->getParamFloat("cannonball_speed")
 		, _options->getSplinePoints());
+	_button = new Button(_options->getParamFPoint("button_create_pos"), _options->getParamFloat("button_create_scale"), _options->getParamString("button_create_string"));
+
+	Render::BindFont("arial");
+
 
 	//гружу текстуры
 	
@@ -88,6 +95,8 @@ void TestWidget::Draw()
 		Render::device.MatrixScale(_aim->getScale());
 		_aimTexture->Draw();
 		Render::device.PopMatrix();
+
+
 
 		break;
 		
@@ -202,8 +211,10 @@ void TestWidget::Draw()
 	// Рисуем все эффекты, которые добавили в контейнер (Update() для контейнера вызывать не нужно).
 	//
 	_effCont.Draw();
-
-	Render::BindFont("arial");
+	
+	//_button->printText();
+	
+	
 	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_gControl->getMousePos().x) + ", Y:" + utils::lexical_cast(_gControl->getMousePos().y), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 65, "gameState:" + utils::lexical_cast(static_cast<int>(_gControl->getGameState())), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 95, "timer sys:" + utils::lexical_cast(_gControl->getTimer()), 1.f, CenterAlign);
