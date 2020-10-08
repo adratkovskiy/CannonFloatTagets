@@ -22,6 +22,9 @@ Options::Options()
                 _configSplinePoints.push_back(atof(node->first_attribute(paramNumber.c_str())->value()));
             }
         }
+        else if (!strcmp(node->last_attribute("type")->value(), (const char*)"string")) {
+            _configString.insert({ node->name(), node->first_attribute("val")->value() });
+        }
         else {
             std::string naname = node->name();
             _configFloat.insert({ node->name(), atof(node->first_attribute("val")->value()) });
@@ -29,7 +32,7 @@ Options::Options()
     }
 }
 
-const float& Options::getParamFloat(const std::string paramName)
+const float Options::getParamFloat(const std::string& paramName)
 {
     std::map<std::string, float>::iterator it;
     it = _configFloat.find(paramName);
@@ -39,11 +42,21 @@ const float& Options::getParamFloat(const std::string paramName)
     }
 }
 
-const FPoint& Options::getParamFPoint(std::string paramName)
+const FPoint& Options::getParamFPoint(const std::string& paramName)
 {
     std::map<std::string, FPoint>::iterator it;
     it = _configFPoint.find(paramName);
     if (it != _configFPoint.end())
+    {
+        return it->second;
+    }
+}
+
+const std::string& Options::getParamString(const std::string& paramName)
+{
+    std::map<std::string, std::string>::iterator it;
+    it = _configString.find(paramName);
+    if (it != _configString.end())
     {
         return it->second;
     }

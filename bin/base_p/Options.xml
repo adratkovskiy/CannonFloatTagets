@@ -14,5 +14,5 @@
   <cannonball_spline_points type="vector" p0="0.0" p1="0.3" p2="0.5" p3="0.7" p4="1.0" />
   <button_create_scale type="float" val="0.125" />
   <button_create_pos type="FPoint" x="100" y="100" />
-  <button_create_string type="string" val="Тестовая надпись" />
+  <button_create_string type="string" val="таргет" />
 </options>

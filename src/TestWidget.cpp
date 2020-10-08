@@ -7,6 +7,12 @@ void DrawCross(int x, int y) // инструмент, чтобы понять, �
 	Render::DrawLine(math::Vector3(x, y - 10, 1), math::Vector3(x, y + 10, 1));
 }
 
+void DrawCross(FPoint coords) // инструмент, чтобы понять, про какие координаты идет речь
+{
+	Render::DrawLine(math::Vector3(coords.x - 10, coords.y, 1), math::Vector3(coords.x + 10, coords.y, 1));
+	Render::DrawLine(math::Vector3(coords.x, coords.y - 10, 1), math::Vector3(coords.x, coords.y + 10, 1));
+}
+
 TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 	: Widget(name)
 	//, _curTex(0)
@@ -39,7 +45,10 @@ void TestWidget::Init()
 	_cannonball = new Cannonball(_options->getParamFPoint("cannonball_center")
 		, _options->getParamFloat("cannonball_speed")
 		, _options->getSplinePoints());
-	_button = new Button(_options->getParamFPoint("button_create_pos"), _options->getParamFloat("button_create_scale"), _options->getParamString("button_create_string"));
+	_button = new Button(_options->getParamFPoint("button_create_pos")
+		, _options->getParamFloat("button_create_scale")
+		, _options->getParamString("button_create_string")
+		, _buttonUpTexture->getBitmapRect());
 
 	Render::BindFont("arial");
 
@@ -88,6 +97,22 @@ void TestWidget::Draw()
 		Render::device.MatrixScale(_cannon->getScale());
 		_cannonFrontTexture->Draw();
 		Render::device.PopMatrix();
+
+		Render::device.PushMatrix(); //кнопка вверх
+		Render::device.MatrixTranslate(_button->getPos());
+		Render::device.MatrixScale(_button->getScale());
+		if (_button->getPressed()) {
+			_buttonDownTexture->Draw();
+		}
+		else {
+			_buttonUpTexture->Draw();
+		}
+		Render::device.PopMatrix();
+
+		Render::SetColor(Color(0, 0, 0, 255));
+		Render::PrintString(_button->getTextPos(), _button->getText(), 1.5f, CenterAlign, CenterAlign);
+		Render::ResetColor();
+
 
 		Render::device.PushMatrix(); //прицел
 		Render::device.MatrixTranslate(static_cast<int>(_gControl->getMousePos().x), static_cast<int>(_gControl->getMousePos().y), 0);
@@ -190,7 +215,7 @@ void TestWidget::Draw()
 	// Метод BeginColor() проталкивает в стек текущий цвет вершин и устанавливает новый.
 	//
 	Render::BeginColor(Color(255, 128, 0, 255));
-	
+	//DrawCross(_button->getTextPos());
 	//
 	// Метод DrawRect() выводит в графическое устройство квадратный спрайт, состоящий их двух
 	// примитивов - треугольников, используя при этом текущий цвет для вершин и привязанную (binded) текстуру,
@@ -281,6 +306,7 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 	}
 	else
 	{
+		_button->click(_gControl->getMousePos());
 		if (_gControl->getReadyToShot())
 		{
 			_gControl->setReadyToShot(false);
@@ -321,6 +347,7 @@ void TestWidget::MouseMove(const IPoint &mouse_pos) // можно не смот�
 
 void TestWidget::MouseUp(const IPoint &mouse_pos) // можно не смотреть, это было в демке.
 {
+	_button->noPressed();
 	if (_eff)
 	{
 		//
