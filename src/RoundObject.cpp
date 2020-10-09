@@ -1,25 +1,29 @@
 #include "stdafx.h"
 #include "RoundObject.h"
 
-RoundObject::RoundObject(const float scale, const IRect& textureRect, FPoint& centerPos, targetType type):
+RoundObject::RoundObject(const float scale, const IRect& textureRect, FPoint& pos):
 	_scale(scale)
-	, _centerPos(centerPos)
-	, _type(type)
+	, _pos(pos)
 {
-	_radius = textureRect.width * _scale;
-}
-
-const RoundObject::targetType& RoundObject::getType() const noexcept
-{
-	return _type;
+	_radius = textureRect.width * _scale / 2;
 }
 
 const FPoint& RoundObject::getPos() const noexcept
 {
-	return _centerPos;
+	return _pos;
 }
 
 const float RoundObject::getScale() const noexcept
 {
 	return _scale;
+}
+
+const float RoundObject::getRadius() const noexcept
+{
+	return _radius;
+}
+
+const FPoint& RoundObject::getCoordCenter() noexcept
+{
+	return FPoint({ _pos.x + _radius, _pos.y + _radius });
 }

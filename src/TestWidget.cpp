@@ -317,7 +317,7 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 	else
 	{
 		if (_button->click(_gControl->getMousePos())) {
-			RoundObject* newTarget = new RoundObject(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), FPoint({500.f, 500.f}), RoundObject::targetType::YELLOW);
+			RoundObject* newTarget = new RoundObject(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), FPoint({500.f, 500.f}));
 			_targets.push_back(*newTarget);
 		}
 		if (_gControl->getReadyToShot())
