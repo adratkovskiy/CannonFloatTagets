@@ -90,7 +90,7 @@ void TestWidget::Draw()
 			Render::device.PushMatrix();
 			Render::device.MatrixTranslate(it->getPos());
 			Render::device.MatrixScale(it->getScale());
-			it->Draw();
+			it->Draw(); // рисую из объекта, ибо ну не удобно каждый раз проверять, какая цель и какой текстурой ее рисовать
 			Render::device.PopMatrix();
 		}
 
@@ -112,10 +112,10 @@ void TestWidget::Draw()
 		_cannonFrontTexture->Draw();
 		Render::device.PopMatrix();
 
-		Render::device.PushMatrix(); //кнопка вверх
+		Render::device.PushMatrix(); //кнопка
 		Render::device.MatrixTranslate(_button->getPos());
 		Render::device.MatrixScale(_button->getScale());
-		if (_button->getPressed()) {
+		if (_button->getPressed()) { //кнопка нажата отпущена, рисую отсюда
 			_buttonDownTexture->Draw();
 		}
 		else {
@@ -318,7 +318,7 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 	}
 	else
 	{
-		if (_button->click(_gControl->getMousePos())) {
+		if (_button->click(_gControl->getMousePos())) { //норм ли такой вид, через свитч-кейс и рандом?
 			int numTarget = math::random(2);
 			FPoint pos({ math::random(900.f) + 50.f, math::random(400.f) + 300.f });
 			Targets* newTarget;
