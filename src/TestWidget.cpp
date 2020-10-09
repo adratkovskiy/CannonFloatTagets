@@ -52,7 +52,7 @@ void TestWidget::Init()
 		, _options->getParamString("button_create_string")
 		, _buttonUpTexture->getBitmapRect());
 
-	_blueTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), FPoint({ 500.f, 500.f }), Core::resourceManager.Get<Render::Texture>("Target_red"));
+	_blueTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), FPoint({ 500.f, 500.f }), _targetBlueTexture);
 
 	Render::BindFont("arial");
 
