@@ -58,6 +58,6 @@ private:
 	Options* _options;
 	Aim* _aim;
 	Button* _button;
-	std::vector<RoundObject> _targets;
+	std::vector<Targets> _targets;
 	Targets* _blueTarget;
 };

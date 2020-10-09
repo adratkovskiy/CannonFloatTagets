@@ -44,7 +44,9 @@ void TestWidget::Init()
 		, _options->getParamFPoint("cannon_stand_pos")
 		, _options->getParamFPoint("cannon_rotate_point")
 		, _options->getParamFPoint("cannon_center"));
-	_cannonball = new Cannonball(_options->getParamFPoint("cannonball_center")
+	_cannonball = new Cannonball(_cannon->getScale()
+		, _cannonballTexture->getBitmapRect()
+		, _options->getParamFPoint("cannon_center")
 		, _options->getParamFloat("cannonball_speed")
 		, _options->getSplinePoints());
 	_button = new Button(_options->getParamFPoint("button_create_pos")
@@ -84,11 +86,11 @@ void TestWidget::Draw()
 		_cannonBackTexture->Draw();
 		Render::device.PopMatrix();
 
-		for (std::vector<RoundObject>::iterator it = _targets.begin(); it < _targets.end(); it++) {
+		for (std::vector<Targets>::iterator it = _targets.begin(); it < _targets.end(); it++) {
 			Render::device.PushMatrix();
 			Render::device.MatrixTranslate(it->getPos());
 			Render::device.MatrixScale(it->getScale());
-			_targetYellowTexture->Draw();
+			it->Draw();
 			Render::device.PopMatrix();
 		}
 
@@ -97,7 +99,7 @@ void TestWidget::Draw()
 			_cannonball->updPosition(_gControl->getTimer()); //ядро
 			Render::device.PushMatrix();
 			Render::device.MatrixTranslate(_cannonball->getPosition());
-			Render::device.MatrixScale(_cannon->getScale());
+			Render::device.MatrixScale(_cannonball->getScale());
 			_cannonballTexture->Draw();
 			Render::device.PopMatrix();
 		}
@@ -131,12 +133,6 @@ void TestWidget::Draw()
 		Render::device.MatrixTranslate(_aim->getCoordCenter());
 		Render::device.MatrixScale(_aim->getScale());
 		_aimTexture->Draw();
-		Render::device.PopMatrix();
-		
-		Render::device.PushMatrix(); 
-		Render::device.MatrixTranslate(_blueTarget->getPos());
-		Render::device.MatrixScale(_blueTarget->getScale());
-		_blueTarget->Draw();
 		Render::device.PopMatrix();
 
 		break;
@@ -323,10 +319,29 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 	else
 	{
 		if (_button->click(_gControl->getMousePos())) {
-			RoundObject* newTarget = new RoundObject(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), FPoint({500.f, 500.f}));
+			int numTarget = math::random(2);
+			FPoint pos({ math::random(900.f) + 50.f, math::random(400.f) + 300.f });
+			Targets* newTarget;
+			switch (numTarget)
+			{
+			case(0):
+				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture);				
+				break;
+			case(1):
+				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetRedTexture->getBitmapRect(), pos, _targetRedTexture);
+				break;
+			case(2):
+				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetBlueTexture->getBitmapRect(), pos, _targetBlueTexture);
+				break;
+			default:
+				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture);
+				break;
+			}
 			_targets.push_back(*newTarget);
+			
+
 		}
-		if (_gControl->getReadyToShot())
+		else if (_gControl->getReadyToShot())
 		{
 			_gControl->setReadyToShot(false);
 			float shotLength = math::sqrt(math::abs(math::sqr(_gControl->getMousePos().x - _cannon->getCannonCenter().x) + math::sqr(_gControl->getMousePos().y - _cannon->getCannonCenter().y)));

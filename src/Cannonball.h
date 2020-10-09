@@ -1,8 +1,16 @@
 #pragma once
-class Cannonball
+#include "RoundObject.h"
+
+class Cannonball : 
+	public RoundObject
 {
 public:
-	Cannonball(const FPoint& pos, float speed, const std::vector<float>& splinePoints);
+	Cannonball(const float scale
+		, const IRect& textureRect
+		, const FPoint& pos
+		, float speed
+		, const std::vector<float>& splinePoints
+	);
 
 	void updPosition(const float globalTimer);
 	void splineClear() noexcept;
@@ -18,7 +26,6 @@ public:
 	void setSpline(FPoint cannonCenter, FPoint mousePos);
 	
 private:
-	float _scale;
 	bool _show;
 	FPoint _centerPos;
 	float _speed;

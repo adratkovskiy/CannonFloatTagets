@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "RoundObject.h"
 
-RoundObject::RoundObject(const float scale, const IRect& textureRect, FPoint& pos):
+RoundObject::RoundObject(const float scale, const IRect& textureRect, const FPoint& pos):
 	_scale(scale)
 	, _pos(pos)
 {

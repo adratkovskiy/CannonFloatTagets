@@ -1,5 +1,6 @@
 #pragma once
 #include "RoundObject.h"
+
 class Targets :
     public RoundObject
 {

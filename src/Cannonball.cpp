@@ -1,12 +1,18 @@
 #include "stdafx.h"
 #include "Cannonball.h"
 
-Cannonball::Cannonball(const FPoint& pos, float speed, const std::vector<float>& splinePoints) :
-	_centerPos(pos)
+Cannonball::Cannonball(const float scale
+	, const IRect& textureRect
+	, const FPoint& pos
+	, float speed
+	, const std::vector<float>& splinePoints
+) : RoundObject(scale, textureRect, pos),
+	_currentPosition(pos)
 	, _speed(speed)
 	, _splinePoints(std::move(splinePoints))
 	, _flightTime(0)
 {
+	_centerPos = FPoint({ textureRect.width / 2 * RoundObject::getScale(), textureRect.height / 2 * RoundObject::getScale() });
 }
 
 const FPoint& Cannonball::getPosition() const noexcept
@@ -46,7 +52,7 @@ void Cannonball::setFlightTime(float cannonTimer)
 
 void Cannonball::updPosition(const float globalTimer)
 {
-	_currentPosition = _spline.getGlobalFrame(math::clamp(0.0f, 1.0f, globalTimer / 6.0f)) + _centerPos;
+	_currentPosition = _spline.getGlobalFrame(math::clamp(0.0f, 1.0f, globalTimer / 6.0f)) - _centerPos;
 }
 
 void Cannonball::setSpline(FPoint cannonCenter, FPoint mousePos)
