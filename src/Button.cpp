@@ -12,7 +12,7 @@ Button::Button(const FPoint& pos, const float scale, const std::string& text, IR
     _textPos = pos + _size / 2;
 }
 
-void Button::click(const IPoint& mouse_pos)
+const bool Button::click(const IPoint& mouse_pos)
 {
     if ((mouse_pos.x >= _pos.x)
         & (mouse_pos.x <= _pos.x + _size.x)
@@ -21,6 +21,7 @@ void Button::click(const IPoint& mouse_pos)
         ) {
         _pressed = true;
     }
+    return _pressed;
 }
 
 void Button::noPressed() noexcept

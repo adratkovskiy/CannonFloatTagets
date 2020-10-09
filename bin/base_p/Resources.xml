@@ -11,9 +11,10 @@
     <texture id="Stand" path="textures/Stand.png" group="Gun" upload="false"/>
     <texture id="Background" path="textures/background.png" group="Back" upload="false"/>
     <texture id="Aim" path="textures/Aim.png" group="Aim" upload="false"/>
-    <texture id="TestPoint" path="textures/TestPoint.png" group="TestPoint" upload="false"/>
     <texture id="Cannonball" path="textures/Cannonball.png" group="Cannonball" upload="false"/>
-    <texture id="Target" path="textures/Target.png" group="Target" upload="false"/>
+    <texture id="Target_yellow" path="textures/Target_yellow.png" group="Targets" upload="false"/>
+    <texture id="Target_red" path="textures/Target_red.png" group="Targets" upload="false"/>
+    <texture id="Target_blue" path="textures/Target_blue.png" group="Targets" upload="false"/>
     <texture id="Button_up" path="textures/Button_up.png" group="Button" upload="false"/>
     <texture id="Button_down" path="textures/Button_down.png" group="Button" upload="false"/>
     <!-- <texture id="Star" path="textures_test/star.png" group="TestGroup" upload="false"/>

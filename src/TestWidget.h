@@ -5,6 +5,7 @@
 #include "Options.h"
 #include "Aim.h"
 #include "Button.h"
+#include "RoundObject.h"
 
 ///
 /// Виджет - основной визуальный элемент на экране.
@@ -42,7 +43,9 @@ private:
 	Render::Texture* _aimTexture;
 	Render::Texture* _pointTexture;
 	Render::Texture* _cannonballTexture;
-	Render::Texture* _targetTexture;
+	Render::Texture* _targetYellowTexture;
+	Render::Texture* _targetRedTexture;
+	Render::Texture* _targetBlueTexture;
 	Render::Texture* _buttonUpTexture;
 	Render::Texture* _buttonDownTexture;
 
@@ -54,4 +57,5 @@ private:
 	Options* _options;
 	Aim* _aim;
 	Button* _button;
+	std::vector<RoundObject> _targets;
 };

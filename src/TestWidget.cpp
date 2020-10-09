@@ -29,7 +29,9 @@ void TestWidget::Init()
 	_backgroundTexture = Core::resourceManager.Get<Render::Texture>("Background");
 	_aimTexture = Core::resourceManager.Get<Render::Texture>("Aim");
 	_cannonballTexture = Core::resourceManager.Get<Render::Texture>("Cannonball");
-	_targetTexture = Core::resourceManager.Get<Render::Texture>("Target");
+	_targetYellowTexture = Core::resourceManager.Get<Render::Texture>("Target_yellow");
+	_targetRedTexture = Core::resourceManager.Get<Render::Texture>("Target_red");
+	_targetBlueTexture = Core::resourceManager.Get<Render::Texture>("Target_blue");
 	_buttonUpTexture = Core::resourceManager.Get<Render::Texture>("Button_up");
 	_buttonDownTexture = Core::resourceManager.Get<Render::Texture>("Button_down");
 
@@ -79,6 +81,14 @@ void TestWidget::Draw()
 		Render::device.MatrixScale(_cannon->getScale());
 		_cannonBackTexture->Draw();
 		Render::device.PopMatrix();
+
+		for (std::vector<RoundObject>::iterator it = _targets.begin(); it < _targets.end(); it++) {
+			Render::device.PushMatrix();
+			Render::device.MatrixTranslate(it->getPos());
+			Render::device.MatrixScale(it->getScale());
+			_targetYellowTexture->Draw();
+			Render::device.PopMatrix();
+		}
 
 		if (!_gControl->getReadyToShot())
 		{
@@ -243,7 +253,7 @@ void TestWidget::Draw()
 	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_gControl->getMousePos().x) + ", Y:" + utils::lexical_cast(_gControl->getMousePos().y), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 65, "gameState:" + utils::lexical_cast(static_cast<int>(_gControl->getGameState())), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 95, "timer sys:" + utils::lexical_cast(_gControl->getTimer()), 1.f, CenterAlign);
-	Render::PrintString(924 + 100 / 2, 125, "timer can:" + utils::lexical_cast(_cannonball->getFlightTime()), 1.f, CenterAlign);
+	Render::PrintString(924 + 100 / 2, 125, "target count:" + utils::lexical_cast(_targets.size()), 1.f, CenterAlign);
 }
 
 void TestWidget::Update(float dt)
@@ -306,7 +316,10 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 	}
 	else
 	{
-		_button->click(_gControl->getMousePos());
+		if (_button->click(_gControl->getMousePos())) {
+			RoundObject* newTarget = new RoundObject(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), FPoint({500.f, 500.f}), RoundObject::targetType::YELLOW);
+			_targets.push_back(*newTarget);
+		}
 		if (_gControl->getReadyToShot())
 		{
 			_gControl->setReadyToShot(false);

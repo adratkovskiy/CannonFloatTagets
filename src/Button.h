@@ -5,7 +5,7 @@ public:
 	Button(const FPoint& pos, const float scale, const std::string& text, IRect& textureRect);
 	~Button();
 
-	void click(const IPoint& mouse_pos);
+	const bool click(const IPoint& mouse_pos);
 	void noPressed() noexcept;
 
 	const float getScale() const noexcept;
