@@ -9,7 +9,7 @@ public:
 	const float getRadius() const noexcept;
 	const FPoint& getCoordCenter() noexcept;
 
-private:
+protected:
 	const float _scale;
 	float _radius;
 	FPoint _pos;
