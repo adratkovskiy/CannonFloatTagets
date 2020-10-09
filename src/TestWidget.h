@@ -6,6 +6,7 @@
 #include "Aim.h"
 #include "Button.h"
 #include "RoundObject.h"
+#include "Targets.h"
 
 ///
 /// Виджет - основной визуальный элемент на экране.
@@ -58,4 +59,5 @@ private:
 	Aim* _aim;
 	Button* _button;
 	std::vector<RoundObject> _targets;
+	Targets* _blueTarget;
 };

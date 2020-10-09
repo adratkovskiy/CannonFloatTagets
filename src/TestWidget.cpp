@@ -52,6 +52,8 @@ void TestWidget::Init()
 		, _options->getParamString("button_create_string")
 		, _buttonUpTexture->getBitmapRect());
 
+	_blueTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), FPoint({ 500.f, 500.f }), Core::resourceManager.Get<Render::Texture>("Target_red"));
+
 	Render::BindFont("arial");
 
 
@@ -130,8 +132,12 @@ void TestWidget::Draw()
 		Render::device.MatrixScale(_aim->getScale());
 		_aimTexture->Draw();
 		Render::device.PopMatrix();
-
-
+		
+		Render::device.PushMatrix(); 
+		Render::device.MatrixTranslate(_blueTarget->getPos());
+		Render::device.MatrixScale(_blueTarget->getScale());
+		_blueTarget->Draw();
+		Render::device.PopMatrix();
 
 		break;
 		
