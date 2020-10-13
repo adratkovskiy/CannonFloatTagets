@@ -8,6 +8,12 @@ RoundObject::RoundObject(const float scale, const IRect& textureRect, const FPoi
 	_radius = textureRect.width * _scale / 2;
 }
 
+const bool RoundObject::isCrossing(const FPoint& targetCoord, const float targetRadius)
+{
+	math::
+	return false;
+}
+
 const FPoint& RoundObject::getPos() const noexcept
 {
 	return _pos;
