@@ -7,6 +7,7 @@
 #include "Button.h"
 #include "RoundObject.h"
 #include "Targets.h"
+#include "Functions.h"
 
 ///
 /// Виджет - основной визуальный элемент на экране.

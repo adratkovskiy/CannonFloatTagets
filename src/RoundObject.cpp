@@ -10,8 +10,7 @@ RoundObject::RoundObject(const float scale, const IRect& textureRect, const FPoi
 
 const bool RoundObject::isCrossing(const FPoint& targetCoord, const float targetRadius)
 {
-	math::
-	return false;
+	return (LocalFunctions::vecLen(_pos, targetCoord) <= _radius + targetRadius);
 }
 
 const FPoint& RoundObject::getPos() const noexcept

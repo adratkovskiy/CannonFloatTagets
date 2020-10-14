@@ -1,4 +1,5 @@
 #pragma once
+#include "Functions.h"
 
 class RoundObject
 {

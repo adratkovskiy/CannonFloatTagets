@@ -122,6 +122,7 @@
     <ClCompile Include="..\..\src\Button.cpp" />
     <ClCompile Include="..\..\src\Cannon.cpp" />
     <ClCompile Include="..\..\src\Cannonball.cpp" />
+    <ClCompile Include="..\..\src\Functions.cpp" />
     <ClCompile Include="..\..\src\GameController.cpp" />
     <ClCompile Include="..\..\src\Main.cpp" />
     <ClCompile Include="..\..\src\Options.cpp" />
@@ -139,6 +140,7 @@
     <ClInclude Include="..\..\src\Button.h" />
     <ClInclude Include="..\..\src\Cannon.h" />
     <ClInclude Include="..\..\src\Cannonball.h" />
+    <ClInclude Include="..\..\src\Functions.h" />
     <ClInclude Include="..\..\src\GameController.h" />
     <ClInclude Include="..\..\src\Options.h" />
     <ClInclude Include="..\..\src\RoundObject.h" />

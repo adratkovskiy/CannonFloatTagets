@@ -299,6 +299,12 @@ void TestWidget::Update(float dt)
 	//
 		
 	_cannon->setAngle( atan2(_cannon->getCannonCenter().y - _gControl->getMousePos().y, _cannon->getCannonCenter().x - _gControl->getMousePos().x) / math::PI * 180 + 90 );
+	if (!_gControl->getReadyToShot()) {
+		for (std::vector<Targets>::iterator it = _targets.begin(); it < _targets.end(); it++)
+		{
+			it->isCrossing(_cannonball->getPosition(), _cannonball->getRadius());
+		}
+	}
 }
 
 bool TestWidget::MouseDown(const IPoint &mouse_pos)
@@ -344,7 +350,7 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 		else if (_gControl->getReadyToShot())
 		{
 			_gControl->setReadyToShot(false);
-			float shotLength = math::sqrt(math::abs(math::sqr(_gControl->getMousePos().x - _cannon->getCannonCenter().x) + math::sqr(_gControl->getMousePos().y - _cannon->getCannonCenter().y)));
+			float shotLength = LocalFunctions::vecLen(_gControl->getMousePos(), _cannon->getCannonCenter());
 			_cannonball->setFlightTime( 1 / shotLength * _cannonball->getSpeed() );
 			_cannonball->setSpline(_cannon->getCannonCenter(), _gControl->getMousePos());
 			_gControl->setTimer(0);
