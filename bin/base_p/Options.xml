@@ -15,4 +15,10 @@
   <button_create_pos type="FPoint" x="100" y="100" />
   <button_create_string type="string" val="таргет" />
   <target_yellow_scale type="float" val="0.125" />
+  <target_blue_scale type="float" val="0.2" />
+  <target_red_scale type="float" val="0.08" />
+  <target_create_place_top type="float" val="400" />
+  <target_create_place_bottom type="float" val="300" />
+  <target_create_place_left type="float" val="50" />
+  <target_create_place_right type="float" val="900" />
 </options>

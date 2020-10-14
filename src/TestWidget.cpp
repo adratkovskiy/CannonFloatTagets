@@ -298,6 +298,7 @@ void TestWidget::Update(float dt)
 	// Анимирование параметра масштабирования в зависимости от таймера.
 	//
 		
+	//переделал хранилище целей из вектор в список, ибо, как я почитал, из него лучше удалять объекты не с краев.
 	_cannon->setAngle( atan2(_cannon->getCannonCenter().y - _gControl->getMousePos().y, _cannon->getCannonCenter().x - _gControl->getMousePos().x) / math::PI * 180 + 90 );
 	if (!_gControl->getReadyToShot()) {
 		for (std::list<Targets>::iterator it = _targets.begin(); it != _targets.end();)
@@ -331,7 +332,7 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 	{
 		if (_button->click(_gControl->getMousePos())) { //норм ли такой вид, через свитч-кейс и рандом?
 			int numTarget = math::random(2);
-			FPoint pos({ math::random(900.f) + 50.f, math::random(400.f) + 300.f });
+			FPoint pos({ math::random(_options->getParamFloat("target_create_place_right")) + _options->getParamFloat("target_create_place_left"), math::random(_options->getParamFloat("target_create_place_top")) + _options->getParamFloat("target_create_place_bottom") });
 			Targets* newTarget;
 			switch (numTarget)
 			{
@@ -339,10 +340,10 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture);				
 				break;
 			case(1):
-				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetRedTexture->getBitmapRect(), pos, _targetRedTexture);
+				newTarget = new Targets(_options->getParamFloat("target_red_scale"), _targetRedTexture->getBitmapRect(), pos, _targetRedTexture);
 				break;
 			case(2):
-				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetBlueTexture->getBitmapRect(), pos, _targetBlueTexture);
+				newTarget = new Targets(_options->getParamFloat("target_blue_scale"), _targetBlueTexture->getBitmapRect(), pos, _targetBlueTexture);
 				break;
 			default:
 				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture);
