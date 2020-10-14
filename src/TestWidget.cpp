@@ -54,8 +54,6 @@ void TestWidget::Init()
 		, _options->getParamString("button_create_string")
 		, _buttonUpTexture->getBitmapRect());
 
-	_blueTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), FPoint({ 500.f, 500.f }), _targetBlueTexture);
-
 	Render::BindFont("arial");
 
 
@@ -254,7 +252,7 @@ void TestWidget::Draw()
 	
 	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_gControl->getMousePos().x) + ", Y:" + utils::lexical_cast(_gControl->getMousePos().y), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 65, "gameState:" + utils::lexical_cast(static_cast<int>(_gControl->getGameState())), 1.f, CenterAlign);
-	Render::PrintString(924 + 100 / 2, 95, "timer sys:" + utils::lexical_cast(_gControl->getTimer()), 1.f, CenterAlign);
+	Render::PrintString(924 + 100 / 2, 95, "target angle:" + utils::lexical_cast(_targetAngle), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 125, "target count:" + utils::lexical_cast(_targets.size()), 1.f, CenterAlign);
 }
 
@@ -292,7 +290,7 @@ void TestWidget::Update(float dt)
 		_gControl->changeTimer() -= 2 * math::PI;
 		_gControl->setReadyToShot(true);
 		_cannonball->splineClear(); // зря вызываю каждый раз, потом буду вызывать в конце пути ядра
-	}	
+	}
 	
 	//
 	// Анимирование параметра масштабирования в зависимости от таймера.
@@ -310,6 +308,11 @@ void TestWidget::Update(float dt)
 				it++;
 			}
 		}
+	}
+
+	for (std::list<Targets>::iterator it = _targets.begin(); it != _targets.end(); it++)
+	{
+		it->Tick();
 	}
 }
 
@@ -337,19 +340,20 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 			switch (numTarget)
 			{
 			case(0):
-				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture);				
+				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, _targetAngle);
 				break;
 			case(1):
-				newTarget = new Targets(_options->getParamFloat("target_red_scale"), _targetRedTexture->getBitmapRect(), pos, _targetRedTexture);
+				newTarget = new Targets(_options->getParamFloat("target_red_scale"), _targetRedTexture->getBitmapRect(), pos, _targetRedTexture, _targetAngle);
 				break;
 			case(2):
-				newTarget = new Targets(_options->getParamFloat("target_blue_scale"), _targetBlueTexture->getBitmapRect(), pos, _targetBlueTexture);
+				newTarget = new Targets(_options->getParamFloat("target_blue_scale"), _targetBlueTexture->getBitmapRect(), pos, _targetBlueTexture, _targetAngle);
 				break;
 			default:
-				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture);
+				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, _targetAngle);
 				break;
 			}
 			_targets.push_back(*newTarget);
+			_targetAngle += math::PI / 4;
 			
 
 		}

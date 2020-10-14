@@ -12,6 +12,8 @@ public:
 	const float getRadius() const noexcept;
 	const FPoint& getCoordCenter() noexcept;
 
+	void setPos(FPoint& pos);
+
 protected:
 	const float _scale;
 	float _radius;

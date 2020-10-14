@@ -32,3 +32,8 @@ const FPoint& RoundObject::getCoordCenter() noexcept
 {
 	return FPoint({ _pos.x + _radius, _pos.y + _radius });
 }
+
+void RoundObject::setPos(FPoint& pos)
+{
+	_pos = pos;
+}

@@ -60,5 +60,5 @@ private:
 	Aim* _aim;
 	Button* _button;
 	std::list<Targets> _targets;
-	Targets* _blueTarget;
+	float _targetAngle = 0.f;
 };
