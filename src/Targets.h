@@ -5,13 +5,14 @@ class Targets :
     public RoundObject
 {
 public:
-    Targets(const float scale, const IRect& textureRect, FPoint& pos, Render::Texture* texture, float moveAngle);
+    Targets(const float scale, const IRect& textureRect, FPoint& pos, Render::Texture* texture, float moveAngle, float speed);
     void Draw() const;
     void Tick();
 
 private:
     Render::Texture* _texture;
     float _moveAngle;
-    float _speed = 1.f;
+    FPoint _moveVec;
+    float _speed;
 };
 

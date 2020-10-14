@@ -13,6 +13,7 @@ public:
 	const FPoint& getCoordCenter() noexcept;
 
 	void setPos(FPoint& pos);
+	void addVecToPos(FPoint& vec);
 
 protected:
 	const float _scale;

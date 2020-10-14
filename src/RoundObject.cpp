@@ -37,3 +37,8 @@ void RoundObject::setPos(FPoint& pos)
 {
 	_pos = pos;
 }
+
+void RoundObject::addVecToPos(FPoint& vec)
+{
+	_pos += vec;
+}

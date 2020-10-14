@@ -17,6 +17,9 @@
   <target_yellow_scale type="float" val="0.125" />
   <target_blue_scale type="float" val="0.2" />
   <target_red_scale type="float" val="0.08" />
+  <target_yellow_speed type="float" val="2" />
+  <target_blue_speed type="float" val="1" />
+  <target_red_speed type="float" val="3" />
   <target_create_place_top type="float" val="400" />
   <target_create_place_bottom type="float" val="300" />
   <target_create_place_left type="float" val="50" />

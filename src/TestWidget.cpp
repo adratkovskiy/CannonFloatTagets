@@ -252,7 +252,7 @@ void TestWidget::Draw()
 	
 	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_gControl->getMousePos().x) + ", Y:" + utils::lexical_cast(_gControl->getMousePos().y), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 65, "gameState:" + utils::lexical_cast(static_cast<int>(_gControl->getGameState())), 1.f, CenterAlign);
-	Render::PrintString(924 + 100 / 2, 95, "target angle:" + utils::lexical_cast(_targetAngle), 1.f, CenterAlign);
+	//Render::PrintString(924 + 100 / 2, 95, "target angle:" + utils::lexical_cast(_targetAngle), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 125, "target count:" + utils::lexical_cast(_targets.size()), 1.f, CenterAlign);
 }
 
@@ -337,23 +337,23 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 			int numTarget = math::random(2);
 			FPoint pos({ math::random(_options->getParamFloat("target_create_place_right")) + _options->getParamFloat("target_create_place_left"), math::random(_options->getParamFloat("target_create_place_top")) + _options->getParamFloat("target_create_place_bottom") });
 			Targets* newTarget;
+			float targetAngle = math::random(math::PI * 2);
 			switch (numTarget)
 			{
 			case(0):
-				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, _targetAngle);
+				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, targetAngle, _options->getParamFloat("target_yellow_speed"));
 				break;
 			case(1):
-				newTarget = new Targets(_options->getParamFloat("target_red_scale"), _targetRedTexture->getBitmapRect(), pos, _targetRedTexture, _targetAngle);
+				newTarget = new Targets(_options->getParamFloat("target_red_scale"), _targetRedTexture->getBitmapRect(), pos, _targetRedTexture, targetAngle, _options->getParamFloat("target_red_speed"));
 				break;
 			case(2):
-				newTarget = new Targets(_options->getParamFloat("target_blue_scale"), _targetBlueTexture->getBitmapRect(), pos, _targetBlueTexture, _targetAngle);
+				newTarget = new Targets(_options->getParamFloat("target_blue_scale"), _targetBlueTexture->getBitmapRect(), pos, _targetBlueTexture, targetAngle, _options->getParamFloat("target_blue_speed"));
 				break;
 			default:
-				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, _targetAngle);
+				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, targetAngle, _options->getParamFloat("target_yellow_speed"));
 				break;
 			}
 			_targets.push_back(*newTarget);
-			_targetAngle += math::PI / 4;
 			
 
 		}
