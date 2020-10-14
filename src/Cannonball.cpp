@@ -15,6 +15,7 @@ Cannonball::Cannonball(const float scale
 	_centerPos = FPoint({ textureRect.width / 2 * RoundObject::getScale(), textureRect.height / 2 * RoundObject::getScale() });
 }
 
+
 const FPoint& Cannonball::getPosition() const noexcept
 {
 	return _currentPosition;

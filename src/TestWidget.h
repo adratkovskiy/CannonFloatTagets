@@ -59,6 +59,6 @@ private:
 	Options* _options;
 	Aim* _aim;
 	Button* _button;
-	std::vector<Targets> _targets;
+	std::list<Targets> _targets;
 	Targets* _blueTarget;
 };

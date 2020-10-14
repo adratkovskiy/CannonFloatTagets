@@ -86,7 +86,7 @@ void TestWidget::Draw()
 		_cannonBackTexture->Draw();
 		Render::device.PopMatrix();
 
-		for (std::vector<Targets>::iterator it = _targets.begin(); it < _targets.end(); it++) {
+		for (std::list<Targets>::iterator it = _targets.begin(); it != _targets.end(); it++) {
 			Render::device.PushMatrix();
 			Render::device.MatrixTranslate(it->getPos());
 			Render::device.MatrixScale(it->getScale());
@@ -300,9 +300,14 @@ void TestWidget::Update(float dt)
 		
 	_cannon->setAngle( atan2(_cannon->getCannonCenter().y - _gControl->getMousePos().y, _cannon->getCannonCenter().x - _gControl->getMousePos().x) / math::PI * 180 + 90 );
 	if (!_gControl->getReadyToShot()) {
-		for (std::vector<Targets>::iterator it = _targets.begin(); it < _targets.end(); it++)
+		for (std::list<Targets>::iterator it = _targets.begin(); it != _targets.end();)
 		{
-			it->isCrossing(_cannonball->getPosition(), _cannonball->getRadius());
+			if (it->isCrossing(_cannonball->getPosition(), _cannonball->getRadius())) {
+				it = _targets.erase(it);
+			}
+			else {
+				it++;
+			}
 		}
 	}
 }
@@ -350,8 +355,7 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 		else if (_gControl->getReadyToShot())
 		{
 			_gControl->setReadyToShot(false);
-			float shotLength = LocalFunctions::vecLen(_gControl->getMousePos(), _cannon->getCannonCenter());
-			_cannonball->setFlightTime( 1 / shotLength * _cannonball->getSpeed() );
+			_cannonball->setFlightTime( 1 / LocalFunctions::pointToPointRange(_gControl->getMousePos(), _cannon->getCannonCenter()) * _cannonball->getSpeed() );
 			_cannonball->setSpline(_cannon->getCannonCenter(), _gControl->getMousePos());
 			_gControl->setTimer(0);
 		}

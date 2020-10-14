@@ -7,6 +7,11 @@ Targets::Targets(const float scale, const IRect& textureRect, FPoint& pos, Rende
 {
 }
 
+Targets::~Targets()
+{
+	bool boo;
+}
+
 void Targets::Draw() const
 {
 	_texture->Draw();

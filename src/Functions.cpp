@@ -1,12 +1,14 @@
 #include "stdafx.h"
 #include "Functions.h"
 
-const float LocalFunctions::vecLen(const FPoint& firstVec, const FPoint& secondVec)
+const float LocalFunctions::pointToPointRange(const FPoint& firstPoint, const FPoint& secondPoint)
 {
-	return math::sqrt(math::abs(math::sqr(firstVec.x - secondVec.x) + math::sqr(firstVec.y - secondVec.y)));
+	return math::sqrt(math::abs(math::sqr(firstPoint.x - secondPoint.x) + math::sqr(firstPoint.y - secondPoint.y)));
 }
 
-const float LocalFunctions::vecLen(const IPoint& firstVec, const FPoint& secondVec)
+const float LocalFunctions::pointToPointRange(const IPoint& firstPoint, const FPoint& secondPoint)
 {
-	return math::sqrt(math::abs(math::sqr(firstVec.x - secondVec.x) + math::sqr(firstVec.y - secondVec.y)));
+	return pointToPointRange(FPoint(firstPoint), secondPoint);
+	//FPoint(firstPoint);
+	//return math::sqrt(math::abs(math::sqr(firstPoint.x - secondPoint.x) + math::sqr(firstPoint.y - secondPoint.y)));
 }

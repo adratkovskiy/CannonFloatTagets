@@ -2,6 +2,6 @@
 
 namespace LocalFunctions
 {
-	const float vecLen(const FPoint& firstVec, const FPoint& secondVec);
-	const float vecLen(const IPoint& firstVec, const FPoint& secondVec);
+	const float pointToPointRange(const FPoint& firstPoint, const FPoint& secondPoint);
+	const float pointToPointRange(const IPoint& firstPoint, const FPoint& secondPoint);
 }
