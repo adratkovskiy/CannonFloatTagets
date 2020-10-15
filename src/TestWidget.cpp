@@ -54,6 +54,11 @@ void TestWidget::Init()
 		, _options->getParamString("button_create_string")
 		, _buttonUpTexture->getBitmapRect());
 
+	_button30Targets = new Button(_options->getParamFPoint("button_create30x_pos")
+		, _options->getParamFloat("button_create_scale")
+		, _options->getParamString("button_create30x_string")
+		, _buttonUpTexture->getBitmapRect());
+
 	_topBorder = _options->getParamInt("target_create_place_top");
 	_bottomBorder = _options->getParamInt("target_create_place_bottom");
 	_leftBorder = _options->getParamInt("target_create_place_left");
@@ -115,7 +120,7 @@ void TestWidget::Draw()
 		_cannonFrontTexture->Draw();
 		Render::device.PopMatrix();
 
-		Render::device.PushMatrix(); //кнопка
+		Render::device.PushMatrix(); //кнопка создания таргета
 		Render::device.MatrixTranslate(_button->getPos());
 		Render::device.MatrixScale(_button->getScale());
 		if (_button->getPressed()) { //кнопка нажата отпущена, рисую отсюда
@@ -126,8 +131,20 @@ void TestWidget::Draw()
 		}
 		Render::device.PopMatrix();
 
+		Render::device.PushMatrix(); //кнопка создания кучи таргетов
+		Render::device.MatrixTranslate(_button30Targets->getPos());
+		Render::device.MatrixScale(_button30Targets->getScale());
+		if (_button30Targets->getPressed()) { //кнопка нажата отпущена, рисую отсюда
+			_buttonDownTexture->Draw();
+		}
+		else {
+			_buttonUpTexture->Draw();
+		}
+		Render::device.PopMatrix();
+
 		Render::SetColor(Color(0, 0, 0, 255));
 		Render::PrintString(_button->getTextPos(), _button->getText(), 1.5f, CenterAlign, CenterAlign);
+		Render::PrintString(_button30Targets->getTextPos(), _button30Targets->getText(), 1.5f, CenterAlign, CenterAlign);
 		Render::ResetColor();
 
 
@@ -355,38 +372,13 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 	}
 	else
 	{
-		if (_button->click(_gControl->getMousePos())) { //норм ли такой вид, через свитч-кейс и рандом?
-			int numTarget = math::random(2);
-			FPoint pos({ static_cast<float>(math::random(_rightBorder - _leftBorder) + _leftBorder), static_cast<float>(math::random(_topBorder - _bottomBorder) + _bottomBorder) });
-			Targets* newTarget;
-			FPoint vec;
-
-			switch (numTarget)
-			{
-			case(0):
-				// почему вот так создание вектора нормально не работает?: (LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed")))
-				// newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed")), _options->getParamFloat("target_yellow_speed"));
-				// а если сначала инициализирую vec, и передаю в конструктор, то все в порядке.
-				// видимо что-то связаное с r-value, да?
-				vec = LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed"));
-				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, vec, _options->getParamFloat("target_yellow_speed"), _topBorder, _bottomBorder, _leftBorder, _rightBorder);
-				break;
-			case(1):
-				vec = LocalFunctions::randomVec(_options->getParamFloat("target_red_speed"));
-				newTarget = new Targets(_options->getParamFloat("target_red_scale"), _targetRedTexture->getBitmapRect(), pos, _targetRedTexture, vec, _options->getParamFloat("target_red_speed"), _topBorder, _bottomBorder, _leftBorder, _rightBorder);
-				break;
-			case(2):
-				vec = LocalFunctions::randomVec(_options->getParamFloat("target_blue_speed"));
-				newTarget = new Targets(_options->getParamFloat("target_blue_scale"), _targetBlueTexture->getBitmapRect(), pos, _targetBlueTexture, vec, _options->getParamFloat("target_blue_speed"), _topBorder, _bottomBorder, _leftBorder, _rightBorder);
-				break;
-			default:
-				vec = LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed"));
-				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, vec, _options->getParamFloat("target_yellow_speed"), _topBorder, _bottomBorder, _leftBorder, _rightBorder);
-				break;
+		if (_button->click(_gControl->getMousePos())) { 
+			CreateTarget();
+		}
+		else if (_button30Targets->click(_gControl->getMousePos())) {
+			for (int i = 0; i < 2; i++) {
+				CreateTarget();
 			}
-			_targets.push_back(*newTarget);
-			
-
 		}
 		else if (_gControl->getReadyToShot())
 		{
@@ -470,4 +462,37 @@ void TestWidget::CharPressed(int unicodeChar) // можно не смотрет�
 	if (unicodeChar == L'а') {
 		// Реакция на ввод символа 'а'
 	}
+}
+
+void TestWidget::CreateTarget()
+{
+	int numTarget = math::random(2);
+	FPoint pos({ static_cast<float>(math::random(_rightBorder - _leftBorder) + _leftBorder), static_cast<float>(math::random(_topBorder - _bottomBorder) + _bottomBorder) });
+	Targets* newTarget;
+	FPoint vec;
+
+	switch (numTarget) //норм ли такой вид, через свитч-кейс и рандом?
+	{
+	case(0):
+		// почему вот так создание вектора нормально не работает?: (LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed")))
+		// newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed")), _options->getParamFloat("target_yellow_speed"));
+		// а если сначала инициализирую vec, и передаю в конструктор, то все в порядке.
+		// видимо что-то связаное с r-value, да?
+		vec = LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed"));
+		newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, vec, _options->getParamFloat("target_yellow_speed"), _topBorder, _bottomBorder, _leftBorder, _rightBorder);
+		break;
+	case(1):
+		vec = LocalFunctions::randomVec(_options->getParamFloat("target_red_speed"));
+		newTarget = new Targets(_options->getParamFloat("target_red_scale"), _targetRedTexture->getBitmapRect(), pos, _targetRedTexture, vec, _options->getParamFloat("target_red_speed"), _topBorder, _bottomBorder, _leftBorder, _rightBorder);
+		break;
+	case(2):
+		vec = LocalFunctions::randomVec(_options->getParamFloat("target_blue_speed"));
+		newTarget = new Targets(_options->getParamFloat("target_blue_scale"), _targetBlueTexture->getBitmapRect(), pos, _targetBlueTexture, vec, _options->getParamFloat("target_blue_speed"), _topBorder, _bottomBorder, _leftBorder, _rightBorder);
+		break;
+	default:
+		vec = LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed"));
+		newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, vec, _options->getParamFloat("target_yellow_speed"), _topBorder, _bottomBorder, _leftBorder, _rightBorder);
+		break;
+	}
+	_targets.push_back(*newTarget);
 }

@@ -33,6 +33,8 @@ public:
 	void KeyPressed(int keyCode) override;
 	void CharPressed(int unicodeChar) override;
 
+	void CreateTarget();
+
 private:
 	void Init();
 
@@ -59,6 +61,7 @@ private:
 	Options* _options;
 	Aim* _aim;
 	Button* _button;
+	Button* _button30Targets;
 	std::list<Targets> _targets;
 	int _topBorder;
 	int _bottomBorder;
