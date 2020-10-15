@@ -337,20 +337,28 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 			int numTarget = math::random(2);
 			FPoint pos({ math::random(_options->getParamFloat("target_create_place_right")) + _options->getParamFloat("target_create_place_left"), math::random(_options->getParamFloat("target_create_place_top")) + _options->getParamFloat("target_create_place_bottom") });
 			Targets* newTarget;
-			float targetAngle = math::random(math::PI * 2);
+			FPoint vec;
+
 			switch (numTarget)
 			{
 			case(0):
-				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, targetAngle, _options->getParamFloat("target_yellow_speed"));
+				// почему вот так создание вектора нормально не работает?: (LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed")))
+				// newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed")), _options->getParamFloat("target_yellow_speed"));
+				// а если сначала инициализирую vec, и передаю в конструктор, то все в порядке.
+				vec = LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed"));
+				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, vec, _options->getParamFloat("target_yellow_speed"));
 				break;
 			case(1):
-				newTarget = new Targets(_options->getParamFloat("target_red_scale"), _targetRedTexture->getBitmapRect(), pos, _targetRedTexture, targetAngle, _options->getParamFloat("target_red_speed"));
+				vec = LocalFunctions::randomVec(_options->getParamFloat("target_red_speed"));
+				newTarget = new Targets(_options->getParamFloat("target_red_scale"), _targetRedTexture->getBitmapRect(), pos, _targetRedTexture, vec, _options->getParamFloat("target_red_speed"));
 				break;
 			case(2):
-				newTarget = new Targets(_options->getParamFloat("target_blue_scale"), _targetBlueTexture->getBitmapRect(), pos, _targetBlueTexture, targetAngle, _options->getParamFloat("target_blue_speed"));
+				vec = LocalFunctions::randomVec(_options->getParamFloat("target_blue_speed"));
+				newTarget = new Targets(_options->getParamFloat("target_blue_scale"), _targetBlueTexture->getBitmapRect(), pos, _targetBlueTexture, vec, _options->getParamFloat("target_blue_speed"));
 				break;
 			default:
-				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, targetAngle, _options->getParamFloat("target_yellow_speed"));
+				vec = LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed"));
+				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, vec, _options->getParamFloat("target_yellow_speed"));
 				break;
 			}
 			_targets.push_back(*newTarget);
