@@ -11,6 +11,11 @@ const float LocalFunctions::pointToPointRange(const IPoint& firstPoint, const FP
 	return pointToPointRange(FPoint(firstPoint), secondPoint);
 }
 
+const float LocalFunctions::vecLen(const FPoint& vec)
+{
+	return math::sqrt(math::abs(math::sqr(vec.x) + math::sqr(vec.y)));
+}
+
 FPoint& LocalFunctions::randomVec(const float speed)
 {
 	float targetAngle = math::random(math::PI * 2);

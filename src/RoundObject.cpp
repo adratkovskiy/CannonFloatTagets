@@ -30,15 +30,16 @@ const float RoundObject::getRadius() const noexcept
 
 const FPoint& RoundObject::getCoordCenter() noexcept
 {
-	return FPoint({ _pos.x + _radius, _pos.y + _radius });
+	return _posCenter;
 }
 
 void RoundObject::setPos(FPoint& pos)
 {
 	_pos = pos;
+	_posCenter = { _pos.x + _radius, _pos.y + _radius };
 }
 
 void RoundObject::addVecToPos(FPoint& vec)
 {
-	_pos += vec;
+	setPos(_pos += vec);
 }

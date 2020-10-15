@@ -1,5 +1,6 @@
 #pragma once
 #include "RoundObject.h"
+#include "Functions.h"
 
 class Targets :
     public RoundObject
@@ -19,7 +20,7 @@ public:
     void Draw() const;
     void Tick();
     void Collision(const FPoint& normal);
-    void tooClose(const FPoint& victimCoord);
+    void tooClose(const FPoint& victimCoord, const float victimRaduis);
 
 private:
     Render::Texture* _texture;

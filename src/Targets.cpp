@@ -31,16 +31,16 @@ void Targets::Draw() const
 
 void Targets::Tick()
 {
-	if (RoundObject::getPos().x < _leftBorder) {
+	if (RoundObject::getCoordCenter().x < _leftBorder) {
 		Collision(FPoint{ 1,0 });
 	}
-	else if (RoundObject::getPos().x > _rightBorder) {
+	else if (RoundObject::getCoordCenter().x > _rightBorder) {
 		Collision(FPoint{ -1,0 });
 	}
-	else if (RoundObject::getPos().y > _topBorder) {
+	else if (RoundObject::getCoordCenter().y > _topBorder) {
 		Collision(FPoint{ 0,-1 });
 	}
-	else if (RoundObject::getPos().y < _bottomBorder) {
+	else if (RoundObject::getCoordCenter().y < _bottomBorder) {
 		Collision(FPoint{ 0,1 });
 	}
 	RoundObject::addVecToPos(_moveVec);
@@ -55,9 +55,11 @@ void Targets::Collision(const FPoint& normal)
 	_moveVec = nextMove;
 }
 
-void Targets::tooClose(const FPoint& victimCoord)
+void Targets::tooClose(const FPoint& victimCoord, const float victimRaduis)
 {
-	FPoint diff = _pos - victimCoord;
-	FPoint normal = { diff.y, diff.x };
-	Collision(normal);
+	FPoint diff = RoundObject::getCoordCenter() - victimCoord;
+	float range = LocalFunctions::vecLen(diff);
+	float summRadius = victimRaduis + _radius;
+	float needRadius = summRadius - range + 1.f;
+	Collision({ diff.y, diff.x });
 }

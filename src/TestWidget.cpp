@@ -142,6 +142,7 @@ void TestWidget::Draw()
 		
 	}
 	
+	
 	//
 	// Проталкиваем в стек текущее преобразование координат, чтобы в дальнейшем
 	// можно было восстановить это преобразование вызовом PopMatrix.
@@ -230,6 +231,10 @@ void TestWidget::Draw()
 	// Метод BeginColor() проталкивает в стек текущий цвет вершин и устанавливает новый.
 	//
 	Render::BeginColor(Color(255, 128, 0, 255));
+	for (std::list<Targets>::iterator it_hunt = _targets.begin(); it_hunt != _targets.end(); it_hunt++)
+	{
+		DrawCross(it_hunt->getCoordCenter());
+	}
 	//DrawCross(_button->getTextPos());
 	//
 	// Метод DrawRect() выводит в графическое устройство квадратный спрайт, состоящий их двух
@@ -301,7 +306,7 @@ void TestWidget::Update(float dt)
 	// Анимирование параметра масштабирования в зависимости от таймера.
 	//
 		
-	//переделал хранилище целей из вектор в список, ибо, как я почитал, из него лучше удалять объекты не с краев.
+	//переделал хранилище целей из вектор в список, ибо, как я почитал, объекты не с краев лучше удалять именно из списка.
 	_cannon->setAngle( atan2(_cannon->getCannonCenter().y - _gControl->getMousePos().y, _cannon->getCannonCenter().x - _gControl->getMousePos().x) / math::PI * 180 + 90 );
 	if (!_gControl->getReadyToShot()) {
 		for (std::list<Targets>::iterator it = _targets.begin(); it != _targets.end();)
@@ -319,9 +324,13 @@ void TestWidget::Update(float dt)
 	{
 		for (std::list<Targets>::iterator it_vict = _targets.begin(); it_vict != _targets.end(); it_vict++)
 		{
-			if (it_hunt != it_vict) {
-				if (LocalFunctions::pointToPointRange(it_hunt->getPos(), it_vict->getPos()) <= (it_hunt->getRadius() + it_vict->getRadius())) {
-					it_hunt->tooClose(it_vict->getPos());
+			if (it_hunt != it_vict) { 
+				//можно оба условия засунуть в одну проверку, но я так понимаю, 
+				//что так будет быстрее, типа отсекает по сравнению, один это объект, или нет
+				float range = LocalFunctions::pointToPointRange(it_hunt->getCoordCenter(), it_vict->getCoordCenter());
+				float radrange = it_hunt->getRadius() + it_vict->getRadius();
+				if (LocalFunctions::pointToPointRange(it_hunt->getCoordCenter(), it_vict->getCoordCenter()) <= (it_hunt->getRadius() + it_vict->getRadius())) {
+					it_hunt->tooClose(it_vict->getCoordCenter(), it_vict->getRadius());
 				}
 			}
 		}

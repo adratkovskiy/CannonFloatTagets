@@ -19,5 +19,6 @@ protected:
 	const float _scale;
 	float _radius;
 	FPoint _pos;
+	FPoint _posCenter;
 };
 
