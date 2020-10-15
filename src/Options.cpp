@@ -25,10 +25,24 @@ Options::Options()
         else if (!strcmp(node->last_attribute("type")->value(), (const char*)"string")) {
             _configString.insert({ node->name(), node->first_attribute("val")->value() });
         }
-        else {
+        else if (!strcmp(node->last_attribute("type")->value(), (const char*)"float")) {
             std::string naname = node->name();
             _configFloat.insert({ node->name(), atof(node->first_attribute("val")->value()) });
         }
+        else if (!strcmp(node->last_attribute("type")->value(), (const char*)"int")) {
+            std::string naname = node->name();
+            _configInt.insert({ node->name(), atoi(node->first_attribute("val")->value()) });
+        }
+    }
+}
+
+const int Options::getParamInt(const std::string& paramName)
+{
+    std::map<std::string, int>::iterator it;
+    it = _configInt.find(paramName);
+    if (it != _configInt.end())
+    {
+        return it->second;
     }
 }
 

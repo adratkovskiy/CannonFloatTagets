@@ -60,4 +60,8 @@ private:
 	Aim* _aim;
 	Button* _button;
 	std::list<Targets> _targets;
+	int _topBorder;
+	int _bottomBorder;
+	int _leftBorder;
+	int _rightBorder;
 };

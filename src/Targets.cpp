@@ -6,11 +6,20 @@ Targets::Targets(const float scale
 	, FPoint& pos
 	, Render::Texture* texture
 	, FPoint& moveVec
-	, const float speed) :
+	, const float speed
+	, const int topBorder
+	, const int bottomBorder
+	, const int leftBorder
+	, const int rightBorder
+) :
 	RoundObject(scale, textureRect, pos)
 	, _texture(texture)
 	, _moveVec(moveVec)
 	, _speed(speed)
+	, _topBorder(topBorder)
+	, _bottomBorder(bottomBorder)
+	, _leftBorder(leftBorder)
+	, _rightBorder(rightBorder)
 {
 }
 
@@ -22,14 +31,26 @@ void Targets::Draw() const
 
 void Targets::Tick()
 {
-	RoundObject::addVecToPos(_moveVec);
-	if (RoundObject::getPos().x < 100) {
-		FPoint stenka = { 0, 1 };
-		FPoint normal = { -1, 0 };
-		float coff = ((_moveVec.x * normal.x + _moveVec.y * normal.y) / (normal.x * normal.x + normal.y * normal.y));
-		FPoint nextMove;
-		nextMove.x = _moveVec.x - 2.0f * normal.x * coff;
-		nextMove.y = _moveVec.y - 2.0f * normal.y * coff;
-		_moveVec = nextMove;
+	if (RoundObject::getPos().x < _leftBorder) {
+		Collision(FPoint{ 1,0 });
 	}
+	else if (RoundObject::getPos().x > _rightBorder) {
+		Collision(FPoint{ -1,0 });
+	}
+	else if (RoundObject::getPos().y > _topBorder) {
+		Collision(FPoint{ 0,-1 });
+	}
+	else if (RoundObject::getPos().y < _bottomBorder) {
+		Collision(FPoint{ 0,1 });
+	}
+	RoundObject::addVecToPos(_moveVec);
+}
+
+void Targets::Collision(const FPoint& normal)
+{
+	float coff = ((_moveVec.x * normal.x + _moveVec.y * normal.y) / (normal.x * normal.x + normal.y * normal.y));
+	FPoint nextMove;
+	nextMove.x = _moveVec.x - 2.0f * normal.x * coff;
+	nextMove.y = _moveVec.y - 2.0f * normal.y * coff;
+	_moveVec = nextMove;
 }
