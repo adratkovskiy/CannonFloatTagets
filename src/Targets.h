@@ -19,6 +19,7 @@ public:
     void Draw() const;
     void Tick();
     void Collision(const FPoint& normal);
+    void tooClose(const FPoint& victimCoord);
 
 private:
     Render::Texture* _texture;

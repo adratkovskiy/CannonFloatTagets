@@ -315,9 +315,17 @@ void TestWidget::Update(float dt)
 		}
 	}
 
-	for (std::list<Targets>::iterator it = _targets.begin(); it != _targets.end(); it++)
+	for (std::list<Targets>::iterator it_hunt = _targets.begin(); it_hunt != _targets.end(); it_hunt++)
 	{
-		it->Tick();
+		for (std::list<Targets>::iterator it_vict = _targets.begin(); it_vict != _targets.end(); it_vict++)
+		{
+			if (it_hunt != it_vict) {
+				if (LocalFunctions::pointToPointRange(it_hunt->getPos(), it_vict->getPos()) <= (it_hunt->getRadius() + it_vict->getRadius())) {
+					it_hunt->tooClose(it_vict->getPos());
+				}
+			}
+		}
+		it_hunt->Tick();
 	}
 }
 

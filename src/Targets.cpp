@@ -54,3 +54,10 @@ void Targets::Collision(const FPoint& normal)
 	nextMove.y = _moveVec.y - 2.0f * normal.y * coff;
 	_moveVec = nextMove;
 }
+
+void Targets::tooClose(const FPoint& victimCoord)
+{
+	FPoint diff = _pos - victimCoord;
+	FPoint normal = { diff.y, diff.x };
+	Collision(normal);
+}
