@@ -367,6 +367,7 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 				// почему вот так создание вектора нормально не работает?: (LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed")))
 				// newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed")), _options->getParamFloat("target_yellow_speed"));
 				// а если сначала инициализирую vec, и передаю в конструктор, то все в порядке.
+				// видимо что-то связаное с r-value, да?
 				vec = LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed"));
 				newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, vec, _options->getParamFloat("target_yellow_speed"), _topBorder, _bottomBorder, _leftBorder, _rightBorder);
 				break;
