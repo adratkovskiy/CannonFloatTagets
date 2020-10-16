@@ -376,7 +376,7 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 			CreateTarget();
 		}
 		else if (_button30Targets->click(_gControl->getMousePos())) {
-			for (int i = 0; i < 2; i++) {
+			for (int i = 0; i < 30; i++) {
 				CreateTarget();
 			}
 		}
@@ -467,31 +467,58 @@ void TestWidget::CharPressed(int unicodeChar) // можно не смотрет�
 void TestWidget::CreateTarget()
 {
 	int numTarget = math::random(2);
-	FPoint pos({ static_cast<float>(math::random(_rightBorder - _leftBorder) + _leftBorder), static_cast<float>(math::random(_topBorder - _bottomBorder) + _bottomBorder) });
 	Targets* newTarget;
-	FPoint vec;
+	FPoint randPos({ static_cast<float>(math::random(_rightBorder - _leftBorder) + _leftBorder), static_cast<float>(math::random(_topBorder - _bottomBorder) + _bottomBorder) });
 
 	switch (numTarget) //норм ли такой вид, через свитч-кейс и рандом?
 	{
 	case(0):
-		// почему вот так создание вектора нормально не работает?: (LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed")))
-		// newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed")), _options->getParamFloat("target_yellow_speed"));
-		// а если сначала инициализирую vec, и передаю в конструктор, то все в порядке.
-		// видимо что-то связаное с r-value, да?
-		vec = LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed"));
-		newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, vec, _options->getParamFloat("target_yellow_speed"), _topBorder, _bottomBorder, _leftBorder, _rightBorder);
+		newTarget = new Targets(_options->getParamFloat("target_yellow_scale")
+			, _targetYellowTexture->getBitmapRect()
+			, randPos
+			, _targetYellowTexture
+			, LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed"))
+			, _options->getParamFloat("target_yellow_speed")
+			, _topBorder
+			, _bottomBorder
+			, _leftBorder
+			, _rightBorder);
 		break;
 	case(1):
-		vec = LocalFunctions::randomVec(_options->getParamFloat("target_red_speed"));
-		newTarget = new Targets(_options->getParamFloat("target_red_scale"), _targetRedTexture->getBitmapRect(), pos, _targetRedTexture, vec, _options->getParamFloat("target_red_speed"), _topBorder, _bottomBorder, _leftBorder, _rightBorder);
+		newTarget = new Targets(_options->getParamFloat("target_red_scale")
+			, _targetRedTexture->getBitmapRect()
+			, randPos
+			, _targetRedTexture
+			, LocalFunctions::randomVec(_options->getParamFloat("target_red_speed"))
+			, _options->getParamFloat("target_red_speed")
+			, _topBorder
+			, _bottomBorder
+			, _leftBorder
+			, _rightBorder);
 		break;
 	case(2):
-		vec = LocalFunctions::randomVec(_options->getParamFloat("target_blue_speed"));
-		newTarget = new Targets(_options->getParamFloat("target_blue_scale"), _targetBlueTexture->getBitmapRect(), pos, _targetBlueTexture, vec, _options->getParamFloat("target_blue_speed"), _topBorder, _bottomBorder, _leftBorder, _rightBorder);
+		newTarget = new Targets(_options->getParamFloat("target_blue_scale")
+			, _targetBlueTexture->getBitmapRect()
+			, randPos
+			, _targetBlueTexture
+			, LocalFunctions::randomVec(_options->getParamFloat("target_blue_speed"))
+			, _options->getParamFloat("target_blue_speed")
+			, _topBorder
+			, _bottomBorder
+			, _leftBorder
+			, _rightBorder);
 		break;
 	default:
-		vec = LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed"));
-		newTarget = new Targets(_options->getParamFloat("target_yellow_scale"), _targetYellowTexture->getBitmapRect(), pos, _targetYellowTexture, vec, _options->getParamFloat("target_yellow_speed"), _topBorder, _bottomBorder, _leftBorder, _rightBorder);
+		newTarget = new Targets(_options->getParamFloat("target_yellow_scale")
+			, _targetYellowTexture->getBitmapRect()
+			, randPos
+			, _targetYellowTexture
+			, LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed"))
+			, _options->getParamFloat("target_yellow_speed")
+			, _topBorder
+			, _bottomBorder
+			, _leftBorder
+			, _rightBorder);
 		break;
 	}
 	_targets.push_back(*newTarget);

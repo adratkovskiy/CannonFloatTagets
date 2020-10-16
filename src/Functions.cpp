@@ -16,7 +16,7 @@ const float LocalFunctions::vecLen(const FPoint& vec)
 	return math::sqrt(math::abs(math::sqr(vec.x) + math::sqr(vec.y)));
 }
 
-FPoint& LocalFunctions::randomVec(const float speed)
+FPoint LocalFunctions::randomVec(const float speed)
 {
 	float targetAngle = math::random(math::PI * 2);
 	return FPoint({ speed * math::sin(targetAngle), speed * math::cos(targetAngle) });

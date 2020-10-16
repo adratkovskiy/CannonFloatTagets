@@ -8,9 +8,9 @@ class Targets :
 public:
     Targets(const float scale
         , const IRect& textureRect
-        , FPoint& pos
+        , const FPoint& pos
         , Render::Texture* texture
-        , FPoint& moveVec
+        , const FPoint& moveVec
         , const float speed
         , const int topBorder
         , const int bottomBorder

@@ -14,6 +14,7 @@ public:
 
 	void setPos(FPoint& pos);
 	void addVecToPos(FPoint& vec);
+	void setPosCenter();
 
 protected:
 	const float _scale;

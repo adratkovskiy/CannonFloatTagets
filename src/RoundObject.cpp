@@ -6,6 +6,7 @@ RoundObject::RoundObject(const float scale, const IRect& textureRect, const FPoi
 	, _pos(pos)
 {
 	_radius = textureRect.width * _scale / 2;
+	setPosCenter();
 }
 
 const bool RoundObject::isCrossing(const FPoint& targetCoord, const float targetRadius)
@@ -36,10 +37,15 @@ const FPoint& RoundObject::getCoordCenter() noexcept
 void RoundObject::setPos(FPoint& pos)
 {
 	_pos = pos;
-	_posCenter = { _pos.x + _radius, _pos.y + _radius };
+	setPosCenter();
 }
 
 void RoundObject::addVecToPos(FPoint& vec)
 {
 	setPos(_pos += vec);
+}
+
+void RoundObject::setPosCenter()
+{
+	_posCenter = { _pos.x + _radius, _pos.y + _radius };
 }
