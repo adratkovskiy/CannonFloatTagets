@@ -32,15 +32,19 @@ void Targets::Draw() const
 void Targets::Tick()
 {
 	if (RoundObject::getCoordCenter().x < _leftBorder) {
+		setPos(FPoint{ _leftBorder - getRadius() , getPos().y });
 		Collision(FPoint{ 1,0 });
 	}
 	else if (RoundObject::getCoordCenter().x > _rightBorder) {
+		setPos(FPoint{ _rightBorder - getRadius() , getPos().y });
 		Collision(FPoint{ -1,0 });
 	}
 	else if (RoundObject::getCoordCenter().y > _topBorder) {
+		setPos(FPoint{ getPos().x , _topBorder - getRadius() });
 		Collision(FPoint{ 0,-1 });
 	}
 	else if (RoundObject::getCoordCenter().y < _bottomBorder) {
+		setPos(FPoint{ getPos().x , _bottomBorder - getRadius() });
 		Collision(FPoint{ 0,1 });
 	}
 	RoundObject::addVecToPos(_moveVec);
@@ -53,27 +57,23 @@ void Targets::Collision(const FPoint& normal)
 	nextMove.x = _moveVec.x - 2.0f * normal.x * coff;
 	nextMove.y = _moveVec.y - 2.0f * normal.y * coff;
 	_moveVec = nextMove;
-	//RoundObject::addVecToPos(_moveVec);
-}
-
-void Targets::tooClose(const FPoint& victimCoord, const float victimRaduis)
-{
-
-	FPoint coordCenter = RoundObject::getCoordCenter();
-	FPoint diff = RoundObject::getCoordCenter() - victimCoord;
-	float range = LocalFunctions::vecLen(diff);
-	float summRadius = victimRaduis + _radius;
-	float needRange = summRadius - range;
-	float toMove = needRange + range;
-	float perc = toMove / range;
-	FPoint newRange = diff * perc;
-	float lenNewRange = LocalFunctions::vecLen(newRange);
-	FPoint newPos = victimCoord + newRange;
-	RoundObject::setPos(newPos);
-	FPoint normal = RoundObject::getCoordCenter() * victimCoord;
-	Collision(normal);
 }
 
 void Targets::tooClose(Targets& victim)
 {
+	float sumRadius = _radius + victim.getRadius();
+	FPoint diff = RoundObject::getCoordCenter() - victim.getCoordCenter();
+	float range = LocalFunctions::vecLen(diff);
+	//отодвигаю назад, чтобы не было пересечения
+	//можно было бы посчитать, насколько точно отодвинуть, чтобы расстояния между ними
+	//было равно двум радиусам обоих объектов, но что-то мне кажется, что это сильно усложнит
+	//(арксинус и еще три синуса)
+	//не уверен, что это надо. Тут при их скоростях потери в пиксель
+	while (sumRadius > range) 
+	{
+		setPos(_pos + -_moveVec);
+		range = LocalFunctions::vecLen(RoundObject::getCoordCenter() - victim.getCoordCenter());
+	}
+	Collision(diff);
+	victim.Collision(diff);
 }

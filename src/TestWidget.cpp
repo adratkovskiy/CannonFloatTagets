@@ -397,8 +397,10 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 			}
 		}
 		else if (_buttonExperiment->click(_gControl->getMousePos())) {
-			CreateTarget(FPoint{ 300.f, 500.f }, FPoint{ 1.f, 1.f });
-			CreateTarget(FPoint{ 500.f, 500.f }, FPoint{ -1.f, 1.f });
+			CreateTarget(FPoint{ 300.f, 400.f }, FPoint{ 1.f, 1.f });
+			CreateTarget(FPoint{ 500.f, 400.f }, FPoint{ -1.f, 1.f });
+			CreateTarget(FPoint{ 300.f, 600.f }, FPoint{ 1.f, -1.f });
+			CreateTarget(FPoint{ 500.f, 600.f }, FPoint{ -1.f, -1.f });
 		}
 		else if (_gControl->getReadyToShot())
 		{

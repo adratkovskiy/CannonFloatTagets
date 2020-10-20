@@ -20,7 +20,6 @@ public:
     void Draw() const;
     void Tick();
     void Collision(const FPoint& normal);
-    void tooClose(const FPoint& victimCoord, const float victimRaduis);
     void tooClose(Targets& victim);
 
 private:
