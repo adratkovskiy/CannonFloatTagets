@@ -59,6 +59,11 @@ void TestWidget::Init()
 		, _options->getParamString("button_create30x_string")
 		, _buttonUpTexture->getBitmapRect());
 
+	_buttonExperiment = new Button(_options->getParamFPoint("button_experiment_pos")
+		, _options->getParamFloat("button_create_scale")
+		, _options->getParamString("button_experiment_string")
+		, _buttonUpTexture->getBitmapRect());
+
 	_topBorder = _options->getParamInt("target_create_place_top");
 	_bottomBorder = _options->getParamInt("target_create_place_bottom");
 	_leftBorder = _options->getParamInt("target_create_place_left");
@@ -142,9 +147,22 @@ void TestWidget::Draw()
 		}
 		Render::device.PopMatrix();
 
+		Render::device.PushMatrix(); //кнопка для эксперимента
+		Render::device.MatrixTranslate(_buttonExperiment->getPos());
+		Render::device.MatrixScale(_buttonExperiment->getScale());
+		if (_buttonExperiment->getPressed()) { //кнопка нажата отпущена, рисую отсюда
+			_buttonDownTexture->Draw();
+		}
+		else {
+			_buttonUpTexture->Draw();
+		}
+		Render::device.PopMatrix();
+		
+
 		Render::SetColor(Color(0, 0, 0, 255));
 		Render::PrintString(_button->getTextPos(), _button->getText(), 1.5f, CenterAlign, CenterAlign);
 		Render::PrintString(_button30Targets->getTextPos(), _button30Targets->getText(), 1.5f, CenterAlign, CenterAlign);
+		Render::PrintString(_buttonExperiment->getTextPos(), _buttonExperiment->getText(), 1.5f, CenterAlign, CenterAlign);
 		Render::ResetColor();
 
 
@@ -339,19 +357,17 @@ void TestWidget::Update(float dt)
 
 	for (std::list<Targets>::iterator it_hunt = _targets.begin(); it_hunt != _targets.end(); it_hunt++)
 	{
+		it_hunt->Tick();
 		for (std::list<Targets>::iterator it_vict = _targets.begin(); it_vict != _targets.end(); it_vict++)
 		{
 			if (it_hunt != it_vict) { 
 				//можно оба условия засунуть в одну проверку, но я так понимаю, 
 				//что так будет быстрее, типа отсекает по сравнению, один это объект, или нет
-				float range = LocalFunctions::pointToPointRange(it_hunt->getCoordCenter(), it_vict->getCoordCenter());
-				float radrange = it_hunt->getRadius() + it_vict->getRadius();
 				if (LocalFunctions::pointToPointRange(it_hunt->getCoordCenter(), it_vict->getCoordCenter()) <= (it_hunt->getRadius() + it_vict->getRadius())) {
-					it_hunt->tooClose(it_vict->getCoordCenter(), it_vict->getRadius());
+					it_hunt->tooClose(*it_vict);
 				}
 			}
 		}
-		it_hunt->Tick();
 	}
 }
 
@@ -379,6 +395,10 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 			for (int i = 0; i < 30; i++) {
 				CreateTarget();
 			}
+		}
+		else if (_buttonExperiment->click(_gControl->getMousePos())) {
+			CreateTarget(FPoint{ 300.f, 500.f }, FPoint{ 1.f, 1.f });
+			CreateTarget(FPoint{ 500.f, 500.f }, FPoint{ -1.f, 1.f });
 		}
 		else if (_gControl->getReadyToShot())
 		{
@@ -420,6 +440,8 @@ void TestWidget::MouseMove(const IPoint &mouse_pos) // можно не смот�
 void TestWidget::MouseUp(const IPoint &mouse_pos) // можно не смотреть, это было в демке.
 {
 	_button->noPressed();
+	_button30Targets->noPressed();
+	_buttonExperiment->noPressed();
 	if (_eff)
 	{
 		//
@@ -521,5 +543,21 @@ void TestWidget::CreateTarget()
 			, _rightBorder);
 		break;
 	}
+	_targets.push_back(*newTarget);
+}
+
+void TestWidget::CreateTarget(FPoint& pos, FPoint& moveVec)
+{
+	Targets* newTarget;
+	newTarget = new Targets(_options->getParamFloat("target_blue_scale")
+		, _targetBlueTexture->getBitmapRect()
+		, pos
+		, _targetBlueTexture
+		, moveVec
+		, _options->getParamFloat("target_blue_speed")
+		, _topBorder
+		, _bottomBorder
+		, _leftBorder
+		, _rightBorder);
 	_targets.push_back(*newTarget);
 }

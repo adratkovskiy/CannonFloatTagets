@@ -53,19 +53,27 @@ void Targets::Collision(const FPoint& normal)
 	nextMove.x = _moveVec.x - 2.0f * normal.x * coff;
 	nextMove.y = _moveVec.y - 2.0f * normal.y * coff;
 	_moveVec = nextMove;
+	//RoundObject::addVecToPos(_moveVec);
 }
 
 void Targets::tooClose(const FPoint& victimCoord, const float victimRaduis)
 {
+
+	FPoint coordCenter = RoundObject::getCoordCenter();
 	FPoint diff = RoundObject::getCoordCenter() - victimCoord;
 	float range = LocalFunctions::vecLen(diff);
 	float summRadius = victimRaduis + _radius;
-	float needRange = summRadius - range + 1.f;
+	float needRange = summRadius - range;
 	float toMove = needRange + range;
 	float perc = toMove / range;
 	FPoint newRange = diff * perc;
 	float lenNewRange = LocalFunctions::vecLen(newRange);
-	FPoint newPos = victimCoord - newRange;
+	FPoint newPos = victimCoord + newRange;
 	RoundObject::setPos(newPos);
-	Collision({ diff.y, diff.x });
+	FPoint normal = RoundObject::getCoordCenter() * victimCoord;
+	Collision(normal);
+}
+
+void Targets::tooClose(Targets& victim)
+{
 }

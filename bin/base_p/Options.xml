@@ -16,6 +16,8 @@
   <button_create_string type="string" val="таргет" />
   <button_create30x_pos type="FPoint" x="100" y="50" />
   <button_create30x_string type="string" val="таргет 30x" />
+  <button_experiment_pos type="FPoint" x="100" y="20" />
+  <button_experiment_string type="string" val="эксперимент" />
   <target_yellow_scale type="float" val="0.125" />
   <target_blue_scale type="float" val="0.2" />
   <target_red_scale type="float" val="0.08" />

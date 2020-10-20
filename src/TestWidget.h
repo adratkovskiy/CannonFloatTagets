@@ -34,6 +34,7 @@ public:
 	void CharPressed(int unicodeChar) override;
 
 	void CreateTarget();
+	void CreateTarget(FPoint& pos, FPoint& moveVec);
 
 private:
 	void Init();
@@ -62,6 +63,7 @@ private:
 	Aim* _aim;
 	Button* _button;
 	Button* _button30Targets;
+	Button* _buttonExperiment;
 	std::list<Targets> _targets;
 	int _topBorder;
 	int _bottomBorder;
