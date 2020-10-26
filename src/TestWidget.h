@@ -69,4 +69,5 @@ private:
 	int _bottomBorder;
 	int _leftBorder;
 	int _rightBorder;
+	int _gamePoints;
 };

@@ -33,6 +33,25 @@ Options::Options()
             std::string naname = node->name();
             _configInt.insert({ node->name(), atoi(node->first_attribute("val")->value()) });
         }
+        else if (!strcmp(node->last_attribute("type")->value(), (const char*)"color")) {
+            std::string naname = node->name();
+            Color color;
+            // вот тут двойное преобразование не очень нравитс€. Ќо иначе только reinterpret_cast, а он в текст преобразует
+            color.red = static_cast<uint8_t>(atoi(node->first_attribute("R")->value()));
+            color.green = static_cast<uint8_t>(atoi(node->first_attribute("G")->value()));
+            color.blue = static_cast<uint8_t>(atoi(node->first_attribute("B")->value()));
+            color.alpha = static_cast<uint8_t>(atoi(node->first_attribute("A")->value()));
+            _color.insert({ node->name(), color });
+        }
+        else if (!strcmp(node->last_attribute("type")->value(), (const char*)"rect")) {
+            std::string naname = node->name();
+            IRect rect;
+            rect.x = atoi(node->first_attribute("x")->value());
+            rect.y = atoi(node->first_attribute("y")->value());
+            rect.width = atoi(node->first_attribute("width")->value());
+            rect.height = atoi(node->first_attribute("height")->value());
+            _rect.insert({ node->name(), rect });
+        }
     }
 }
 
@@ -81,11 +100,21 @@ const std::vector<float>& Options::getSplinePoints() const noexcept
     return _configSplinePoints;
 }
 
-const std::vector<uint8_t>& Options::getColor(const std::string& paramName) const noexcept
+const Color& Options::getColor(const std::string& paramName)
 {
-    std::map<std::string, std::vector<uint8_t>>::iterator it;
+    std::map<std::string, Color>::iterator it;
     it = _color.find(paramName);
     if (it != _color.end())
+    {
+        return it->second;
+    }
+}
+
+const IRect& Options::getRect(const std::string& paramName)
+{
+    std::map<std::string, IRect>::iterator it;
+    it = _rect.find(paramName);
+    if (it != _rect.end())
     {
         return it->second;
     }

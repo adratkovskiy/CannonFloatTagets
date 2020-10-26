@@ -68,9 +68,12 @@ void TestWidget::Init()
 	_bottomBorder = _options->getParamInt("target_create_place_bottom");
 	_leftBorder = _options->getParamInt("target_create_place_left");
 	_rightBorder = _options->getParamInt("target_create_place_right");
-	_gamePoints = _options->getParamInt("game_points_default");
 
 	Render::BindFont("arial");
+
+
+	//гружу текстуры
+	
 }
 
 void TestWidget::Draw()
@@ -171,55 +174,173 @@ void TestWidget::Draw()
 		Render::device.PopMatrix();
 
 		break;
-
-	case GameController::GameStates::STOP:
-		_backgroundTexture->Draw();
-		Render::device.SetTexturing(false);
-
-		Render::BeginColor(_options->getColor("block_screen_color"));
-		Render::DrawRect(_options->getRect("block_screen_size"));
-		Render::EndColor();
-
-		Render::device.SetTexturing(true);
-		break;
 		
 	}
 	
+	
+	//
+	// Проталкиваем в стек текущее преобразование координат, чтобы в дальнейшем
+	// можно было восстановить это преобразование вызовом PopMatrix.
+	
+	
+	//
+	// Изменяем текущее преобразование координат, перемещая центр координат в позицию мыши
+	// и поворачивая координаты относительно этого центра вокруг оси z на угол _angle.
+	//
+	
+	/*Render::device.PushMatrix();
+	Render::device.MatrixTranslate(static_cast<int>(_gControl->getMousePos().x), static_cast<int>(_gControl->getMousePos().y), 0);
+	Render::device.MatrixRotate(math::Vector3(0, 0, 1), _cannon->getAngle());
+
+	if (!_curTex)
+	{
+		//
+		// Метод Texture::Draw() выводит квадратный спрайт с размерами текстуры
+		// в центре координат (0, 0). Центр координат и преобразование координат вершин
+		// спрайта устанавливаются с применением текущего преобразования.
+		//
+		// При вызове метода Texture::Draw() вызывать Texture::Bind() необязательно.
+		//
+		// _tex1->Draw();
+	}
+	else
+	{
+		// IRect texRect = _tex2->getBitmapRect();
+
+		//
+		// При отрисовке текстуры можно вручную задавать UV координаты той части текстуры,
+		// которая будет натянута на вершины спрайта. UV координаты должны быть нормализованы,
+		// т.е., вне зависимости от размера текстуры в текселях, размер любой текстуры
+		// равен 1 (UV координаты задаются в диапазоне 0..1, хотя ничто не мешает задать их
+		// больше единицы, при этом в случае установленной адресации текстуры REPEAT, текстура
+		// будет размножена по этой стороне соответствующее количество раз).
+		//
+
+		// FRect rect(texRect);
+		// FRect uv(0, 1, 0, 1);
+
+		// _tex2->TranslateUV(rect, uv);
+
+		// Render::device.MatrixScale(_scale);
+		//Render::device.MatrixTranslate(-texRect.width * 0.5f, -texRect.height * 0.5f, 0.0f);
+
+		//
+		// Привязываем текстуру.
+		//
+		//_tex2->Bind();
+		
+		//
+		// Метод DrawQuad() выводит в графическое устройство квадратный спрайт, состоящий их двух
+		// примитивов - треугольников, используя при этом текущий цвет для вершин и привязанную (binded) текстуру,
+		// если разрешено текстурирование.
+		//
+		// Перед вызовом DrawQuad() должен быть вызов Texture::Bind() либо SetTexturing(false),
+		// иначе визуальный результат будет непредсказуемым.
+		//
+		//Render::DrawQuad(rect, uv);
+	}
 
 
+	
+	//
+	// Воостанавливаем прежнее преобразование координат, снимая со стека изменённый фрейм.
+	//
+	Render::device.PopMatrix();*/
+	
+	//
+	// Получаем текущие координаты объекта, двигающегося по сплайну
+	//
+	
 
+	//
+	// И рисуем объект в этих координатах
+	//
+	
+
+	//
+	// Этот вызов отключает текстурирование при отрисовке.
+	//
 	Render::device.SetTexturing(false);
-
-	Render::BeginColor(_options->getColor("panel_bottom_stat_color"));
-	Render::DrawRect(_options->getRect("panel_bottom_stat_size"));
+	
+	//
+	// Метод BeginColor() проталкивает в стек текущий цвет вершин и устанавливает новый.
+	//
+	
+	//DrawCross(_button->getTextPos());
+	//
+	// Метод DrawRect() выводит в графическое устройство квадратный спрайт, состоящий их двух
+	// примитивов - треугольников, используя при этом текущий цвет для вершин и привязанную (binded) текстуру,
+	// если разрешено текстурирование.
+	//
+	// Перед вызовом DrawRect() должен быть вызов Texture::Bind(), либо SetTexturing(false),
+	// иначе визуальный результат будет непредсказуемым.
+	//
+	Render::BeginColor(_options->getColor("color_panel_bottom_stat"));
+	Render::DrawRect(924, 0, 100, 100);
 	Render::EndColor();
 
-	Render::BeginColor(_options->getColor("panel_bottom_stat_color"));
-	Render::DrawRect(0, _options->getParamInt("panel_points_top"), _options->getParamInt("panel_points_width"), _options->getParamInt("panel_points_height"));
+	Render::BeginColor(_options->getColor("color_panel_bottom_stat"));
+	Render::DrawRect(_options->getParamInt(""), 0, 100, 100);
 	Render::EndColor();
-
+	
+	//
+	// Опять включаем текстурирование.
+	//
 	Render::device.SetTexturing(true);
 	
+	//
+	// Рисуем все эффекты, которые добавили в контейнер (Update() для контейнера вызывать не нужно).
+	//
 	_effCont.Draw();
 	
-	Render::PrintString(10, _options->getParamInt("panel_points_top") + _options->getParamInt("panel_points_height") / 2, "очки: ", 1.2f, LeftAlign, CenterAlign);
-	Render::PrintString(50, _options->getParamInt("panel_points_top") + _options->getParamInt("panel_points_height") / 2, utils::lexical_cast(_gamePoints), 1.2f, LeftAlign, CenterAlign);
+	//_button->printText();
+	
+	
 	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_gControl->getMousePos().x) + ", Y:" + utils::lexical_cast(_gControl->getMousePos().y), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 65, "gameState:" + utils::lexical_cast(static_cast<int>(_gControl->getGameState())), 1.f, CenterAlign);
+	//Render::PrintString(924 + 100 / 2, 95, "target angle:" + utils::lexical_cast(_targetAngle), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 95, "target count:" + utils::lexical_cast(_targets.size()), 1.f, CenterAlign);
 }
 
 void TestWidget::Update(float dt)
 {
-	// эффекты - не трогал
+	//_cannonball_pos = _cannonball->getPos();
+	//
+	// Обновим контейнер с эффектами
+	//
 	_effCont.Update(dt);
+
+	//
+	// dt - значение времени в секундах, прошедшее от предыдущего кадра.
+	// Оно может принимать разные значения, в зависимости от производительности системы
+	// и сложности сцены.
+	//
+	// Для того, чтобы наша анимация зависела только от времени, и не зависела от
+	// производительности системы, мы должны рассчитывать её от этого значения.
+	//
+	// Увеличиваем наш таймер с удвоенной скоростью.
+	//
 	_gControl->changeTimer() += dt * _cannonball->getFlightTime();
+	
+	//
+	// Зацикливаем таймер в диапазоне (0, 2п).
+	// Это нужно делать для предотвращения получения некорректных значений,
+	// если вдруг переполнится разрядная сетка (float переполнился) или задержка
+	// от предыдущего кадра была слишкой большой (система тормози-и-ит).
+	//
+	// Диапазон значений выбран равным (0, 2п), потому что мы используем это значение
+	// для расчёта синуса, и большие значения будут просто периодически повторять результат.
+	//
 	while (_gControl->getTimer() > 2 * math::PI)
 	{
 		_gControl->changeTimer() -= 2 * math::PI;
 		_gControl->setReadyToShot(true);
 		_cannonball->splineClear(); // зря вызываю каждый раз, потом буду вызывать в конце пути ядра
 	}
+	
+	//
+	// Анимирование параметра масштабирования в зависимости от таймера.
+	//
 		
 	//переделал хранилище целей из вектор в список, ибо, как я почитал, объекты не с краев лучше удалять именно из списка.
 	_cannon->setAngle( atan2(_cannon->getCannonCenter().y - _gControl->getMousePos().y, _cannon->getCannonCenter().x - _gControl->getMousePos().x) / math::PI * 180 + 90 );
@@ -227,7 +348,6 @@ void TestWidget::Update(float dt)
 		for (std::list<Targets>::iterator it = _targets.begin(); it != _targets.end();)
 		{
 			if (it->isCrossing(_cannonball->getPosition(), _cannonball->getRadius())) {
-				_gamePoints += it->getPoints();
 				it = _targets.erase(it);
 			}
 			else {
@@ -249,9 +369,6 @@ void TestWidget::Update(float dt)
 				}
 			}
 		}
-	}
-	if (_gamePoints >= _options->getParamInt("game_points_max")) {
-		_gControl->setGameState(GameController::GameStates::STOP);
 	}
 }
 
@@ -293,6 +410,20 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 			_cannonball->setSpline(_cannon->getCannonCenter(), _gControl->getMousePos());
 			_gControl->setTimer(0);
 		}
+		//
+		//
+		// При нажатии на левую кнопку мыши, создаём временный эффект, который завершится сам.
+		//
+		//_gControl->setGameState(static_cast<GameController::GameStates>(static_cast<int>(_gControl->getGameState()) + 1));
+		/*ParticleEffectPtr eff = _effCont.AddEffect("FindItem2");
+		eff->posX = _mousePos.x + 0.f;
+		eff->posY = _mousePos.y + 0.f;
+		eff->Reset();*/
+
+		//
+		// Изменяем значение с 0 на 1 и наоборот.
+		//
+		//_curTex = 1 - _curTex;
 	}
 	return false;
 }
@@ -376,9 +507,7 @@ void TestWidget::CreateTarget()
 			, _topBorder
 			, _bottomBorder
 			, _leftBorder
-			, _rightBorder
-			, _options->getParamInt("target_yellow_points")
-		);
+			, _rightBorder);
 		break;
 	case(1):
 		newTarget = new Targets(_options->getParamFloat("target_red_scale")
@@ -390,9 +519,7 @@ void TestWidget::CreateTarget()
 			, _topBorder
 			, _bottomBorder
 			, _leftBorder
-			, _rightBorder
-			, _options->getParamInt("target_red_points")
-		);
+			, _rightBorder);
 		break;
 	case(2):
 		newTarget = new Targets(_options->getParamFloat("target_blue_scale")
@@ -404,9 +531,7 @@ void TestWidget::CreateTarget()
 			, _topBorder
 			, _bottomBorder
 			, _leftBorder
-			, _rightBorder
-			, _options->getParamInt("target_blue_points")
-		);
+			, _rightBorder);
 		break;
 	default:
 		newTarget = new Targets(_options->getParamFloat("target_yellow_scale")
@@ -418,9 +543,7 @@ void TestWidget::CreateTarget()
 			, _topBorder
 			, _bottomBorder
 			, _leftBorder
-			, _rightBorder
-			, _options->getParamInt("target_yellow_points")
-		);
+			, _rightBorder);
 		break;
 	}
 	_targets.push_back(*newTarget);
@@ -438,8 +561,6 @@ void TestWidget::CreateTarget(FPoint& pos, FPoint& moveVec)
 		, _topBorder
 		, _bottomBorder
 		, _leftBorder
-		, _rightBorder
-		, _options->getParamInt("target_blue_points")
-	);
+		, _rightBorder);
 	_targets.push_back(*newTarget);
 }

@@ -11,6 +11,7 @@ Targets::Targets(const float scale
 	, const int bottomBorder
 	, const int leftBorder
 	, const int rightBorder
+	, const int points
 ) :
 	RoundObject(scale, textureRect, pos)
 	, _texture(texture)
@@ -20,6 +21,7 @@ Targets::Targets(const float scale
 	, _bottomBorder(bottomBorder)
 	, _leftBorder(leftBorder)
 	, _rightBorder(rightBorder)
+	, _points(points)
 {
 }
 
@@ -76,4 +78,9 @@ void Targets::tooClose(Targets& victim)
 	}
 	Collision(diff);
 	victim.Collision(diff);
+}
+
+const int Targets::getPoints() const noexcept
+{
+	return _points;
 }

@@ -16,11 +16,14 @@ public:
         , const int bottomBorder
         , const int leftBorder
         , const int rightBorder
+        , const int points
     );
     void Draw() const;
     void Tick();
     void Collision(const FPoint& normal);
     void tooClose(Targets& victim);
+    
+    const int getPoints() const noexcept;
 
 private:
     Render::Texture* _texture;
@@ -30,5 +33,6 @@ private:
     const int _bottomBorder;
     const int _leftBorder;
     const int _rightBorder;
+    const int _points;
 };
 
