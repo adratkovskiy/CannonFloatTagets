@@ -169,7 +169,6 @@ void TestWidget::Draw()
 		Render::device.MatrixScale(_aim->getScale());
 		_aimTexture->Draw();
 		Render::device.PopMatrix();
-
 		break;
 
 	case GameController::GameStates::STOP:
@@ -184,9 +183,6 @@ void TestWidget::Draw()
 		break;
 		
 	}
-	
-
-
 
 	Render::device.SetTexturing(false);
 
