@@ -81,3 +81,13 @@ const std::vector<float>& Options::getSplinePoints() const noexcept
     return _configSplinePoints;
 }
 
+const std::vector<uint8_t>& Options::getColor(const std::string& paramName) const noexcept
+{
+    std::map<std::string, std::vector<uint8_t>>::iterator it;
+    it = _color.find(paramName);
+    if (it != _color.end())
+    {
+        return it->second;
+    }
+}
+

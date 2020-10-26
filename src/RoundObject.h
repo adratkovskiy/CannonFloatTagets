@@ -14,12 +14,14 @@ public:
 
 	void setPos(FPoint& pos);
 	void addVecToPos(FPoint& vec);
-	void setPosCenter();
 
 protected:
 	const float _scale;
 	float _radius;
 	FPoint _pos;
 	FPoint _posCenter;
+
+private:
+	void setPosCenter();
 };
 

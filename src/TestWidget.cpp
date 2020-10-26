@@ -147,7 +147,7 @@ void TestWidget::Draw()
 		}
 		Render::device.PopMatrix();
 
-		Render::device.PushMatrix(); //кнопка для эксперимента
+		Render::device.PushMatrix(); //кнопка для эксперимента (пока ковырялся с отражением)
 		Render::device.MatrixTranslate(_buttonExperiment->getPos());
 		Render::device.MatrixScale(_buttonExperiment->getScale());
 		if (_buttonExperiment->getPressed()) { //кнопка нажата отпущена, рисую отсюда
@@ -266,10 +266,6 @@ void TestWidget::Draw()
 	// Метод BeginColor() проталкивает в стек текущий цвет вершин и устанавливает новый.
 	//
 	Render::BeginColor(Color(255, 128, 0, 255));
-	for (std::list<Targets>::iterator it_hunt = _targets.begin(); it_hunt != _targets.end(); it_hunt++)
-	{
-		DrawCross(it_hunt->getCoordCenter());
-	}
 	//DrawCross(_button->getTextPos());
 	//
 	// Метод DrawRect() выводит в графическое устройство квадратный спрайт, состоящий их двух
@@ -280,6 +276,10 @@ void TestWidget::Draw()
 	// иначе визуальный результат будет непредсказуемым.
 	//
 	Render::DrawRect(924, 0, 100, 100);
+	Render::EndColor();
+
+	Render::BeginColor(Color(255, 128, 0, 255));
+	Render::DrawRect(_options->getParamInt(""), 0, 100, 100);
 	Render::EndColor();
 	
 	//
@@ -298,7 +298,7 @@ void TestWidget::Draw()
 	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_gControl->getMousePos().x) + ", Y:" + utils::lexical_cast(_gControl->getMousePos().y), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 65, "gameState:" + utils::lexical_cast(static_cast<int>(_gControl->getGameState())), 1.f, CenterAlign);
 	//Render::PrintString(924 + 100 / 2, 95, "target angle:" + utils::lexical_cast(_targetAngle), 1.f, CenterAlign);
-	Render::PrintString(924 + 100 / 2, 125, "target count:" + utils::lexical_cast(_targets.size()), 1.f, CenterAlign);
+	Render::PrintString(924 + 100 / 2, 95, "target count:" + utils::lexical_cast(_targets.size()), 1.f, CenterAlign);
 }
 
 void TestWidget::Update(float dt)

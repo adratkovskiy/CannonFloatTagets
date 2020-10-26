@@ -28,4 +28,5 @@
   <target_create_place_bottom type="int" val="300" />
   <target_create_place_left type="int" val="50" />
   <target_create_place_right type="int" val="950" />
+  <color_panel_top type="color" p0="100" p2="100" p3="100" p4="255" />
 </options>
