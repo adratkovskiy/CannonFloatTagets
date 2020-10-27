@@ -64,6 +64,11 @@ void TestWidget::Init()
 		, _options->getParamString("button_experiment_string")
 		, _buttonUpTexture->getBitmapRect());
 
+	_buttonRestart = new Button(_options->getParamFPoint("button_restart_pos")
+		, _options->getParamFloat("button_restart_scale")
+		, _options->getParamString("button_restart_string")
+		, _buttonUpTexture->getBitmapRect());
+
 	_topBorder = _options->getParamInt("target_create_place_top");
 	_bottomBorder = _options->getParamInt("target_create_place_bottom");
 	_leftBorder = _options->getParamInt("target_create_place_left");
@@ -71,6 +76,7 @@ void TestWidget::Init()
 	_gamePoints = _options->getParamInt("game_points_default");
 
 	Render::BindFont("arial");
+	SetGameStatus(GameController::GameStates::GAME);
 }
 
 void TestWidget::Draw()
@@ -79,7 +85,7 @@ void TestWidget::Draw()
 	
 	switch (_gControl->getGameState()) // Будущие режимы игры (заставка, игра, финальный счет)
 	{
-	case GameController::GameStates::START_SCREEN: // режим: игра
+	case GameController::GameStates::GAME: // режим: игра
 		_backgroundTexture->Draw();
 
 		Render::device.PushMatrix();		// подставка под пушку
@@ -171,17 +177,52 @@ void TestWidget::Draw()
 		Render::device.PopMatrix();
 		break;
 
-	case GameController::GameStates::STOP:
+	case GameController::GameStates::TO_STOP:
 		_backgroundTexture->Draw();
 		Render::device.SetTexturing(false);
 
-		Render::BeginColor(_options->getColor("block_screen_color"));
+		Render::BeginColor(Color{ _options->getColor("block_screen_color").red
+			, _options->getColor("block_screen_color").green
+			, _options->getColor("block_screen_color").blue
+			, _fade
+			});
 		Render::DrawRect(_options->getRect("block_screen_size"));
 		Render::EndColor();
 
 		Render::device.SetTexturing(true);
+		if (_fade < _options->getColor("block_screen_color").alpha) {
+			_fade++;
+		}
+		else {
+			SetGameStatus(GameController::GameStates::STOP);
+		}
 		break;
-		
+
+	case GameController::GameStates::STOP:
+		_backgroundTexture->Draw();
+		Render::device.SetTexturing(false);
+		Render::BeginColor(_options->getColor("block_screen_color"));
+		Render::DrawRect(_options->getRect("block_screen_size"));
+		Render::EndColor();
+		Render::device.SetTexturing(true);
+
+		Render::device.PushMatrix(); //кнопка создания кучи таргетов
+		Render::device.MatrixTranslate(_buttonRestart->getPos());
+		Render::device.MatrixScale(_buttonRestart->getScale());
+		if (_buttonRestart->getPressed()) { //кнопка нажата отпущена, рисую отсюда
+			_buttonDownTexture->Draw();
+		}
+		else {
+			_buttonUpTexture->Draw();
+		}
+		Render::device.PopMatrix();
+
+		Render::SetColor(Color(0, 0, 0, 255));
+		Render::PrintString(_buttonRestart->getTextPos(), _buttonRestart->getText(), 1.5f, CenterAlign, CenterAlign);
+		Render::ResetColor();
+
+	default:
+		break;
 	}
 
 	Render::device.SetTexturing(false);
@@ -207,47 +248,52 @@ void TestWidget::Draw()
 
 void TestWidget::Update(float dt)
 {
-	// эффекты - не трогал
-	_effCont.Update(dt);
-	_gControl->changeTimer() += dt * _cannonball->getFlightTime();
-	while (_gControl->getTimer() > 2 * math::PI)
+	_effCont.Update(dt); // эффекты - не трогал
+	
+	switch (_gControl->getGameState())
 	{
-		_gControl->changeTimer() -= 2 * math::PI;
-		_gControl->setReadyToShot(true);
-		_cannonball->splineClear(); // зря вызываю каждый раз, потом буду вызывать в конце пути ядра
-	}
-		
-	//переделал хранилище целей из вектор в список, ибо, как я почитал, объекты не с краев лучше удалять именно из списка.
-	_cannon->setAngle( atan2(_cannon->getCannonCenter().y - _gControl->getMousePos().y, _cannon->getCannonCenter().x - _gControl->getMousePos().x) / math::PI * 180 + 90 );
-	if (!_gControl->getReadyToShot()) {
-		for (std::list<Targets>::iterator it = _targets.begin(); it != _targets.end();)
+	case GameController::GameStates::GAME:
+		_gControl->changeTimer() += dt * _cannonball->getFlightTime();
+		while (_gControl->getTimer() > 2 * math::PI)
 		{
-			if (it->isCrossing(_cannonball->getPosition(), _cannonball->getRadius())) {
-				_gamePoints += it->getPoints();
-				it = _targets.erase(it);
-			}
-			else {
-				it++;
-			}
+			_gControl->changeTimer() -= 2 * math::PI;
+			_gControl->setReadyToShot(true);
+			_cannonball->splineClear(); // зря вызываю каждый раз, потом буду вызывать в конце пути ядра
 		}
-	}
 
-	for (std::list<Targets>::iterator it_hunt = _targets.begin(); it_hunt != _targets.end(); it_hunt++)
-	{
-		it_hunt->Tick();
-		for (std::list<Targets>::iterator it_vict = _targets.begin(); it_vict != _targets.end(); it_vict++)
-		{
-			if (it_hunt != it_vict) { 
-				//можно оба условия засунуть в одну проверку, но я так понимаю, 
-				//что так будет быстрее, типа отсекает по сравнению, один это объект, или нет
-				if (LocalFunctions::pointToPointRange(it_hunt->getCoordCenter(), it_vict->getCoordCenter()) <= (it_hunt->getRadius() + it_vict->getRadius())) {
-					it_hunt->tooClose(*it_vict);
+		//переделал хранилище целей из вектор в список, ибо, как я почитал, объекты не с краев лучше удалять именно из списка.
+		_cannon->setAngle(atan2(_cannon->getCannonCenter().y - _gControl->getMousePos().y, _cannon->getCannonCenter().x - _gControl->getMousePos().x) / math::PI * 180 + 90);
+		if (!_gControl->getReadyToShot()) {
+			for (std::list<Targets>::iterator it = _targets.begin(); it != _targets.end();)
+			{
+				if (it->isCrossing(_cannonball->getPosition(), _cannonball->getRadius())) {
+					_gamePoints += it->getPoints();
+					it = _targets.erase(it);
+				}
+				else {
+					it++;
 				}
 			}
 		}
-	}
-	if (_gamePoints >= _options->getParamInt("game_points_max")) {
-		_gControl->setGameState(GameController::GameStates::STOP);
+
+		for (std::list<Targets>::iterator it_hunt = _targets.begin(); it_hunt != _targets.end(); it_hunt++)
+		{
+			it_hunt->Tick();
+			for (std::list<Targets>::iterator it_vict = _targets.begin(); it_vict != _targets.end(); it_vict++)
+			{
+				if (it_hunt != it_vict) {
+					//можно оба условия засунуть в одну проверку, но я так понимаю, 
+					//что так будет быстрее, типа отсекает по сравнению, один это объект, или нет
+					if (LocalFunctions::pointToPointRange(it_hunt->getCoordCenter(), it_vict->getCoordCenter()) <= (it_hunt->getRadius() + it_vict->getRadius())) {
+						it_hunt->tooClose(*it_vict);
+					}
+				}
+			}
+		}
+		if ((_gamePoints >= _options->getParamInt("game_points_max")) & (_gControl->getGameState() == GameController::GameStates::GAME)) {
+			SetGameStatus(GameController::GameStates::TO_STOP);
+		}
+		break;
 	}
 }
 
@@ -281,6 +327,9 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 			CreateTarget(FPoint{ 500.f, 400.f }, FPoint{ -1.f, 1.f });
 			CreateTarget(FPoint{ 300.f, 600.f }, FPoint{ 1.f, -1.f });
 			CreateTarget(FPoint{ 500.f, 600.f }, FPoint{ -1.f, -1.f });
+		}
+		else if (_buttonRestart->click(_gControl->getMousePos())) {
+			SetGameStatus(GameController::GameStates::GAME);
 		}
 		else if (_gControl->getReadyToShot())
 		{
@@ -438,4 +487,32 @@ void TestWidget::CreateTarget(FPoint& pos, FPoint& moveVec)
 		, _options->getParamInt("target_blue_points")
 	);
 	_targets.push_back(*newTarget);
+}
+
+void TestWidget::SetGameStatus(const GameController::GameStates state)
+{
+	_gControl->setGameState(state);
+	switch (state)
+	{
+	case GameController::GameStates::TO_STOP:
+		_button->setActive(false);
+		_button30Targets->setActive(false);
+		_buttonExperiment->setActive(false);
+		break;
+
+	case GameController::GameStates::GAME:
+		_button->setActive(true);
+		_button30Targets->setActive(true);
+		_buttonExperiment->setActive(true);
+		_buttonRestart->setActive(false);
+		_fade = 0;
+		_gamePoints = 0;
+		break;
+	case GameController::GameStates::STOP:
+		_buttonRestart->setActive(true);
+		_targets.clear();
+		break;
+	default:
+		break;
+	}
 }

@@ -8,6 +8,7 @@ public:
 	enum class GameStates {
 		START_SCREEN,
 		GAME,
+		TO_STOP,
 		STOP
 	};
 

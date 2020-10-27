@@ -25,6 +25,10 @@ Targets::Targets(const float scale
 {
 }
 
+Targets::~Targets()
+{
+}
+
 
 void Targets::Draw() const
 {

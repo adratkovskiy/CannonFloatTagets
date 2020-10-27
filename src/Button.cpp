@@ -6,6 +6,7 @@ Button::Button(const FPoint& pos, const float scale, const std::string& text, IR
     , _scale(scale)
     , _text(text)
     , _pressed(false)
+    , _active(true)
 {
     _size.x = textureRect.width * _scale;
     _size.y = textureRect.height * _scale;
@@ -14,12 +15,14 @@ Button::Button(const FPoint& pos, const float scale, const std::string& text, IR
 
 const bool Button::click(const IPoint& mouse_pos)
 {
-    if ((mouse_pos.x >= _pos.x)
-        & (mouse_pos.x <= _pos.x + _size.x)
-        & (mouse_pos.y >= _pos.y)
-        & (mouse_pos.y <= _pos.y + _size.y)
-        ) {
-        _pressed = true;
+    if (_active) { //сначала экранирую по активности кнопки
+        if ((mouse_pos.x >= _pos.x)
+            & (mouse_pos.x <= _pos.x + _size.x)
+            & (mouse_pos.y >= _pos.y)
+            & (mouse_pos.y <= _pos.y + _size.y)
+            ) {
+            _pressed = true;
+        }
     }
     return _pressed;
 }
@@ -52,6 +55,11 @@ const FPoint& Button::getTextPos() const noexcept
 const bool Button::getPressed() const noexcept
 {
     return _pressed;
+}
+
+void Button::setActive(const bool active) noexcept
+{
+    _active = active;
 }
 
 

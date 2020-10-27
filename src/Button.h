@@ -14,8 +14,10 @@ public:
 	const std::string& getText() const noexcept;
 	const FPoint& getTextPos() const noexcept;
 	const bool getPressed() const noexcept;
+	void setActive(const bool active) noexcept;
 
 private:
+	bool _active;
 	bool _pressed;
 	FPoint _pos;
 	FPoint _textPos;

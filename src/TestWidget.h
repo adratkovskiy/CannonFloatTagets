@@ -36,6 +36,8 @@ public:
 	void CreateTarget();
 	void CreateTarget(FPoint& pos, FPoint& moveVec);
 
+	void SetGameStatus(const GameController::GameStates state);
+
 private:
 	void Init();
 
@@ -64,10 +66,12 @@ private:
 	Button* _button;
 	Button* _button30Targets;
 	Button* _buttonExperiment;
+	Button* _buttonRestart;
 	std::list<Targets> _targets;
 	int _topBorder;
 	int _bottomBorder;
 	int _leftBorder;
 	int _rightBorder;
 	int _gamePoints;
+	uint8_t _fade;
 };

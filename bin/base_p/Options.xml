@@ -18,6 +18,9 @@
   <button_create30x_string type="string" val="таргет 30x" />
   <button_experiment_pos type="FPoint" x="100" y="20" />
   <button_experiment_string type="string" val="эксперимент" />
+  <button_restart_scale type="float" val="0.125" />
+  <button_restart_pos type="FPoint" x="450" y="370" />
+  <button_restart_string type="string" val="рестарт" />
   <target_yellow_scale type="float" val="0.125" />
   <target_blue_scale type="float" val="0.2" />
   <target_red_scale type="float" val="0.08" />
@@ -40,5 +43,5 @@
   <game_points_default type="int" val="0" />
   <game_points_max type="int" val="1" />
   <block_screen_size type="rect" x="0" y="0" width="1024" height="768" />
-  <block_screen_color type="color" R="0" G="0" B="0" A="50" />
+  <block_screen_color type="color" R="0" G="0" B="0" A="100" />
 </options>
