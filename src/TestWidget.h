@@ -35,8 +35,12 @@ public:
 
 	void CreateTarget();
 	void CreateTarget(FPoint& pos, FPoint& moveVec);
+	void CreateSomeTarget(int count);
+	void CreateColorTarget(const char color, const int count);
 
 	void SetGameStatus(const GameController::GameStates state);
+
+	const std::string getTitlePoins() const noexcept;
 
 private:
 	void Init();
@@ -74,4 +78,5 @@ private:
 	int _rightBorder;
 	int _gamePoints;
 	uint8_t _fade;
+	float _gameTimer;
 };

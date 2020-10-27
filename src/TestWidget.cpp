@@ -17,6 +17,7 @@ TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 	: Widget(name)
 	//, _curTex(0)
 	, _eff(NULL)
+	, _gameTimer(0.f)
 {
 	Init();
 }
@@ -74,6 +75,7 @@ void TestWidget::Init()
 	_leftBorder = _options->getParamInt("target_create_place_left");
 	_rightBorder = _options->getParamInt("target_create_place_right");
 	_gamePoints = _options->getParamInt("game_points_default");
+	_gameTimer = _options->getParamFloat("game_time_max");
 
 	Render::BindFont("arial");
 	SetGameStatus(GameController::GameStates::GAME);
@@ -217,6 +219,8 @@ void TestWidget::Draw()
 		Render::device.PopMatrix();
 
 		Render::SetColor(Color(0, 0, 0, 255));
+		Render::PrintString(_options->getParamFPoint("text_endgame_title_pos"), _options->getParamString("text_endgame_string"), 1.5f, CenterAlign, CenterAlign);
+		Render::PrintString(_options->getParamFPoint("text_endgame_points_pos"), utils::lexical_cast(_gamePoints) + " " + getTitlePoins(), 1.5f, CenterAlign, CenterAlign);
 		Render::PrintString(_buttonRestart->getTextPos(), _buttonRestart->getText(), 1.5f, CenterAlign, CenterAlign);
 		Render::ResetColor();
 
@@ -238,8 +242,13 @@ void TestWidget::Draw()
 	
 	_effCont.Draw();
 	
-	Render::PrintString(10, _options->getParamInt("panel_points_top") + _options->getParamInt("panel_points_height") / 2, "очки: ", 1.2f, LeftAlign, CenterAlign);
-	Render::PrintString(50, _options->getParamInt("panel_points_top") + _options->getParamInt("panel_points_height") / 2, utils::lexical_cast(_gamePoints), 1.2f, LeftAlign, CenterAlign);
+	Render::PrintString(10, _options->getParamInt("panel_points_top") + _options->getParamInt("panel_points_height") / 2, 
+		_options->getParamString("text_title_points_string") 
+		+ utils::lexical_cast(_gamePoints)
+		+ " "
+		+ _options->getParamString("text_title_timeout_string")
+		+ utils::lexical_cast(math::round(_gameTimer))
+		, 1.0f, LeftAlign, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_gControl->getMousePos().x) + ", Y:" + utils::lexical_cast(_gControl->getMousePos().y), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 65, "gameState:" + utils::lexical_cast(static_cast<int>(_gControl->getGameState())), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 95, "target count:" + utils::lexical_cast(_targets.size()), 1.f, CenterAlign);
@@ -248,18 +257,18 @@ void TestWidget::Draw()
 void TestWidget::Update(float dt)
 {
 	_effCont.Update(dt); // эффекты - не трогал
-	
 	switch (_gControl->getGameState())
 	{
 	case GameController::GameStates::GAME:
+		_gameTimer -= dt;
 		if (!_gControl->getReadyToShot()) {
-			_cannonball->updPosition(_gControl->getTimer()); //ядро
+			_cannonball->updPosition(_gControl->getTimer()); //полет ядра
 			if (_cannonball->getPosition().y < 0) {
 				_gControl->setReadyToShot(true);
 				_cannonball->splineClear(); 
 			}
 			_gControl->changeTimer() += dt * _cannonball->getFlightTime();
-			while (_gControl->getTimer() > 2 * math::PI)
+			while (_gControl->getTimer() > 2 * math::PI) //это какой-то движковый прикол, не понял
 			{
 				_gControl->changeTimer() -= 2 * math::PI;
 
@@ -296,7 +305,8 @@ void TestWidget::Update(float dt)
 				}
 			}
 		}
-		if ((_gamePoints >= _options->getParamInt("game_points_max")) & (_gControl->getGameState() == GameController::GameStates::GAME)) {
+		if ((_gameTimer <= 0.f) & (_gControl->getGameState() == GameController::GameStates::GAME)) {
+			_gameTimer = 0.f;
 			SetGameStatus(GameController::GameStates::TO_STOP);
 		}
 		break;
@@ -324,9 +334,7 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 			CreateTarget();
 		}
 		else if (_button30Targets->click(_gControl->getMousePos())) {
-			for (int i = 0; i < 30; i++) {
-				CreateTarget();
-			}
+			CreateSomeTarget(_options->getParamInt("targets_count_to_game"));
 		}
 		else if (_buttonExperiment->click(_gControl->getMousePos())) {
 			CreateTarget(FPoint{ 300.f, 400.f }, FPoint{ 1.f, 1.f });
@@ -496,7 +504,83 @@ void TestWidget::CreateTarget(FPoint& pos, FPoint& moveVec)
 	_targets.push_back(*newTarget);
 }
 
-void TestWidget::SetGameStatus(const GameController::GameStates state)
+void TestWidget::CreateSomeTarget(int count)
+{
+	for (int i = 0; i < count; i++) {
+		CreateTarget();
+	}
+}
+
+void TestWidget::CreateColorTarget(const char color, const int count)
+{
+	for (int i = 0; i < count; i++)
+	{
+		Targets* newTarget;
+		FPoint randPos({ static_cast<float>(math::random(_rightBorder - _leftBorder) + _leftBorder), static_cast<float>(math::random(_topBorder - _bottomBorder) + _bottomBorder) });
+		switch (color) //норм ли такой вид, через свитч-кейс и рандом?
+		{
+		case('y'):
+			newTarget = new Targets(_options->getParamFloat("target_yellow_scale")
+				, _targetYellowTexture->getBitmapRect()
+				, randPos
+				, _targetYellowTexture
+				, LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed"))
+				, _options->getParamFloat("target_yellow_speed")
+				, _topBorder
+				, _bottomBorder
+				, _leftBorder
+				, _rightBorder
+				, _options->getParamInt("target_yellow_points")
+			);
+			break;
+		case('r'):
+			newTarget = new Targets(_options->getParamFloat("target_red_scale")
+				, _targetRedTexture->getBitmapRect()
+				, randPos
+				, _targetRedTexture
+				, LocalFunctions::randomVec(_options->getParamFloat("target_red_speed"))
+				, _options->getParamFloat("target_red_speed")
+				, _topBorder
+				, _bottomBorder
+				, _leftBorder
+				, _rightBorder
+				, _options->getParamInt("target_red_points")
+			);
+			break;
+		case('b'):
+			newTarget = new Targets(_options->getParamFloat("target_blue_scale")
+				, _targetBlueTexture->getBitmapRect()
+				, randPos
+				, _targetBlueTexture
+				, LocalFunctions::randomVec(_options->getParamFloat("target_blue_speed"))
+				, _options->getParamFloat("target_blue_speed")
+				, _topBorder
+				, _bottomBorder
+				, _leftBorder
+				, _rightBorder
+				, _options->getParamInt("target_blue_points")
+			);
+			break;
+		default:
+			newTarget = new Targets(_options->getParamFloat("target_yellow_scale")
+				, _targetYellowTexture->getBitmapRect()
+				, randPos
+				, _targetYellowTexture
+				, LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed"))
+				, _options->getParamFloat("target_yellow_speed")
+				, _topBorder
+				, _bottomBorder
+				, _leftBorder
+				, _rightBorder
+				, _options->getParamInt("target_yellow_points")
+			);
+			break;
+		}
+		_targets.push_back(*newTarget);
+	}
+}
+
+void TestWidget::SetGameStatus(const GameController::GameStates state) //смена статуса игры
 {
 	_gControl->setGameState(state);
 	switch (state)
@@ -508,6 +592,10 @@ void TestWidget::SetGameStatus(const GameController::GameStates state)
 		break;
 
 	case GameController::GameStates::GAME:
+		//CreateSomeTarget(_options->getParamInt("targets_count_to_game"));
+		CreateColorTarget('b', _options->getParamInt("targets_count_blue"));
+		CreateColorTarget('y', _options->getParamInt("targets_count_yellow"));
+		CreateColorTarget('r', _options->getParamInt("targets_count_red"));
 		_button->setActive(true);
 		_button30Targets->setActive(true);
 		_buttonExperiment->setActive(true);
@@ -516,6 +604,7 @@ void TestWidget::SetGameStatus(const GameController::GameStates state)
 		_gamePoints = 0;
 		_cannonball->splineClear();
 		_gControl->setReadyToShot(true);
+		_gameTimer = _options->getParamFloat("game_time_max");
 		break;
 	case GameController::GameStates::STOP:
 		_buttonRestart->setActive(true);
@@ -523,5 +612,39 @@ void TestWidget::SetGameStatus(const GameController::GameStates state)
 		break;
 	default:
 		break;
+	}
+}
+
+const std::string TestWidget::getTitlePoins() const noexcept
+{
+	std::string toReturn = "";
+	std::string points = std::to_string(_gamePoints);
+	if ((points.length() == 2) & (points[0] == '1')) {
+		return "очков";
+	}
+	else {
+		char lastSymbol = points[points.length() - 1];
+		switch (lastSymbol)
+		{
+		case '0':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+			return "очков";
+			break;
+		case '1':
+			return "очко";
+			break;
+		case '2':
+		case '3':
+		case '4':
+			return "очка";
+			break;
+		default:
+			return "очков";
+			break;
+		}
 	}
 }

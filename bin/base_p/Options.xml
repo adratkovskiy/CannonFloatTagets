@@ -19,7 +19,7 @@
   <button_experiment_pos type="FPoint" x="100" y="20" />
   <button_experiment_string type="string" val="эксперимент" />
   <button_restart_scale type="float" val="0.125" />
-  <button_restart_pos type="FPoint" x="450" y="370" />
+  <button_restart_pos type="FPoint" x="460" y="370" />
   <button_restart_string type="string" val="рестарт" />
   <target_yellow_scale type="float" val="0.125" />
   <target_blue_scale type="float" val="0.2" />
@@ -41,7 +41,17 @@
   <panel_points_top type="int" val="738" />
   <panel_points_width type="int" val="200" />
   <game_points_default type="int" val="0" />
-  <game_points_max type="int" val="1" />
+  <game_points_max type="int" val="12" />
   <block_screen_size type="rect" x="0" y="0" width="1024" height="768" />
   <block_screen_color type="color" R="0" G="0" B="0" A="100" />
+  <text_endgame_string type="string" val="ваш результат" />
+  <text_endgame_title_pos type="FPoint" x="512" y="450" />
+  <text_endgame_points_pos type="FPoint" x="512" y="420" />
+  <text_title_points_string type="string" val="очки: " />
+  <text_title_timeout_string type="string" val="времени осталось: " />
+  <game_time_max type="float" val="20" />
+  <targets_count_to_game type="int" val="30" />
+  <targets_count_red type="int" val="10" />
+  <targets_count_blue type="int" val="10" />
+  <targets_count_yellow type="int" val="10" />
 </options>
