@@ -112,7 +112,6 @@ void TestWidget::Draw()
 
 		if (!_gControl->getReadyToShot())
 		{
-			_cannonball->updPosition(_gControl->getTimer()); //ядро
 			Render::device.PushMatrix();
 			Render::device.MatrixTranslate(_cannonball->getPosition());
 			Render::device.MatrixScale(_cannonball->getScale());
@@ -253,14 +252,21 @@ void TestWidget::Update(float dt)
 	switch (_gControl->getGameState())
 	{
 	case GameController::GameStates::GAME:
-		_gControl->changeTimer() += dt * _cannonball->getFlightTime();
-		while (_gControl->getTimer() > 2 * math::PI)
-		{
-			_gControl->changeTimer() -= 2 * math::PI;
-			_gControl->setReadyToShot(true);
-			_cannonball->splineClear(); // зря вызываю каждый раз, потом буду вызывать в конце пути ядра
-		}
+		if (!_gControl->getReadyToShot()) {
+			_cannonball->updPosition(_gControl->getTimer()); //ядро
+			if (_cannonball->getPosition().y < 0) {
+				_gControl->setReadyToShot(true);
+				_cannonball->splineClear(); 
+			}
+			_gControl->changeTimer() += dt * _cannonball->getFlightTime();
+			while (_gControl->getTimer() > 2 * math::PI)
+			{
+				_gControl->changeTimer() -= 2 * math::PI;
 
+			}
+		}
+		
+		
 		//переделал хранилище целей из вектор в список, ибо, как я почитал, объекты не с краев лучше удалять именно из списка.
 		_cannon->setAngle(atan2(_cannon->getCannonCenter().y - _gControl->getMousePos().y, _cannon->getCannonCenter().x - _gControl->getMousePos().x) / math::PI * 180 + 90);
 		if (!_gControl->getReadyToShot()) {
@@ -354,12 +360,13 @@ void TestWidget::MouseMove(const IPoint &mouse_pos) // можно не смот�
 	}
 }
 
-void TestWidget::MouseUp(const IPoint &mouse_pos) // можно не смотреть, это было в демке.
+void TestWidget::MouseUp(const IPoint &mouse_pos) 
 {
 	_button->noPressed();
 	_button30Targets->noPressed();
 	_buttonExperiment->noPressed();
-	if (_eff)
+	_buttonRestart->noPressed();
+	if (_eff)  // можно не смотреть, это было в демке.
 	{
 		//
 		// Если эффект создан, то при отпускании мыши завершаем его.
@@ -507,6 +514,8 @@ void TestWidget::SetGameStatus(const GameController::GameStates state)
 		_buttonRestart->setActive(false);
 		_fade = 0;
 		_gamePoints = 0;
+		_cannonball->splineClear();
+		_gControl->setReadyToShot(true);
 		break;
 	case GameController::GameStates::STOP:
 		_buttonRestart->setActive(true);
