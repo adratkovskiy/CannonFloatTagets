@@ -54,4 +54,5 @@
   <targets_count_red type="int" val="10" />
   <targets_count_blue type="int" val="10" />
   <targets_count_yellow type="int" val="10" />
+  <fade_speed type="int" val="2" />
 </options>

@@ -76,6 +76,7 @@ void TestWidget::Init()
 	_rightBorder = _options->getParamInt("target_create_place_right");
 	_gamePoints = _options->getParamInt("game_points_default");
 	_gameTimer = _options->getParamFloat("game_time_max");
+	_fadeSpeed = _options->getParamInt("fade_speed");
 
 	Render::BindFont("arial");
 	SetGameStatus(GameController::GameStates::GAME);
@@ -112,12 +113,20 @@ void TestWidget::Draw()
 			Render::device.PopMatrix();
 		}
 
-		if (!_gControl->getReadyToShot())
+		if (!_gControl->getReadyToShot()) // рисую полет ядра
 		{
 			Render::device.PushMatrix();
 			Render::device.MatrixTranslate(_cannonball->getPosition());
 			Render::device.MatrixScale(_cannonball->getScale());
 			_cannonballTexture->Draw();
+			Render::device.PopMatrix();
+		}
+		else {
+			Render::device.PushMatrix(); // или рисую прицел
+			Render::device.MatrixTranslate(static_cast<int>(_gControl->getMousePos().x), static_cast<int>(_gControl->getMousePos().y), 0);
+			Render::device.MatrixTranslate(_aim->getCoordCenter());
+			Render::device.MatrixScale(_aim->getScale());
+			_aimTexture->Draw();
 			Render::device.PopMatrix();
 		}
 
@@ -163,26 +172,18 @@ void TestWidget::Draw()
 		Render::device.PopMatrix();
 		
 
-		Render::SetColor(Color(0, 0, 0, 255));
+		Render::SetColor(Color(0, 0, 0, 255)); //текст на кнопках
 		Render::PrintString(_button->getTextPos(), _button->getText(), 1.5f, CenterAlign, CenterAlign);
 		Render::PrintString(_button30Targets->getTextPos(), _button30Targets->getText(), 1.5f, CenterAlign, CenterAlign);
 		Render::PrintString(_buttonExperiment->getTextPos(), _buttonExperiment->getText(), 1.5f, CenterAlign, CenterAlign);
 		Render::ResetColor();
-
-
-		Render::device.PushMatrix(); //прицел
-		Render::device.MatrixTranslate(static_cast<int>(_gControl->getMousePos().x), static_cast<int>(_gControl->getMousePos().y), 0);
-		Render::device.MatrixTranslate(_aim->getCoordCenter());
-		Render::device.MatrixScale(_aim->getScale());
-		_aimTexture->Draw();
-		Render::device.PopMatrix();
 		break;
 
 	case GameController::GameStates::TO_STOP:
 		_backgroundTexture->Draw();
 		Render::device.SetTexturing(false);
 
-		Render::BeginColor(Color{ _options->getColor("block_screen_color").red
+		Render::BeginColor(Color{ _options->getColor("block_screen_color").red //затемнение фона
 			, _options->getColor("block_screen_color").green
 			, _options->getColor("block_screen_color").blue
 			, _fade
@@ -192,7 +193,7 @@ void TestWidget::Draw()
 
 		Render::device.SetTexturing(true);
 		if (_fade < _options->getColor("block_screen_color").alpha) {
-			_fade++;
+			_fade += _fadeSpeed; // скорость затенения
 		}
 		else {
 			SetGameStatus(GameController::GameStates::STOP);
@@ -207,10 +208,10 @@ void TestWidget::Draw()
 		Render::EndColor();
 		Render::device.SetTexturing(true);
 
-		Render::device.PushMatrix(); //кнопка создания кучи таргетов
+		Render::device.PushMatrix(); //кнопка рестарта
 		Render::device.MatrixTranslate(_buttonRestart->getPos());
 		Render::device.MatrixScale(_buttonRestart->getScale());
-		if (_buttonRestart->getPressed()) { //кнопка нажата отпущена, рисую отсюда
+		if (_buttonRestart->getPressed()) { 
 			_buttonDownTexture->Draw();
 		}
 		else {
@@ -242,6 +243,7 @@ void TestWidget::Draw()
 	
 	_effCont.Draw();
 	
+	// ниже можно ли делать такое оформление кода, или не стоит?
 	Render::PrintString(10, _options->getParamInt("panel_points_top") + _options->getParamInt("panel_points_height") / 2, 
 		_options->getParamString("text_title_points_string") 
 		+ utils::lexical_cast(_gamePoints)
@@ -256,14 +258,14 @@ void TestWidget::Draw()
 
 void TestWidget::Update(float dt)
 {
-	_effCont.Update(dt); // эффекты - не трогал
+	_effCont.Update(dt); // эффекты - еще буду доделывать
 	switch (_gControl->getGameState())
 	{
 	case GameController::GameStates::GAME:
 		_gameTimer -= dt;
 		if (!_gControl->getReadyToShot()) {
 			_cannonball->updPosition(_gControl->getTimer()); //полет ядра
-			if (_cannonball->getPosition().y < 0) {
+			if (_cannonball->getPosition().y < 0) { //прилетело - очищаю
 				_gControl->setReadyToShot(true);
 				_cannonball->splineClear(); 
 			}
@@ -281,7 +283,7 @@ void TestWidget::Update(float dt)
 		if (!_gControl->getReadyToShot()) {
 			for (std::list<Targets>::iterator it = _targets.begin(); it != _targets.end();)
 			{
-				if (it->isCrossing(_cannonball->getPosition(), _cannonball->getRadius())) {
+				if (it->isCrossing(_cannonball->getPosition(), _cannonball->getRadius())) { //проверка на сбитие мишени
 					_gamePoints += it->getPoints();
 					it = _targets.erase(it);
 				}
@@ -298,9 +300,9 @@ void TestWidget::Update(float dt)
 			{
 				if (it_hunt != it_vict) {
 					//можно оба условия засунуть в одну проверку, но я так понимаю, 
-					//что так будет быстрее, типа отсекает по сравнению, один это объект, или нет
+					//что так будет немного быстрее, типа отсекает по сравнению, один это объект, или нет
 					if (LocalFunctions::pointToPointRange(it_hunt->getCoordCenter(), it_vict->getCoordCenter()) <= (it_hunt->getRadius() + it_vict->getRadius())) {
-						it_hunt->tooClose(*it_vict);
+						it_hunt->tooClose(*it_vict); // столкновение с объектами
 					}
 				}
 			}
@@ -592,8 +594,8 @@ void TestWidget::SetGameStatus(const GameController::GameStates state) //сме�
 		break;
 
 	case GameController::GameStates::GAME:
-		//CreateSomeTarget(_options->getParamInt("targets_count_to_game"));
-		CreateColorTarget('b', _options->getParamInt("targets_count_blue"));
+		//CreateSomeTarget(_options->getParamInt("targets_count_to_game"));  // для примера
+		CreateColorTarget('b', _options->getParamInt("targets_count_blue")); 
 		CreateColorTarget('y', _options->getParamInt("targets_count_yellow"));
 		CreateColorTarget('r', _options->getParamInt("targets_count_red"));
 		_button->setActive(true);

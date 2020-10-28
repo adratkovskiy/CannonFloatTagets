@@ -78,5 +78,6 @@ private:
 	int _rightBorder;
 	int _gamePoints;
 	uint8_t _fade;
+	int _fadeSpeed;
 	float _gameTimer;
 };
