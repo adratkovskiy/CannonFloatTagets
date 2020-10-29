@@ -8,7 +8,7 @@ public:
 	Cannonball(const float scale
 		, const IRect& textureRect
 		, const FPoint& pos
-		, float speed
+		, const float speed
 		, const std::vector<float>& splinePoints
 	);
 
@@ -19,7 +19,7 @@ public:
 	const bool& getShow() const noexcept;
 	const float& getSpeed() const noexcept;
 	const float& getFlightTime() const noexcept;
-	TimedSpline<FPoint>& getSpline();
+	TimedSpline<FPoint>& getSpline() noexcept;
 
 	void setShow(bool show);
 	void setFlightTime(float cannonTimer);
@@ -28,7 +28,7 @@ public:
 private:
 	bool _show;
 	FPoint _centerPos;
-	float _speed;
+	const float _speed;
 	float _flightTime;
 	FPoint _currentPosition;
 	TimedSpline<FPoint> _spline;
