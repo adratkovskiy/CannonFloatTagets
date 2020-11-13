@@ -48,10 +48,6 @@ void GameController::setTimer(const float timer)
 	_timer = timer;
 }
 
-float& GameController::changeTimer()
-{
-	return _timer;
-}
 
 
 

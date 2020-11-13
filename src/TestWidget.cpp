@@ -269,11 +269,10 @@ void TestWidget::Update(float dt)
 				_gControl->setReadyToShot(true);
 				_cannonball->splineClear(); 
 			}
-			_gControl->changeTimer() += dt * _cannonball->getFlightTime();
+			_gControl->setTimer(_gControl->getTimer() + dt * _cannonball->getFlightTime());
 			while (_gControl->getTimer() > 2 * math::PI) //это какой-то движковый прикол, не понял
 			{
-				_gControl->changeTimer() -= 2 * math::PI;
-
+				_gControl->setTimer(_gControl->getTimer() - 2 * math::PI);
 			}
 		}
 		

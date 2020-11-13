@@ -3,7 +3,7 @@
 
 float LocalFunctions::pointToPointRange(const FPoint& firstPoint, const FPoint& secondPoint)
 {
-	return math::sqrt(math::abs(math::sqr(firstPoint.x - secondPoint.x) + math::sqr(firstPoint.y - secondPoint.y)));
+	return math::sqrt(math::sqr(firstPoint.x - secondPoint.x) + math::sqr(firstPoint.y - secondPoint.y));
 }
 
 float LocalFunctions::pointToPointRange(const IPoint& firstPoint, const FPoint& secondPoint)
@@ -13,7 +13,7 @@ float LocalFunctions::pointToPointRange(const IPoint& firstPoint, const FPoint& 
 
 float LocalFunctions::vecLen(const FPoint& vec)
 {
-	return math::sqrt(math::abs(math::sqr(vec.x) + math::sqr(vec.y)));
+	return math::sqrt(math::sqr(vec.x) + math::sqr(vec.y));
 }
 
 //опять же, если возвращаю по ссылке, то в void TestWidget::CreateTarget() значение уже умирает

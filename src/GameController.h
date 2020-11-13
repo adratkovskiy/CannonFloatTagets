@@ -14,8 +14,6 @@ public:
 
 	GameController(GameStates gameState, bool readyToShot, float timer);
 
-	float& changeTimer();
-
 	bool getReadyToShot() const;
 	const GameController::GameStates& getGameState() const;
 	const IPoint& getMousePos() const;

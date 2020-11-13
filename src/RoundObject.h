@@ -5,15 +5,16 @@ class RoundObject
 {
 public:
 	RoundObject(const float scale, const IRect& textureRect, const FPoint& pos);
+	virtual ~RoundObject();
 	bool isCrossing(const FPoint& targetCoord, const float targetRadius);
-	void addVecToPos(FPoint& vec);
+	void addVecToPos(const FPoint& vec);
 
 	const FPoint& getPos() const;
 	float getScale() const;
 	float getRadius() const;
 	const FPoint& getCoordCenter();
 
-	void setPos(FPoint& pos);
+	void setPos(const FPoint& pos);
 
 protected:
 	float _scale;
