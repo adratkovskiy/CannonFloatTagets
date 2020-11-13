@@ -55,7 +55,7 @@ Options::Options()
     }
 }
 
-const int Options::getParamInt(const std::string& paramName)
+int Options::getParamInt(const std::string& paramName)
 {
     std::map<std::string, int>::iterator it;
     it = _configInt.find(paramName);
@@ -65,7 +65,7 @@ const int Options::getParamInt(const std::string& paramName)
     }
 }
 
-const float Options::getParamFloat(const std::string& paramName)
+float Options::getParamFloat(const std::string& paramName)
 {
     std::map<std::string, float>::iterator it;
     it = _configFloat.find(paramName);
@@ -95,7 +95,7 @@ const std::string& Options::getParamString(const std::string& paramName)
     }
 }
 
-const std::vector<float>& Options::getSplinePoints() const noexcept
+const std::vector<float>& Options::getSplinePoints() const
 {
     return _configSplinePoints;
 }

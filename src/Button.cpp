@@ -13,7 +13,7 @@ Button::Button(const FPoint& pos, const float scale, const std::string& text, IR
     _textPos = pos + _size / 2;
 }
 
-const bool Button::click(const IPoint& mouse_pos)
+bool Button::click(const IPoint& mouse_pos)
 {
     if (_active) { //сначала экранирую по активности кнопки
         if ((mouse_pos.x >= _pos.x)
@@ -27,37 +27,37 @@ const bool Button::click(const IPoint& mouse_pos)
     return _pressed;
 }
 
-void Button::noPressed() noexcept
+void Button::noPressed()
 {
     _pressed = false;
 }
 
-const float Button::getScale() const noexcept
+float Button::getScale() const
 {
     return _scale;
 }
 
-const FPoint& Button::getPos() const noexcept
+const FPoint& Button::getPos() const
 {
     return _pos;
 }
 
-const std::string& Button::getText() const noexcept
+const std::string& Button::getText() const
 {
     return _text;
 }
 
-const FPoint& Button::getTextPos() const noexcept
+const FPoint& Button::getTextPos() const
 {
     return _textPos;
 }
 
-const bool Button::getPressed() const noexcept
+bool Button::getPressed() const
 {
     return _pressed;
 }
 
-void Button::setActive(const bool active) noexcept
+void Button::setActive(const bool active)
 {
     _active = active;
 }

@@ -16,22 +16,17 @@ Cannonball::Cannonball(const float scale
 }
 
 
-const FPoint& Cannonball::getPosition() const noexcept
+const FPoint& Cannonball::getPosition() const
 {
 	return _currentPosition;
 }
 
-const bool& Cannonball::getShow() const noexcept
-{
-	return _show;
-}
-
-const float& Cannonball::getSpeed() const noexcept
+float Cannonball::getSpeed() const
 {
 	return _speed;
 }
 
-const float& Cannonball::getFlightTime() const noexcept
+float Cannonball::getFlightTime() const
 {
 	return _flightTime;
 }
@@ -66,7 +61,7 @@ void Cannonball::setSpline(FPoint cannonCenter, FPoint mousePos)
 	_spline.CalculateGradient();
 }
 
-void Cannonball::splineClear() noexcept
+void Cannonball::splineClear()
 {
 	_spline.Clear();
 }

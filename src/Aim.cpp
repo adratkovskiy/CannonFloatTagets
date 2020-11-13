@@ -9,12 +9,12 @@ Aim::Aim(const float scale, const IRect& bitmapRect):
     _centerCoord.y = -bitmapRect.height * _scale * 0.5;
 }
 
-const float Aim::getScale() const noexcept
+float Aim::getScale() const
 {
     return _scale;
 }
 
-const FPoint& Aim::getCoordCenter() const noexcept
+const FPoint& Aim::getCoordCenter() const
 {
     return _centerCoord;
 }

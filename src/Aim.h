@@ -4,10 +4,10 @@ class Aim
 public:
 	Aim(const float scale, const IRect& bitmapRect);
 
-	const float getScale() const noexcept;
-	const FPoint& getCoordCenter() const noexcept;
+	float getScale() const;
+	const FPoint& getCoordCenter() const;
 private:
-	const float _scale;
+	float _scale;
 	FPoint _centerCoord;
 };
 

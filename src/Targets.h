@@ -24,7 +24,7 @@ public:
     void Collision(const FPoint& normal);
     void tooClose(Targets& victim);
     
-    const int getPoints() const noexcept;
+    int getPoints() const;
 
 private:
     Render::Texture* _texture;

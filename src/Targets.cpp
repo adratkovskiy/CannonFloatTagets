@@ -84,7 +84,7 @@ void Targets::tooClose(Targets& victim)
 	victim.Collision(diff);
 }
 
-const int Targets::getPoints() const noexcept
+int Targets::getPoints() const
 {
 	return _points;
 }

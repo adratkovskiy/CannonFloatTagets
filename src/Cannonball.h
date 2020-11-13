@@ -13,12 +13,11 @@ public:
 	);
 
 	void updPosition(const float globalTimer);
-	void splineClear() noexcept;
+	void splineClear();
 
-	const FPoint& getPosition() const noexcept;
-	const bool& getShow() const noexcept;
-	const float& getSpeed() const noexcept;
-	const float& getFlightTime() const noexcept;
+	const FPoint& getPosition() const;
+	float getSpeed() const;
+	float getFlightTime() const;
 	TimedSpline<FPoint>& getSpline();
 
 	void setShow(bool show);

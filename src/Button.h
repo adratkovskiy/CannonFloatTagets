@@ -6,15 +6,15 @@ public:
 	Button(const FPoint& pos, const float scale, const std::string& text, IRect& textureRect);
 	~Button();
 
-	const bool click(const IPoint& mouse_pos);
-	void noPressed() noexcept;
+	bool click(const IPoint& mouse_pos);
+	void noPressed();
 
-	const float getScale() const noexcept;
-	const FPoint& getPos() const noexcept;
-	const std::string& getText() const noexcept;
-	const FPoint& getTextPos() const noexcept;
-	const bool getPressed() const noexcept;
-	void setActive(const bool active) noexcept;
+	float getScale() const;
+	const FPoint& getPos() const;
+	const std::string& getText() const;
+	const FPoint& getTextPos() const;
+	bool getPressed() const;
+	void setActive(const bool active);
 
 private:
 	bool _active;

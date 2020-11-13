@@ -8,22 +8,22 @@ GameController::GameController(GameStates gameState, bool readyToShot, float tim
 {
 }
 
-const bool GameController::getReadyToShot() const noexcept
+bool GameController::getReadyToShot() const
 {
 	return _readyToShot;
 }
 
-const GameController::GameStates& GameController::getGameState() const noexcept
+const GameController::GameStates& GameController::getGameState() const
 {
 	return _gameState;
 }
 
-const IPoint& GameController::getMousePos()  const noexcept
+const IPoint& GameController::getMousePos()  const
 {
 	return _mousePos;
 }
 
-const float GameController::getTimer() const noexcept
+float GameController::getTimer() const
 {
 	return _timer;
 }

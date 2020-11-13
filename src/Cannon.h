@@ -9,16 +9,16 @@ public:
 		, const FPoint& cannonCenter
 	);
 
-	const float getAngle() const noexcept;
-	const float getScale() const noexcept;
-	const FPoint& getCannonCenter() const noexcept;
-	const FPoint& getCannonRotatePoint() const noexcept;
-	const FPoint& getStandPos() const noexcept;
+	float getAngle() const;
+	float getScale() const;
+	const FPoint& getCannonCenter() const;
+	const FPoint& getCannonRotatePoint() const;
+	const FPoint& getStandPos() const;
 
 	void setAngle(const float angle);
 private:
 	float _angle;
-	const float _scale;
+	float _scale;
 	const FPoint _standPos;
 	const FPoint _cannonRotatePoint;
 	const FPoint _cannonCenter;

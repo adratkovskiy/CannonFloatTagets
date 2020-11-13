@@ -4,11 +4,11 @@ class Options
 {
 public:
 	Options();
-	const int getParamInt(const std::string& paramName);
-	const float getParamFloat(const std::string& paramName);
+	int getParamInt(const std::string& paramName);
+	float getParamFloat(const std::string& paramName);
 	const FPoint& getParamFPoint(const std::string& paramName);
 	const std::string& getParamString(const std::string& paramName);
-	const std::vector<float>& getSplinePoints() const noexcept;
+	const std::vector<float>& getSplinePoints() const;
 	const Color& getColor(const std::string& paramName);
 	const IRect& getRect(const std::string& paramName);
 private:
