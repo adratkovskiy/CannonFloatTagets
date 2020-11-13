@@ -6,6 +6,7 @@ public:
 
 	float getScale() const;
 	const FPoint& getCoordCenter() const;
+
 private:
 	float _scale;
 	FPoint _centerCoord;

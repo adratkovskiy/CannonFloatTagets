@@ -31,7 +31,7 @@ float Cannonball::getFlightTime() const
 	return _flightTime;
 }
 
-TimedSpline<FPoint>& Cannonball::getSpline() noexcept
+TimedSpline<FPoint>& Cannonball::getSpline()
 {
 	return _spline;
 }

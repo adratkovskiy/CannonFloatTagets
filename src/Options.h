@@ -4,6 +4,7 @@ class Options
 {
 public:
 	Options();
+
 	int getParamInt(const std::string& paramName);
 	float getParamFloat(const std::string& paramName);
 	const FPoint& getParamFPoint(const std::string& paramName);
@@ -11,6 +12,7 @@ public:
 	const std::vector<float>& getSplinePoints() const;
 	const Color& getColor(const std::string& paramName);
 	const IRect& getRect(const std::string& paramName);
+
 private:
 	std::map<std::string, std::string> _configString;
 	std::map<std::string, float> _configFloat;

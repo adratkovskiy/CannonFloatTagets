@@ -16,6 +16,7 @@ public:
 	const FPoint& getStandPos() const;
 
 	void setAngle(const float angle);
+
 private:
 	float _angle;
 	float _scale;

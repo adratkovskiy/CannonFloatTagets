@@ -13,7 +13,9 @@ public:
 	};
 
 	GameController(GameStates gameState, bool readyToShot, float timer);
-	
+
+	float& changeTimer();
+
 	bool getReadyToShot() const;
 	const GameController::GameStates& getGameState() const;
 	const IPoint& getMousePos() const;
@@ -23,8 +25,6 @@ public:
 	void setGameState(const GameStates gameState);
 	void setMousePos(const IPoint& mousePos);
 	void setTimer(const float timer);
-
-	float& changeTimer();
 	
 private:
 	float _timer;

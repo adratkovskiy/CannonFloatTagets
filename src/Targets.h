@@ -19,6 +19,7 @@ public:
         , const int points
     );
     ~Targets();
+
     void Draw() const;
     void Tick();
     void Collision(const FPoint& normal);
