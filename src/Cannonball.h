@@ -15,18 +15,10 @@ public:
 	void updPosition(const float globalTimer);
 	void splineClear();
 
-<<<<<<< HEAD
 	const FPoint& getPosition() const;
 	float getSpeed() const;
 	float getFlightTime() const;
 	TimedSpline<FPoint>& getSpline();
-=======
-	const FPoint& getPosition() const noexcept;
-	const bool& getShow() const noexcept;
-	const float& getSpeed() const noexcept;
-	const float& getFlightTime() const noexcept;
-	TimedSpline<FPoint>& getSpline() noexcept;
->>>>>>> 22a3e1faecb604078384831bf2c8f0ebd8be7e8a
 
 	void setShow(bool show);
 	void setFlightTime(float cannonTimer);
