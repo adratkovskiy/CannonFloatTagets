@@ -63,6 +63,8 @@ int Options::getParamInt(const std::string& paramName)
     {
         return it->second;
     }
+    else
+        return 0;
 }
 
 float Options::getParamFloat(const std::string& paramName)
@@ -73,6 +75,8 @@ float Options::getParamFloat(const std::string& paramName)
     {
         return it->second;
     }
+    else
+        return 0.f;
 }
 
 const FPoint& Options::getParamFPoint(const std::string& paramName)
@@ -83,6 +87,8 @@ const FPoint& Options::getParamFPoint(const std::string& paramName)
     {
         return it->second;
     }
+    else
+        return FPoint{ 0.f, 0.f };
 }
 
 const std::string& Options::getParamString(const std::string& paramName)
@@ -93,6 +99,8 @@ const std::string& Options::getParamString(const std::string& paramName)
     {
         return it->second;
     }
+    else
+        return "";
 }
 
 const std::vector<float>& Options::getSplinePoints() const
@@ -108,6 +116,8 @@ const Color& Options::getColor(const std::string& paramName)
     {
         return it->second;
     }
+    else
+        return Color{ 0, 0, 0, 0 };
 }
 
 const IRect& Options::getRect(const std::string& paramName)
@@ -118,5 +128,7 @@ const IRect& Options::getRect(const std::string& paramName)
     {
         return it->second;
     }
+    else
+        return IRect{ 0, 0, 0, 0 };
 }
 

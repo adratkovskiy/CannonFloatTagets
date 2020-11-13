@@ -29,7 +29,7 @@ public:
 private:
     Render::Texture* _texture;
     FPoint _moveVec;
-    float _speed;
+    const float _speed;
     const int _topBorder;
     const int _bottomBorder;
     const int _leftBorder;
