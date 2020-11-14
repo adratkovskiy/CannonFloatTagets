@@ -34,13 +34,11 @@ Options::Options()
             _configInt.insert({ node->name(), atoi(node->first_attribute("val")->value()) });
         }
         else if (!strcmp(node->last_attribute("type")->value(), (const char*)"color")) {
-            std::string naname = node->name();
             Color color;
-            // вот тут двойное преобразование не очень нравитс€. Ќо иначе только reinterpret_cast, а он в текст преобразует
-            color.red = static_cast<uint8_t>(atoi(node->first_attribute("R")->value()));
-            color.green = static_cast<uint8_t>(atoi(node->first_attribute("G")->value()));
-            color.blue = static_cast<uint8_t>(atoi(node->first_attribute("B")->value()));
-            color.alpha = static_cast<uint8_t>(atoi(node->first_attribute("A")->value()));
+            color.red = strtoul(node->first_attribute("R")->value(), NULL, 0);
+            color.green = strtoul(node->first_attribute("G")->value(), NULL, 0);
+            color.blue = strtoul(node->first_attribute("B")->value(), NULL, 0);
+            color.alpha = strtoul(node->first_attribute("A")->value(), NULL, 0);
             _color.insert({ node->name(), color });
         }
         else if (!strcmp(node->last_attribute("type")->value(), (const char*)"rect")) {
