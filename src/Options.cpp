@@ -10,8 +10,8 @@ Options::Options()
     {
         if (!strcmp(node->last_attribute("type")->value(), (const char*) "FPoint")) {
             FPoint multy;
-            multy.x = atof(node->first_attribute("x")->value());
-            multy.y = atof(node->first_attribute("y")->value());
+            multy.x = strtof(node->first_attribute("x")->value(), NULL);
+            multy.y = strtof(node->first_attribute("y")->value(), NULL);
             _configFPoint.insert({ node->name(), multy });
         }
         else if (!strcmp(node->last_attribute("type")->value(), (const char*)"vector")) {
@@ -19,19 +19,17 @@ Options::Options()
             for (int i = 0; i < points_size; i++)
             {
                 std::string paramNumber = "p" + std::to_string(i);
-                _configSplinePoints.push_back(atof(node->first_attribute(paramNumber.c_str())->value()));
+                _configSplinePoints.push_back(strtof(node->first_attribute(paramNumber.c_str())->value(), NULL));
             }
         }
         else if (!strcmp(node->last_attribute("type")->value(), (const char*)"string")) {
             _configString.insert({ node->name(), node->first_attribute("val")->value() });
         }
         else if (!strcmp(node->last_attribute("type")->value(), (const char*)"float")) {
-            std::string naname = node->name();
-            _configFloat.insert({ node->name(), atof(node->first_attribute("val")->value()) });
+            _configFloat.insert({ node->name(), strtof(node->first_attribute("val")->value(), NULL) });
         }
         else if (!strcmp(node->last_attribute("type")->value(), (const char*)"int")) {
-            std::string naname = node->name();
-            _configInt.insert({ node->name(), atoi(node->first_attribute("val")->value()) });
+            _configInt.insert({ node->name(), strtol(node->first_attribute("val")->value(), NULL, 0) });
         }
         else if (!strcmp(node->last_attribute("type")->value(), (const char*)"color")) {
             Color color;
@@ -42,12 +40,11 @@ Options::Options()
             _color.insert({ node->name(), color });
         }
         else if (!strcmp(node->last_attribute("type")->value(), (const char*)"rect")) {
-            std::string naname = node->name();
             IRect rect;
-            rect.x = atoi(node->first_attribute("x")->value());
-            rect.y = atoi(node->first_attribute("y")->value());
-            rect.width = atoi(node->first_attribute("width")->value());
-            rect.height = atoi(node->first_attribute("height")->value());
+            rect.x = strtoul(node->first_attribute("x")->value(), NULL, 0);
+            rect.y = strtoul(node->first_attribute("y")->value(), NULL, 0);
+            rect.width = strtoul(node->first_attribute("width")->value(), NULL, 0);
+            rect.height = strtoul(node->first_attribute("height")->value(), NULL, 0);
             _rect.insert({ node->name(), rect });
         }
     }
