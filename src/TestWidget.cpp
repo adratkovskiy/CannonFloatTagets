@@ -105,7 +105,7 @@ void TestWidget::Draw()
 		_cannonBackTexture->Draw();
 		Render::device.PopMatrix();
 
-		for (std::list<Targets>::iterator it = _targets.begin(); it != _targets.end(); it++) {
+		for (std::vector<Targets>::iterator it = _targets.begin(); it != _targets.end(); it++) {
 			Render::device.PushMatrix();
 			Render::device.MatrixTranslate(it->getPos());
 			Render::device.MatrixScale(it->getScale());
@@ -280,11 +280,13 @@ void TestWidget::Update(float dt)
 		//переделал хранилище целей из вектор в список, ибо, как я почитал, объекты не с краев лучше удалять именно из списка.
 		_cannon->setAngle(atan2(_cannon->getCannonCenter().y - _gControl->getMousePos().y, _cannon->getCannonCenter().x - _gControl->getMousePos().x) / math::PI * 180 + 90);
 		if (!_gControl->getReadyToShot()) {
-			for (std::list<Targets>::iterator it = _targets.begin(); it != _targets.end();)
+			for (std::vector<Targets>::iterator it = _targets.begin(); it != _targets.end();)
 			{
 				if (it->isCrossing(_cannonball->getPosition(), _cannonball->getRadius())) { //проверка на сбитие мишени
 					_gamePoints += it->getPoints();
-					it = _targets.erase(it);
+					//std::swap(it, _targets.back());
+					break;
+					//it = _targets.erase(it);
 				}
 				else {
 					it++;
@@ -292,17 +294,15 @@ void TestWidget::Update(float dt)
 			}
 		}
 
-		for (std::list<Targets>::iterator it_hunt = _targets.begin(); it_hunt != _targets.end(); it_hunt++)
+		for (std::vector<Targets>::iterator it_hunt = _targets.begin(); it_hunt != _targets.end(); it_hunt++)
 		{
 			it_hunt->Tick();
-			for (std::list<Targets>::iterator it_vict = _targets.begin(); it_vict != _targets.end(); it_vict++)
+			for (std::vector<Targets>::iterator it_vict = _targets.begin(); it_vict != _targets.end(); it_vict++)
 			{
-				if (it_hunt != it_vict) {
-					//можно оба условия засунуть в одну проверку, но я так понимаю, 
-					//что так будет немного быстрее, типа отсекает по сравнению, один это объект, или нет
-					if (LocalFunctions::pointToPointRange(it_hunt->getCoordCenter(), it_vict->getCoordCenter()) <= (it_hunt->getRadius() + it_vict->getRadius())) {
-						it_hunt->tooClose(*it_vict); // столкновение с объектами
-					}
+				if ((it_hunt != it_vict) &&
+					(LocalFunctions::pointToPointRange(it_hunt->getCoordCenter(), it_vict->getCoordCenter()) <= (it_hunt->getRadius() + it_vict->getRadius()))
+					) {
+					it_hunt->tooClose(*it_vict); // столкновение с объектами
 				}
 			}
 		}
