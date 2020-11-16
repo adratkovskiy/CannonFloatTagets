@@ -275,8 +275,7 @@ void TestWidget::Update(float dt)
 				_gControl->setTimer(_gControl->getTimer() - 2 * math::PI);
 			}
 		}
-		
-		
+		std::swap(_targets[0], _targets[1]);
 		//переделал хранилище целей из вектор в список, ибо, как я почитал, объекты не с краев лучше удалять именно из списка.
 		_cannon->setAngle(atan2(_cannon->getCannonCenter().y - _gControl->getMousePos().y, _cannon->getCannonCenter().x - _gControl->getMousePos().x) / math::PI * 180 + 90);
 		if (!_gControl->getReadyToShot()) {
@@ -284,9 +283,8 @@ void TestWidget::Update(float dt)
 			{
 				if (it->isCrossing(_cannonball->getPosition(), _cannonball->getRadius())) { //проверка на сбитие мишени
 					_gamePoints += it->getPoints();
-					//std::swap(it, _targets.back());
+					//std::iter_swap(_targets.begin(), _targets.begin() + 1);
 					break;
-					//it = _targets.erase(it);
 				}
 				else {
 					it++;

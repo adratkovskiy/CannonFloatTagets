@@ -6,7 +6,24 @@ RoundObject::RoundObject(const float scale, const IRect& textureRect, const FPoi
 	, _pos(pos)
 {
 	_radius = textureRect.width * _scale / 2;
+	_textureRect = textureRect;
 	setPosCenter();
+}
+
+RoundObject::RoundObject(const RoundObject& obj) :
+	_scale(obj._scale)
+	, _pos(obj._pos)
+{
+	_radius = obj._radius;
+	_posCenter = obj._posCenter;
+}
+
+RoundObject& RoundObject::operator=(const RoundObject& obj)
+{
+	if (&obj == this) {
+		return *this;
+	}
+
 }
 
 RoundObject::~RoundObject()
