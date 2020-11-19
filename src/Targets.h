@@ -18,7 +18,7 @@ public:
         , const int rightBorder
         , const int points
     );
-    Targets(const Targets& obj);
+    //Targets(const Targets& obj);
     Targets& operator=(const Targets& obj);
     ~Targets();
 
@@ -32,11 +32,11 @@ public:
 private:
     Render::Texture* _texture;
     FPoint _moveVec;
-    const float _speed;
-    const int _topBorder;
-    const int _bottomBorder;
-    const int _leftBorder;
-    const int _rightBorder;
-    const int _points;
+    float _speed;
+    int _topBorder;
+    int _bottomBorder;
+    int _leftBorder;
+    int _rightBorder;
+    int _points;
 };
 

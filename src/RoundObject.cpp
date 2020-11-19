@@ -18,14 +18,6 @@ RoundObject::RoundObject(const RoundObject& obj) :
 	_posCenter = obj._posCenter;
 }
 
-RoundObject& RoundObject::operator=(const RoundObject& obj)
-{
-	if (&obj == this) {
-		return *this;
-	}
-
-}
-
 RoundObject::~RoundObject()
 {
 }
