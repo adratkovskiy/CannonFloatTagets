@@ -25,29 +25,12 @@ Targets::Targets(const float scale
 {
 }
 
-/*Targets::Targets(const Targets& obj) :
-	RoundObject(obj._scale, obj._textureRect, obj._pos)
-	, _texture(obj._texture)
-	, _moveVec(obj._moveVec)
-	, _speed(obj._speed)
-	, _topBorder(obj._topBorder)
-	, _bottomBorder(obj._bottomBorder)
-	, _leftBorder(obj._leftBorder)
-	, _rightBorder(obj._rightBorder)
-	, _points(obj._points)
-{
-}*/
-
 Targets& Targets::operator=(const Targets& obj)
 {
 	if (&obj == this) {
 		return *this;
 	}
-	RoundObject::_scale = obj.RoundObject::_scale;
-	RoundObject::_radius = obj.RoundObject::_radius;
-	RoundObject::_pos = obj.RoundObject::_pos;
-	RoundObject::_posCenter = obj.RoundObject::_posCenter;
-	RoundObject::_textureRect = obj.RoundObject::_textureRect;
+	RoundObject::operator=(obj);
 	_texture = obj._texture;
 	_moveVec = obj._moveVec;
 	_speed = obj._speed;

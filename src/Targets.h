@@ -18,7 +18,6 @@ public:
         , const int rightBorder
         , const int points
     );
-    //Targets(const Targets& obj);
     Targets& operator=(const Targets& obj);
     ~Targets();
 
