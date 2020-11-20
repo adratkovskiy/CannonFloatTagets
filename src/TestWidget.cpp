@@ -77,6 +77,13 @@ void TestWidget::Init()
 	_gamePoints = _options->getParamInt("game_points_default");
 	_gameTimer = _options->getParamFloat("game_time_max");
 	_fadeSpeed = _options->getParamInt("fade_speed");
+	_fadeBackground = Color{ _options->getColor("block_screen_color").red //затемнение фона
+			, _options->getColor("block_screen_color").green
+			, _options->getColor("block_screen_color").blue
+			, _options->getColor("block_screen_color").alpha
+	};
+	_fadeMax = _options->getColor("block_screen_color").alpha;
+	_blockScreen = _options->getRect("block_screen_size");
 
 	Render::BindFont("arial");
 	SetGameStatus(GameController::GameStates::GAME);
@@ -183,16 +190,12 @@ void TestWidget::Draw()
 		_backgroundTexture->Draw();
 		Render::device.SetTexturing(false);
 
-		Render::BeginColor(Color{ _options->getColor("block_screen_color").red //затемнение фона
-			, _options->getColor("block_screen_color").green
-			, _options->getColor("block_screen_color").blue
-			, _fade
-			});
-		Render::DrawRect(_options->getRect("block_screen_size"));
+		Render::BeginColor(Color{_fadeBackground.red, _fadeBackground.green, _fadeBackground.blue, _fade});
+		Render::DrawRect(_blockScreen);
 		Render::EndColor();
 
 		Render::device.SetTexturing(true);
-		if (_fade < _options->getColor("block_screen_color").alpha) {
+		if (_fade < _fadeMax) {
 			_fade += _fadeSpeed; // скорость затенения
 		}
 		else {
@@ -203,8 +206,8 @@ void TestWidget::Draw()
 	case GameController::GameStates::STOP:
 		_backgroundTexture->Draw();
 		Render::device.SetTexturing(false);
-		Render::BeginColor(_options->getColor("block_screen_color"));
-		Render::DrawRect(_options->getRect("block_screen_size"));
+		Render::BeginColor(_fadeBackground);
+		Render::DrawRect(_blockScreen);
 		Render::EndColor();
 		Render::device.SetTexturing(true);
 
@@ -279,18 +282,17 @@ void TestWidget::Update(float dt)
 		_cannon->setAngle(atan2(_cannon->getCannonCenter().y - _gControl->getMousePos().y, _cannon->getCannonCenter().x - _gControl->getMousePos().x) / math::PI * 180 + 90);
 		if (!_gControl->getReadyToShot()) {
 			int targetsToDelete = 0;
-			for (std::vector<Targets>::iterator it = _targets.begin(); it != _targets.end();)
+			for (std::vector<Targets>::iterator it = _targets.begin(); it < _targets.end() - targetsToDelete; it++)
 			{
 				if (it->isCrossing(_cannonball->getPosition(), _cannonball->getRadius())) { //проверка на сбитие мишени
-					_gamePoints += it->getPoints();
 					targetsToDelete++;
-					std::swap(it, _targets.end() - targetsToDelete);
-					
-					//_targets.erase(_targets.end());
+					_gamePoints += it->getPoints();
+					std::iter_swap(it, _targets.end() - targetsToDelete);
 				}
-				else {
-					it++;
-				}
+				if ((targetsToDelete > 0) && (it + 1 == _targets.end() - targetsToDelete)) 
+				{
+					_targets.erase(it + 1, _targets.end());
+				}	
 			}
 		}
 

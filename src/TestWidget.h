@@ -60,6 +60,9 @@ private:
 	Render::Texture* _buttonUpTexture;
 	Render::Texture* _buttonDownTexture;
 
+	Color _fadeBackground;
+	IRect _blockScreen;
+
 	EffectsContainer _effCont;
 	ParticleEffectPtr _eff;
 	GameController* _gControl;
@@ -78,6 +81,7 @@ private:
 	int _rightBorder;
 	int _gamePoints;
 	uint8_t _fade;
+	uint8_t _fadeMax;
 	int _fadeSpeed;
 	float _gameTimer;
 };
