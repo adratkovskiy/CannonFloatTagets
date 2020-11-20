@@ -85,6 +85,34 @@ void TestWidget::Init()
 	_fadeMax = _options->getColor("block_screen_color").alpha;
 	_blockScreen = _options->getRect("block_screen_size");
 
+	_textEndgameTitlePos = _options->getParamFPoint("text_endgame_title_pos");
+	_textEndgamePointsPos = _options->getParamFPoint("text_endgame_points_pos");
+	_textEndgameString = _options->getParamString("text_endgame_string");
+	_panelBottomStatColor = _options->getColor("panel_bottom_stat_color");
+	_panelBottomStatSize = _options->getRect("panel_bottom_stat_size");
+	_panelTopStatSize = _options->getRect("panel_top_stat_size");
+	_textTitlePointsString = _options->getParamString("text_title_points_string");
+	_textTitleTimeoutString = _options->getParamString("text_title_timeout_string");
+	_targetsCountToGame = _options->getParamInt("targets_count_to_game");
+
+	_targetRedScale = _options->getParamFloat("target_red_scale");
+	_targetBlueScale = _options->getParamFloat("target_blue_scale");
+	_targetYellowScale = _options->getParamFloat("target_yellow_scale");
+
+	_targetRedSpeed = _options->getParamFloat("target_red_speed");
+	_targetBlueSpeed = _options->getParamFloat("target_blue_speed");
+	_targetYellowSpeed = _options->getParamFloat("target_yellow_speed");
+
+	_targetRedPoints = _options->getParamInt("target_red_points");
+	_targetBluePoints = _options->getParamInt("target_blue_points");
+	_targetYellowPoints = _options->getParamInt("target_yellow_points");
+
+	_targetsCountRed = _options->getParamInt("targets_count_red");
+	_targetsCountBlue = _options->getParamInt("targets_count_blue");
+	_targetsCountYellow = _options->getParamInt("targets_count_yellow");
+
+	_gameTimeMax = _options->getParamFloat("game_time_max");
+
 	Render::BindFont("arial");
 	SetGameStatus(GameController::GameStates::GAME);
 }
@@ -223,8 +251,8 @@ void TestWidget::Draw()
 		Render::device.PopMatrix();
 
 		Render::SetColor(Color(0, 0, 0, 255));
-		Render::PrintString(_options->getParamFPoint("text_endgame_title_pos"), _options->getParamString("text_endgame_string"), 1.5f, CenterAlign, CenterAlign);
-		Render::PrintString(_options->getParamFPoint("text_endgame_points_pos"), utils::lexical_cast(_gamePoints) + " " + getTitlePoins(), 1.5f, CenterAlign, CenterAlign);
+		Render::PrintString(_textEndgameTitlePos, _textEndgameString, 1.5f, CenterAlign, CenterAlign);
+		Render::PrintString(_textEndgamePointsPos, utils::lexical_cast(_gamePoints) + " " + getTitlePoins(), 1.5f, CenterAlign, CenterAlign);
 		Render::PrintString(_buttonRestart->getTextPos(), _buttonRestart->getText(), 1.5f, CenterAlign, CenterAlign);
 		Render::ResetColor();
 
@@ -234,24 +262,20 @@ void TestWidget::Draw()
 
 	Render::device.SetTexturing(false);
 
-	Render::BeginColor(_options->getColor("panel_bottom_stat_color"));
-	Render::DrawRect(_options->getRect("panel_bottom_stat_size"));
-	Render::EndColor();
-
-	Render::BeginColor(_options->getColor("panel_bottom_stat_color"));
-	Render::DrawRect(0, _options->getParamInt("panel_points_top"), _options->getParamInt("panel_points_width"), _options->getParamInt("panel_points_height"));
+	Render::BeginColor(_panelBottomStatColor);
+	Render::DrawRect(_panelBottomStatSize);
+	Render::DrawRect(_panelTopStatSize);
 	Render::EndColor();
 
 	Render::device.SetTexturing(true);
 	
 	_effCont.Draw();
 	
-	// ниже можно ли делать такое оформление кода, или не стоит?
-	Render::PrintString(10, _options->getParamInt("panel_points_top") + _options->getParamInt("panel_points_height") / 2, 
-		_options->getParamString("text_title_points_string") 
+	Render::PrintString(10, _panelTopStatSize.y + _panelTopStatSize.height / 2,
+		_textTitlePointsString
 		+ utils::lexical_cast(_gamePoints)
 		+ " "
-		+ _options->getParamString("text_title_timeout_string")
+		+ _textTitleTimeoutString
 		+ utils::lexical_cast(math::round(_gameTimer))
 		, 1.0f, LeftAlign, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_gControl->getMousePos().x) + ", Y:" + utils::lexical_cast(_gControl->getMousePos().y), 1.f, CenterAlign);
@@ -337,7 +361,7 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 			CreateTarget();
 		}
 		else if (_button30Targets->click(_gControl->getMousePos())) {
-			CreateSomeTarget(_options->getParamInt("targets_count_to_game"));
+			CreateSomeTarget(_targetsCountToGame);
 		}
 		else if (_buttonExperiment->click(_gControl->getMousePos())) {
 			CreateTarget(FPoint{ 300.f, 400.f }, FPoint{ 1.f, 1.f });
@@ -430,59 +454,59 @@ void TestWidget::CreateTarget()
 	switch (numTarget) //норм ли такой вид, через свитч-кейс и рандом?
 	{
 	case(0):
-		newTarget = new Targets(_options->getParamFloat("target_yellow_scale")
+		newTarget = new Targets(_targetYellowScale
 			, _targetYellowTexture->getBitmapRect()
 			, randPos
 			, _targetYellowTexture
-			, LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed"))
-			, _options->getParamFloat("target_yellow_speed")
+			, LocalFunctions::randomVec(_targetYellowSpeed)
+			, _targetYellowSpeed
 			, _topBorder
 			, _bottomBorder
 			, _leftBorder
 			, _rightBorder
-			, _options->getParamInt("target_yellow_points")
+			, _targetYellowPoints
 		);
 		break;
 	case(1):
-		newTarget = new Targets(_options->getParamFloat("target_red_scale")
+		newTarget = new Targets(_targetRedScale
 			, _targetRedTexture->getBitmapRect()
 			, randPos
 			, _targetRedTexture
-			, LocalFunctions::randomVec(_options->getParamFloat("target_red_speed"))
-			, _options->getParamFloat("target_red_speed")
+			, LocalFunctions::randomVec(_targetRedSpeed)
+			, _targetRedSpeed
 			, _topBorder
 			, _bottomBorder
 			, _leftBorder
 			, _rightBorder
-			, _options->getParamInt("target_red_points")
+			, _targetRedPoints
 		);
 		break;
 	case(2):
-		newTarget = new Targets(_options->getParamFloat("target_blue_scale")
+		newTarget = new Targets(_targetBlueScale
 			, _targetBlueTexture->getBitmapRect()
 			, randPos
 			, _targetBlueTexture
-			, LocalFunctions::randomVec(_options->getParamFloat("target_blue_speed"))
-			, _options->getParamFloat("target_blue_speed")
+			, LocalFunctions::randomVec(_targetBlueSpeed)
+			, _targetBlueSpeed
 			, _topBorder
 			, _bottomBorder
 			, _leftBorder
 			, _rightBorder
-			, _options->getParamInt("target_blue_points")
+			, _targetBluePoints
 		);
 		break;
 	default:
-		newTarget = new Targets(_options->getParamFloat("target_yellow_scale")
+		newTarget = new Targets(_targetYellowScale
 			, _targetYellowTexture->getBitmapRect()
 			, randPos
 			, _targetYellowTexture
-			, LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed"))
-			, _options->getParamFloat("target_yellow_speed")
+			, LocalFunctions::randomVec(_targetYellowSpeed)
+			, _targetYellowSpeed
 			, _topBorder
 			, _bottomBorder
 			, _leftBorder
 			, _rightBorder
-			, _options->getParamInt("target_yellow_points")
+			, _targetYellowPoints
 		);
 		break;
 	}
@@ -492,17 +516,17 @@ void TestWidget::CreateTarget()
 void TestWidget::CreateTarget(FPoint& pos, FPoint& moveVec)
 {
 	Targets* newTarget;
-	newTarget = new Targets(_options->getParamFloat("target_blue_scale")
+	newTarget = new Targets(_targetBlueScale
 		, _targetBlueTexture->getBitmapRect()
 		, pos
 		, _targetBlueTexture
 		, moveVec
-		, _options->getParamFloat("target_blue_speed")
+		, _targetBlueSpeed
 		, _topBorder
 		, _bottomBorder
 		, _leftBorder
 		, _rightBorder
-		, _options->getParamInt("target_blue_points")
+		, _targetBluePoints
 	);
 	_targets.push_back(*newTarget);
 }
@@ -523,59 +547,59 @@ void TestWidget::CreateColorTarget(const char color, const int count)
 		switch (color) //норм ли такой вид, через свитч-кейс и рандом?
 		{
 		case('y'):
-			newTarget = new Targets(_options->getParamFloat("target_yellow_scale")
+			newTarget = new Targets(_targetYellowScale
 				, _targetYellowTexture->getBitmapRect()
 				, randPos
 				, _targetYellowTexture
-				, LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed"))
-				, _options->getParamFloat("target_yellow_speed")
+				, LocalFunctions::randomVec(_targetYellowSpeed)
+				, _targetYellowSpeed 
 				, _topBorder
 				, _bottomBorder
 				, _leftBorder
 				, _rightBorder
-				, _options->getParamInt("target_yellow_points")
+				, _targetYellowPoints
 			);
 			break;
 		case('r'):
-			newTarget = new Targets(_options->getParamFloat("target_red_scale")
+			newTarget = new Targets(_targetRedScale
 				, _targetRedTexture->getBitmapRect()
 				, randPos
 				, _targetRedTexture
-				, LocalFunctions::randomVec(_options->getParamFloat("target_red_speed"))
-				, _options->getParamFloat("target_red_speed")
+				, LocalFunctions::randomVec(_targetRedSpeed)
+				, _targetRedSpeed
 				, _topBorder
 				, _bottomBorder
 				, _leftBorder
 				, _rightBorder
-				, _options->getParamInt("target_red_points")
+				, _targetRedPoints
 			);
 			break;
 		case('b'):
-			newTarget = new Targets(_options->getParamFloat("target_blue_scale")
+			newTarget = new Targets(_targetBlueScale
 				, _targetBlueTexture->getBitmapRect()
 				, randPos
 				, _targetBlueTexture
-				, LocalFunctions::randomVec(_options->getParamFloat("target_blue_speed"))
-				, _options->getParamFloat("target_blue_speed")
+				, LocalFunctions::randomVec(_targetBlueSpeed)
+				, _targetBlueSpeed
 				, _topBorder
 				, _bottomBorder
 				, _leftBorder
 				, _rightBorder
-				, _options->getParamInt("target_blue_points")
+				, _targetBluePoints
 			);
 			break;
 		default:
-			newTarget = new Targets(_options->getParamFloat("target_yellow_scale")
+			newTarget = new Targets(_targetYellowScale 
 				, _targetYellowTexture->getBitmapRect()
 				, randPos
 				, _targetYellowTexture
-				, LocalFunctions::randomVec(_options->getParamFloat("target_yellow_speed"))
-				, _options->getParamFloat("target_yellow_speed")
+				, LocalFunctions::randomVec(_targetYellowSpeed )
+				, _targetYellowSpeed 
 				, _topBorder
 				, _bottomBorder
 				, _leftBorder
 				, _rightBorder
-				, _options->getParamInt("target_yellow_points")
+				, _targetYellowPoints
 			);
 			break;
 		}
@@ -595,10 +619,9 @@ void TestWidget::SetGameStatus(const GameController::GameStates state) //сме�
 		break;
 
 	case GameController::GameStates::GAME:
-		//CreateSomeTarget(_options->getParamInt("targets_count_to_game"));  // для примера
-		CreateColorTarget('b', _options->getParamInt("targets_count_blue")); 
-		CreateColorTarget('y', _options->getParamInt("targets_count_yellow"));
-		CreateColorTarget('r', _options->getParamInt("targets_count_red"));
+		CreateColorTarget('b', _targetsCountBlue);
+		CreateColorTarget('y', _targetsCountYellow);
+		CreateColorTarget('r', _targetsCountRed);
 		_button->setActive(true);
 		_button30Targets->setActive(true);
 		_buttonExperiment->setActive(true);
@@ -607,7 +630,7 @@ void TestWidget::SetGameStatus(const GameController::GameStates state) //сме�
 		_gamePoints = 0;
 		_cannonball->splineClear();
 		_gControl->setReadyToShot(true);
-		_gameTimer = _options->getParamFloat("game_time_max");
+		_gameTimer = _gameTimeMax;
 		break;
 	case GameController::GameStates::STOP:
 		_buttonRestart->setActive(true);

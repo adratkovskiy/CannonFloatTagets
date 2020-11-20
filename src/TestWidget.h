@@ -60,8 +60,33 @@ private:
 	Render::Texture* _buttonUpTexture;
 	Render::Texture* _buttonDownTexture;
 
+	//main screen
 	Color _fadeBackground;
 	IRect _blockScreen;
+	FPoint _textEndgameTitlePos;
+	FPoint _textEndgamePointsPos;
+	std::string _textEndgameString;
+	Color _panelBottomStatColor;
+	IRect _panelBottomStatSize;
+	IRect _panelTopStatSize;
+	std::string _textTitlePointsString;
+	std::string _textTitleTimeoutString;
+	int _targetsCountToGame;
+
+	//targets
+	float _targetRedScale;
+	float _targetBlueScale;
+	float _targetYellowScale;
+	float _targetRedSpeed;
+	float _targetBlueSpeed;
+	float _targetYellowSpeed;
+	int _targetRedPoints;
+	int _targetBluePoints;
+	int _targetYellowPoints;
+	int _targetsCountRed;
+	int _targetsCountBlue;
+	int _targetsCountYellow;
+	float _gameTimeMax;
 
 	EffectsContainer _effCont;
 	ParticleEffectPtr _eff;
@@ -84,4 +109,5 @@ private:
 	uint8_t _fadeMax;
 	int _fadeSpeed;
 	float _gameTimer;
+	float _gameTimerMax;
 };

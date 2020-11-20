@@ -37,9 +37,7 @@
   <panel_top_color type="color" R="100" G="100" B="100" A="255" />
   <panel_bottom_stat_color type="color" R="255" G="128" B="0" A="255" />
   <panel_bottom_stat_size type="rect" x="924" y="0" width="100" height="100" />
-  <panel_points_height type="int" val="30" />
-  <panel_points_top type="int" val="738" />
-  <panel_points_width type="int" val="200" />
+  <panel_top_stat_size type="rect" x="0" y="738" width="200" height="30" />
   <game_points_default type="int" val="0" />
   <game_points_max type="int" val="12" />
   <block_screen_size type="rect" x="0" y="0" width="1024" height="768" />
