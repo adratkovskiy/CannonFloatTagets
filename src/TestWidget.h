@@ -88,8 +88,6 @@ private:
 	int _targetsCountYellow;
 	float _gameTimeMax;
 
-	EffectsContainer _effCont;
-	ParticleEffectPtr _eff;
 	GameController* _gControl;
 	Cannonball* _cannonball;
 	Cannon* _cannon;
@@ -110,4 +108,7 @@ private:
 	int _fadeSpeed;
 	float _gameTimer;
 	float _gameTimerMax;
+
+	EffectsContainer _effCont;
+	ParticleEffectPtr _eff;
 };

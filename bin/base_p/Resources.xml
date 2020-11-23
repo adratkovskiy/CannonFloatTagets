@@ -17,11 +17,5 @@
     <texture id="Target_blue" path="textures/Target_blue.png" group="Targets" upload="false"/>
     <texture id="Button_up" path="textures/Button_up.png" group="Button" upload="false"/>
     <texture id="Button_down" path="textures/Button_down.png" group="Button" upload="false"/>
-    <!-- <texture id="Star" path="textures_test/star.png" group="TestGroup" upload="false"/>
-    <texture id="Circle" path="textures_test/circle.png" group="TestGroup" upload="false"/>
-    <texture id="btnStart_Text" path="textures_test/Local/Buttons/Start_text.png" group="MainMenu" upload="true"/>
-    <texture id="cancel_normal" path="textures_test/cancel_normal" />
-    <texture id="cancel_active" path="textures_test/cancel_active" />
-    <texture id="cancel_pressed" path="textures_test/cancel_pressed" />-->
 	</Textures>
 </Resources>

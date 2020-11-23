@@ -148,6 +148,8 @@ void TestWidget::Draw()
 			Render::device.PopMatrix();
 		}
 
+		_effCont.Draw(); //дым за ядром
+
 		if (!_gControl->getReadyToShot()) // рисую полет ядра
 		{
 			Render::device.PushMatrix();
@@ -269,8 +271,6 @@ void TestWidget::Draw()
 
 	Render::device.SetTexturing(true);
 	
-	_effCont.Draw();
-	
 	Render::PrintString(10, _panelTopStatSize.y + _panelTopStatSize.height / 2,
 		_textTitlePointsString
 		+ utils::lexical_cast(_gamePoints)
@@ -285,16 +285,25 @@ void TestWidget::Draw()
 
 void TestWidget::Update(float dt)
 {
-	_effCont.Update(dt); // эффекты - еще буду доделывать
+	_effCont.Update(dt);
+
 	switch (_gControl->getGameState())
 	{
 	case GameController::GameStates::GAME:
 		_gameTimer -= dt;
 		if (!_gControl->getReadyToShot()) {
 			_cannonball->updPosition(_gControl->getTimer()); //полет ядра
+			FPoint cannonBallPos = _cannonball->getPosition();
+			_eff->posX = cannonBallPos.x;
+			_eff->posY = cannonBallPos.y;
 			if (_cannonball->getPosition().y < 0) { //прилетело - очищаю
 				_gControl->setReadyToShot(true);
-				_cannonball->splineClear(); 
+				_cannonball->splineClear();
+				if (_eff)
+				{
+					_eff->Finish();
+					_eff = NULL;
+				}
 			}
 			_gControl->setTimer(_gControl->getTimer() + dt * _cannonball->getFlightTime());
 			while (_gControl->getTimer() > 2 * math::PI) //это какой-то движковый прикол, не понял
@@ -347,16 +356,11 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 {
 	if (Core::mainInput.GetMouseRightButton())
 	{
-		// При нажатии на правую кнопку мыши, создаём эффект шлейфа за мышкой.
-		//
-		/*_eff = _effCont.AddEffect("Iskra");
+		/*_eff = _effCont.AddEffect("SmokeCannon");
 		_eff->posX = mouse_pos.x + 0.f;
 		_eff->posY = mouse_pos.y + 0.f;
 		_eff->Reset();*/
-		
-		//
-		// И изменяем угол наклона текстуры.
-		//
+
 	}
 	else
 	{
@@ -381,21 +385,19 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 			_cannonball->setFlightTime( 1 / LocalFunctions::pointToPointRange(_gControl->getMousePos(), _cannon->getCannonCenter()) * _cannonball->getSpeed() );
 			_cannonball->setSpline(_cannon->getCannonCenter(), _gControl->getMousePos());
 			_gControl->setTimer(0);
+			_eff = _effCont.AddEffect("SmokeCannon");
+			FPoint cannonPos = _cannonball->getPosition();
+			_eff->posX = cannonPos.x;
+			_eff->posY = cannonPos.y;
+			_eff->Reset();
 		}
 	}
 	return false;
 }
 
-void TestWidget::MouseMove(const IPoint &mouse_pos) // можно не смотреть, это было в демке.
+void TestWidget::MouseMove(const IPoint &mouse_pos) 
 {
-	if (_eff)
-	{
-		//
-		// Если эффект создан, то перемещаем его в позицию мыши.
-		//
-		_eff->posX = mouse_pos.x + 0.f;
-		_eff->posY = mouse_pos.y + 0.f;
-	}
+
 }
 
 void TestWidget::MouseUp(const IPoint &mouse_pos) 
@@ -404,14 +406,6 @@ void TestWidget::MouseUp(const IPoint &mouse_pos)
 	_button30Targets->noPressed();
 	_buttonExperiment->noPressed();
 	_buttonRestart->noPressed();
-	if (_eff)  // можно не смотреть, это было в демке.
-	{
-		//
-		// Если эффект создан, то при отпускании мыши завершаем его.
-		//
-		_eff->Finish();
-		_eff = NULL;
-	}
 }
 
 void TestWidget::AcceptMessage(const Message& message) // можно не смотреть, это было в демке.

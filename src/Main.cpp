@@ -9,7 +9,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 int main(int argc, const char* argv[])
 #endif
 {
-	ParticleSystem::SetTexturesPath("textures_test/Particles");
+	ParticleSystem::SetTexturesPath("textures/Particles");
 
 #if defined(ENGINE_TARGET_WIN32)
 	Core::fileSystem.SetWriteDirectory("./write_directory");

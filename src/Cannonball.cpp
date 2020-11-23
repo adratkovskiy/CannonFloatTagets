@@ -51,14 +51,10 @@ void Cannonball::updPosition(const float globalTimer)
 	_currentPosition = _spline.getGlobalFrame(math::clamp(0.0f, 1.0f, globalTimer / 6.0f)) - _centerPos;
 }
 
-// получаю FPoint по значению, потому что отдаю в функцию по ссылкам
-// (_cannonball->setSpline(_cannon->getCannonCenter(), _gControl->getMousePos());) - норм?
 void Cannonball::setSpline(FPoint cannonCenter, FPoint mousePos)
 {
 	_spline.addKey(_splinePoints[0], cannonCenter);
 	_spline.addKey(_splinePoints[1], mousePos);
-	//вот тут "(mousePos.y - cannonCenter.y)" Visual studio ругается, что, дескать, результат стоит приводить к 8 байтовому значению.
-	//что с этим делать?
 	_spline.addKey(_splinePoints[2], { (float)(mousePos.x + (mousePos.x - cannonCenter.x)), (float)(mousePos.y + 0.3 * (mousePos.y - cannonCenter.y)) });
 	_spline.addKey(_splinePoints[3], { (float)(mousePos.x + 2 * (mousePos.x - cannonCenter.x)), (float)(mousePos.y) });
 	_spline.addKey(_splinePoints[4], { (float)(cannonCenter.x + 1.75 * (mousePos.x + (mousePos.x - cannonCenter.x) - cannonCenter.x)), (float)(-30) });
