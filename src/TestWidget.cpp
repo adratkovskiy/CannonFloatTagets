@@ -15,7 +15,6 @@ void DrawCross(FPoint coords) // инструмент, чтобы понять, 
 
 TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 	: Widget(name)
-	//, _curTex(0)
 	, _eff(NULL)
 	, _gameTimer(0.f)
 {
@@ -153,7 +152,6 @@ void TestWidget::Draw()
 		if (!_gControl->getReadyToShot()) // рисую полет ядра
 		{
 			Render::device.PushMatrix();
-			//Render::device.MatrixTranslate(_cannonball->getPosition());
 			Render::device.MatrixTranslate(_cannonball->getPos());
 			Render::device.MatrixScale(_cannonball->getScale());
 			_cannonballTexture->Draw();
@@ -294,7 +292,7 @@ void TestWidget::Update(float dt)
 		_gameTimer -= dt;
 		if (!_gControl->getReadyToShot()) {
 			_cannonball->updPosition(_gControl->getTimer()); //полет ядра
-			FPoint cannonBallPos = _cannonball->getPos();
+			FPoint cannonBallPos = _cannonball->getCoordCenter();
 			_eff->posX = cannonBallPos.x;
 			_eff->posY = cannonBallPos.y;
 			if (_cannonball->getPos().y < 0) { //прилетело - очищаю
@@ -355,15 +353,7 @@ void TestWidget::Update(float dt)
 
 bool TestWidget::MouseDown(const IPoint &mouse_pos)
 {
-	if (Core::mainInput.GetMouseRightButton())
-	{
-		/*_eff = _effCont.AddEffect("SmokeCannon");
-		_eff->posX = mouse_pos.x + 0.f;
-		_eff->posY = mouse_pos.y + 0.f;
-		_eff->Reset();*/
-
-	}
-	else
+	if (Core::mainInput.GetMouseLeftButton())
 	{
 		if (_button->click(_gControl->getMousePos())) { 
 			CreateTarget();

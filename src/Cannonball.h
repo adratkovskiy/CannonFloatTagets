@@ -25,10 +25,9 @@ public:
 	
 private:
 	bool _show;
-	FPoint _centerPos;
+	FPoint _centerOffset;
 	const float _speed;
 	float _flightTime;
-	FPoint _currentPosition;
 	TimedSpline<FPoint> _spline;
 	std::vector<float> _splinePoints;
 };
