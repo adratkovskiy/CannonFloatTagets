@@ -15,7 +15,8 @@ void DrawCross(FPoint coords) // инструмент, чтобы понять, 
 
 TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 	: Widget(name)
-	, _eff(NULL)
+	, _effParticleSmoke(NULL)
+	, _effParticleExpl(NULL)
 	, _gameTimer(0.f)
 {
 	Init();
@@ -147,7 +148,8 @@ void TestWidget::Draw()
 			Render::device.PopMatrix();
 		}
 
-		_effCont.Draw(); //дым за ядром
+		_effContSmoke.Draw(); //дым за ядром
+		//_effContExpl.Draw();
 
 		if (!_gControl->getReadyToShot()) // рисую полет ядра
 		{
@@ -284,7 +286,8 @@ void TestWidget::Draw()
 
 void TestWidget::Update(float dt)
 {
-	_effCont.Update(dt);
+	_effContSmoke.Update(dt);
+	//_effContExpl.Update(dt);
 
 	switch (_gControl->getGameState())
 	{
@@ -293,15 +296,15 @@ void TestWidget::Update(float dt)
 		if (!_gControl->getReadyToShot()) {
 			_cannonball->updPosition(_gControl->getTimer()); //полет ядра
 			FPoint cannonBallPos = _cannonball->getCoordCenter();
-			_eff->posX = cannonBallPos.x;
-			_eff->posY = cannonBallPos.y;
+			_effParticleSmoke->posX = cannonBallPos.x;
+			_effParticleSmoke->posY = cannonBallPos.y;
 			if (_cannonball->getPos().y < 0) { //прилетело - очищаю
 				_gControl->setReadyToShot(true);
 				_cannonball->splineClear();
-				if (_eff)
+				if (_effParticleSmoke)
 				{
-					_eff->Finish();
-					_eff = NULL;
+					_effParticleSmoke->Finish();
+					_effParticleSmoke = NULL;
 				}
 			}
 			_gControl->setTimer(_gControl->getTimer() + dt * _cannonball->getFlightTime());
@@ -321,6 +324,11 @@ void TestWidget::Update(float dt)
 					targetsToDelete++;
 					_gamePoints += it->getPoints();
 					std::iter_swap(it, _targets.end() - targetsToDelete);
+					/*_effParticleExpl = _effContSmoke.AddEffect("Explosion");
+					FPoint cannonPos = it->getPos();
+					_effParticleSmoke->posX = cannonPos.x;
+					_effParticleSmoke->posY = cannonPos.y;
+					_effParticleSmoke->Reset();*/
 				}
 				else {
 					it++;
@@ -376,11 +384,11 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 			_cannonball->setFlightTime( 1 / LocalFunctions::pointToPointRange(_gControl->getMousePos(), _cannon->getCannonCenter()) * _cannonball->getSpeed() );
 			_cannonball->setSpline(_cannon->getCannonCenter(), _gControl->getMousePos());
 			_gControl->setTimer(0);
-			_eff = _effCont.AddEffect("SmokeCannon");
+			_effParticleSmoke = _effContSmoke.AddEffect("SmokeCannon");
 			FPoint cannonPos = _cannonball->getPos();
-			_eff->posX = cannonPos.x;
-			_eff->posY = cannonPos.y;
-			_eff->Reset();
+			_effParticleSmoke->posX = cannonPos.x;
+			_effParticleSmoke->posY = cannonPos.y;
+			_effParticleSmoke->Reset();
 		}
 	}
 	return false;
@@ -399,7 +407,7 @@ void TestWidget::MouseUp(const IPoint &mouse_pos)
 	_buttonRestart->noPressed();
 }
 
-void TestWidget::AcceptMessage(const Message& message) // можно не смотреть, это было в демке.
+void TestWidget::AcceptMessage(const Message& message)
 {
 	//
 	// Виджету могут посылаться сообщения с параметрами.
@@ -409,7 +417,7 @@ void TestWidget::AcceptMessage(const Message& message) // можно не смо
 	const std::string& data = message.getData();
 }
 
-void TestWidget::KeyPressed(int keyCode) // можно не смотреть, это было в демке.
+void TestWidget::KeyPressed(int keyCode)
 {
 	//
 	// keyCode - виртуальный код клавиши.
@@ -422,7 +430,7 @@ void TestWidget::KeyPressed(int keyCode) // можно не смотреть, э
 	}
 }
 
-void TestWidget::CharPressed(int unicodeChar) // можно не смотреть, это было в демке.
+void TestWidget::CharPressed(int unicodeChar) 
 {
 	//
 	// unicodeChar - Unicode код введённого символа
@@ -439,7 +447,7 @@ void TestWidget::CreateTarget()
 	Targets* newTarget;
 	FPoint randPos({ static_cast<float>(math::random(_rightBorder - _leftBorder) + _leftBorder), static_cast<float>(math::random(_topBorder - _bottomBorder) + _bottomBorder) });
 
-	switch (numTarget) //норм ли такой вид, через свитч-кейс и рандом?
+	switch (numTarget) 
 	{
 	case(0):
 		newTarget = new Targets(_targetYellowScale
@@ -532,7 +540,7 @@ void TestWidget::CreateColorTarget(const char color, const int count)
 	{
 		Targets* newTarget;
 		FPoint randPos({ static_cast<float>(math::random(_rightBorder - _leftBorder) + _leftBorder), static_cast<float>(math::random(_topBorder - _bottomBorder) + _bottomBorder) });
-		switch (color) //норм ли такой вид, через свитч-кейс и рандом?
+		switch (color) 
 		{
 		case('y'):
 			newTarget = new Targets(_targetYellowScale

@@ -11,6 +11,7 @@ LoadResource("Resources.xml")
 -- Загрузка эффектов, созданных в редакторе частиц.
 --
 LoadEffects("Smoke.xml")
+LoadEffects("Explosion.xml")
 
 --
 -- Загрузка слоёв.

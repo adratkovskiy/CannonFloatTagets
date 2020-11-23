@@ -109,6 +109,9 @@ private:
 	float _gameTimer;
 	float _gameTimerMax;
 
-	EffectsContainer _effCont;
-	ParticleEffectPtr _eff;
+	EffectsContainer _effContSmoke;
+	ParticleEffectPtr _effParticleSmoke;
+
+	EffectsContainer _effContExpl;
+	ParticleEffectPtr _effParticleExpl;
 };
