@@ -16,10 +16,10 @@ Cannonball::Cannonball(const float scale
 }
 
 
-const FPoint& Cannonball::getPosition() const
+/*const FPoint& Cannonball::getPosition() const
 {
 	return _currentPosition;
-}
+}*/
 
 float Cannonball::getSpeed() const
 {
@@ -48,7 +48,8 @@ void Cannonball::setFlightTime(float cannonTimer)
 
 void Cannonball::updPosition(const float globalTimer)
 {
-	_currentPosition = _spline.getGlobalFrame(math::clamp(0.0f, 1.0f, globalTimer / 6.0f)) - _centerPos;
+	//_currentPosition = _spline.getGlobalFrame(math::clamp(0.0f, 1.0f, globalTimer / 6.0f)) - _centerPos;
+	RoundObject::setPos(_spline.getGlobalFrame(math::clamp(0.0f, 1.0f, globalTimer / 6.0f)) - _centerPos);
 }
 
 void Cannonball::setSpline(FPoint cannonCenter, FPoint mousePos)

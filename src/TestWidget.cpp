@@ -153,7 +153,8 @@ void TestWidget::Draw()
 		if (!_gControl->getReadyToShot()) // рисую полет ядра
 		{
 			Render::device.PushMatrix();
-			Render::device.MatrixTranslate(_cannonball->getPosition());
+			//Render::device.MatrixTranslate(_cannonball->getPosition());
+			Render::device.MatrixTranslate(_cannonball->getPos());
 			Render::device.MatrixScale(_cannonball->getScale());
 			_cannonballTexture->Draw();
 			Render::device.PopMatrix();
@@ -293,10 +294,10 @@ void TestWidget::Update(float dt)
 		_gameTimer -= dt;
 		if (!_gControl->getReadyToShot()) {
 			_cannonball->updPosition(_gControl->getTimer()); //полет ядра
-			FPoint cannonBallPos = _cannonball->getPosition();
+			FPoint cannonBallPos = _cannonball->getPos();
 			_eff->posX = cannonBallPos.x;
 			_eff->posY = cannonBallPos.y;
-			if (_cannonball->getPosition().y < 0) { //прилетело - очищаю
+			if (_cannonball->getPos().y < 0) { //прилетело - очищаю
 				_gControl->setReadyToShot(true);
 				_cannonball->splineClear();
 				if (_eff)
@@ -318,7 +319,7 @@ void TestWidget::Update(float dt)
 			std::vector<Targets>::iterator it = _targets.begin();
 			for (int i = 0; i < targetsCount; i++)
 			{
-				if (it->isCrossing(_cannonball->getPosition(), _cannonball->getRadius())) { //проверка на сбитие мишени
+				if (it->isCrossing(_cannonball->getPos(), _cannonball->getRadius())) { //проверка на сбитие мишени
 					targetsToDelete++;
 					_gamePoints += it->getPoints();
 					std::iter_swap(it, _targets.end() - targetsToDelete);
@@ -386,7 +387,7 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 			_cannonball->setSpline(_cannon->getCannonCenter(), _gControl->getMousePos());
 			_gControl->setTimer(0);
 			_eff = _effCont.AddEffect("SmokeCannon");
-			FPoint cannonPos = _cannonball->getPosition();
+			FPoint cannonPos = _cannonball->getPos();
 			_eff->posX = cannonPos.x;
 			_eff->posY = cannonPos.y;
 			_eff->Reset();

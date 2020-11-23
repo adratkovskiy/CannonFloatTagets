@@ -15,7 +15,6 @@ public:
 	void updPosition(const float globalTimer);
 	void splineClear();
 
-	const FPoint& getPosition() const;
 	float getSpeed() const;
 	float getFlightTime() const;
 	TimedSpline<FPoint>& getSpline();
