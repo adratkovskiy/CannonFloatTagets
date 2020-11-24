@@ -142,11 +142,11 @@ void TestWidget::Draw()
 		_cannonBackTexture->Draw();
 		Render::device.PopMatrix();
 
-		for (std::vector<Targets>::iterator it = _targets.begin(); it != _targets.end(); it++) {
+		for (std::vector<Targets*>::iterator it = _targets.begin(); it != _targets.end(); it++) {
 			Render::device.PushMatrix();
-			Render::device.MatrixTranslate(it->getPos());
-			Render::device.MatrixScale(it->getScale());
-			it->Draw(); // рисую из объекта, ибо ну не удобно каждый раз проверять, какая цель и какой текстурой ее рисовать
+			Render::device.MatrixTranslate((*it)->getPos());
+			Render::device.MatrixScale((*it)->getScale());
+			(*it)->Draw(); // рисую из объекта, ибо ну не удобно каждый раз проверять, какая цель и какой текстурой ее рисовать
 			Render::device.PopMatrix();
 		}
 
@@ -325,36 +325,37 @@ void TestWidget::Update(float dt)
 		if (!_gControl->getReadyToShot()) { //если ядро кого-то может сбить
 			int targetsToDelete = 0;
 			int targetsCount = _targets.size();
-			std::vector<Targets>::iterator it = _targets.begin();
+			std::vector<Targets*>::iterator it = _targets.begin();
 			for (int i = 0; i < targetsCount; i++)
 			{
-				if (it->isCrossing(_cannonball->getPos(), _cannonball->getRadius())) { //проверка на сбитие мишени
+				if ((*it)->isCrossing(_cannonball->getPos(), _cannonball->getRadius())) { //проверка на сбитие мишени
 					ParticleEffectPtr eff = _effCont.AddEffect("Explosion"); //взрыв
-					eff->SetPos(it->getCoordCenter());
+					eff->SetPos((*it)->getCoordCenter());
 					eff->Reset();
 
 					targetsToDelete++;
-					_gamePoints += it->getPoints();
+					_gamePoints += (*it)->getPoints();
+					delete* it;
 					std::iter_swap(it, _targets.end() - targetsToDelete); //закидываем те мишени, что сбиты в конец вектора
 				}
 				else {
 					it++;
 				}
 			}
-			if (targetsCount > 0) {
+			if (targetsToDelete > 0) {
 				_targets.erase(_targets.end() - targetsToDelete, _targets.end()); //очищаем от сбитых мишеней
 			}
 		}
 
-		for (std::vector<Targets>::iterator it_hunt = _targets.begin(); it_hunt != _targets.end(); it_hunt++)
+		for (std::vector<Targets*>::iterator it_hunt = _targets.begin(); it_hunt != _targets.end(); it_hunt++)
 		{
-			it_hunt->Tick();
-			for (std::vector<Targets>::iterator it_vict = _targets.begin(); it_vict != _targets.end(); it_vict++)
+			(*it_hunt)->Tick();
+			for (std::vector<Targets*>::iterator it_vict = _targets.begin(); it_vict != _targets.end(); it_vict++)
 			{
 				if ((it_hunt != it_vict) &&
-					(LocalFunctions::pointToPointRange(it_hunt->getCoordCenter(), it_vict->getCoordCenter()) <= (it_hunt->getRadius() + it_vict->getRadius()))
+					(LocalFunctions::pointToPointRange((*it_hunt)->getCoordCenter(), (*it_vict)->getCoordCenter()) <= ((*it_hunt)->getRadius() + (*it_vict)->getRadius()))
 					) {
-					it_hunt->tooClose(*it_vict); // столкновение с объектами
+					(*it_hunt)->tooClose(*(*it_vict)); // столкновение с объектами
 				}
 			}
 		}
@@ -502,7 +503,7 @@ void TestWidget::CreateTarget()
 		);
 		break;
 	}
-	_targets.push_back(*newTarget);
+	_targets.push_back(newTarget);
 }
 
 void TestWidget::CreateTarget(FPoint& pos, FPoint& moveVec) // мишень в конкретном месте и с нужным направлением движения
@@ -520,7 +521,7 @@ void TestWidget::CreateTarget(FPoint& pos, FPoint& moveVec) // мишень в �
 		, _rightBorder
 		, _targetBluePoints
 	);
-	_targets.push_back(*newTarget);
+	_targets.push_back(newTarget);
 }
 
 void TestWidget::CreateSomeTarget(int count)
@@ -595,7 +596,7 @@ void TestWidget::CreateColorTarget(const char color, const int count) //созд
 			);
 			break;
 		}
-		_targets.push_back(*newTarget);
+		_targets.push_back(newTarget);
 	}
 }
 
@@ -629,6 +630,9 @@ void TestWidget::SetGameStatus(const GameController::GameStates state) //сме�
 		break;
 	case GameController::GameStates::STOP:
 		_buttonRestart->setActive(true);
+		for (std::vector<Targets*>::iterator it = _targets.begin(); it < _targets.end(); it++) {
+			delete (*it);
+		}
 		_targets.clear();
 		break;
 	default:

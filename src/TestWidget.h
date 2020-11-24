@@ -99,7 +99,7 @@ private:
 	Button* _button30Targets;
 	Button* _buttonExperiment;
 	Button* _buttonRestart;
-	std::vector<Targets> _targets;
+	std::vector<Targets*> _targets;
 	int _topBorder;
 	int _bottomBorder;
 	int _leftBorder;
