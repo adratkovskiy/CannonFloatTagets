@@ -40,7 +40,8 @@ public:
 
 	void SetGameStatus(const GameController::GameStates state);
 
-	const std::string getTitlePoins() const noexcept;
+	const std::string getTitlePoins() const;
+	void TestButtonsClick();
 
 private:
 	void Init();
@@ -67,6 +68,7 @@ private:
 	FPoint _textEndgamePointsPos;
 	std::string _textEndgameString;
 	Color _panelBottomStatColor;
+	Color _defTextColor;
 	IRect _panelBottomStatSize;
 	IRect _panelTopStatSize;
 	std::string _textTitlePointsString;
@@ -109,9 +111,8 @@ private:
 	float _gameTimer;
 	float _gameTimerMax;
 
-	EffectsContainer _effContSmoke;
+	EffectsContainer _effCont;
 	ParticleEffectPtr _effParticleSmoke;
 
-	EffectsContainer _effContExpl;
-	ParticleEffectPtr _effParticleExpl;
+	bool _showTestButtons;
 };

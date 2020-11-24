@@ -47,10 +47,11 @@
   <text_endgame_points_pos type="FPoint" x="512" y="420" />
   <text_title_points_string type="string" val="очки: " />
   <text_title_timeout_string type="string" val="времени осталось: " />
-  <game_time_max type="float" val="20" />
+  <game_time_max type="float" val="30" />
   <targets_count_to_game type="int" val="30" />
   <targets_count_red type="int" val="10" />
   <targets_count_blue type="int" val="10" />
   <targets_count_yellow type="int" val="10" />
   <fade_speed type="int" val="2" />
+  <def_text_color type="color" R="0" G="0" B="0" A="255" />
 </options>

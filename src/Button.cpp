@@ -13,9 +13,13 @@ Button::Button(const FPoint& pos, const float scale, const std::string& text, IR
     _textPos = pos + _size / 2;
 }
 
+Button::~Button()
+{
+}
+
 bool Button::click(const IPoint& mouse_pos)
 {
-    if (_active) { //сначала экранирую по активности кнопки
+    if (_active) { 
         if ((mouse_pos.x >= _pos.x)
             & (mouse_pos.x <= _pos.x + _size.x)
             & (mouse_pos.y >= _pos.y)

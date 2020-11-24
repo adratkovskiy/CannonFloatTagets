@@ -16,7 +16,6 @@ float LocalFunctions::vecLen(const FPoint& vec)
 	return math::sqrt(math::sqr(vec.x) + math::sqr(vec.y));
 }
 
-//опять же, если возвращаю по ссылке, то в void TestWidget::CreateTarget() значение уже умирает
 FPoint LocalFunctions::randomVec(const float speed) 
 {
 	float targetAngle = math::random(math::PI * 2);

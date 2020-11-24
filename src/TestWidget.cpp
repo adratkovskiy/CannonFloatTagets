@@ -16,7 +16,6 @@ void DrawCross(FPoint coords) // инструмент, чтобы понять, 
 TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 	: Widget(name)
 	, _effParticleSmoke(NULL)
-	, _effParticleExpl(NULL)
 	, _gameTimer(0.f)
 {
 	Init();
@@ -24,6 +23,7 @@ TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 
 void TestWidget::Init()
 {
+	_showTestButtons = false; // включить отладочные кнопки, если нужно поэксперементировать
 	_cannonBackTexture = Core::resourceManager.Get<Render::Texture>("Cannon_back");
 	_cannonFrontTexture = Core::resourceManager.Get<Render::Texture>("Cannon_front");
 	_standTexture = Core::resourceManager.Get<Render::Texture>("Stand");
@@ -50,6 +50,7 @@ void TestWidget::Init()
 		, _options->getParamFPoint("cannon_center")
 		, _options->getParamFloat("cannonball_speed")
 		, _options->getSplinePoints());
+
 	_button = new Button(_options->getParamFPoint("button_create_pos")
 		, _options->getParamFloat("button_create_scale")
 		, _options->getParamString("button_create_string")
@@ -77,6 +78,7 @@ void TestWidget::Init()
 	_gamePoints = _options->getParamInt("game_points_default");
 	_gameTimer = _options->getParamFloat("game_time_max");
 	_fadeSpeed = _options->getParamInt("fade_speed");
+	_defTextColor = _options->getColor("def_text_color");
 	_fadeBackground = Color{ _options->getColor("block_screen_color").red //затемнение фона
 			, _options->getColor("block_screen_color").green
 			, _options->getColor("block_screen_color").blue
@@ -121,7 +123,7 @@ void TestWidget::Draw()
 {
 	_gControl->setMousePos(Core::mainInput.GetMousePos());
 	
-	switch (_gControl->getGameState()) // Будущие режимы игры (заставка, игра, финальный счет)
+	switch (_gControl->getGameState()) // Режимы игры (игра, затемнение, финальный счет)
 	{
 	case GameController::GameStates::GAME: // режим: игра
 		_backgroundTexture->Draw();
@@ -148,8 +150,7 @@ void TestWidget::Draw()
 			Render::device.PopMatrix();
 		}
 
-		_effContSmoke.Draw(); //дым за ядром
-		//_effContExpl.Draw();
+		_effCont.Draw();
 
 		if (!_gControl->getReadyToShot()) // рисую полет ядра
 		{
@@ -176,49 +177,55 @@ void TestWidget::Draw()
 		_cannonFrontTexture->Draw();
 		Render::device.PopMatrix();
 
-		Render::device.PushMatrix(); //кнопка создания таргета
-		Render::device.MatrixTranslate(_button->getPos());
-		Render::device.MatrixScale(_button->getScale());
-		if (_button->getPressed()) { //кнопка нажата отпущена, рисую отсюда
-			_buttonDownTexture->Draw();
-		}
-		else {
-			_buttonUpTexture->Draw();
-		}
-		Render::device.PopMatrix();
+		if (_showTestButtons) // отладочные кнопки
+		{
+			Render::device.PushMatrix(); //кнопка создания таргета
+			Render::device.MatrixTranslate(_button->getPos());
+			Render::device.MatrixScale(_button->getScale());
+			if (_button->getPressed()) { //кнопка нажата отпущена, рисую отсюда
+				_buttonDownTexture->Draw();
+			}
+			else {
+				_buttonUpTexture->Draw();
+			}
+			Render::device.PopMatrix();
 
-		Render::device.PushMatrix(); //кнопка создания кучи таргетов
-		Render::device.MatrixTranslate(_button30Targets->getPos());
-		Render::device.MatrixScale(_button30Targets->getScale());
-		if (_button30Targets->getPressed()) { //кнопка нажата отпущена, рисую отсюда
-			_buttonDownTexture->Draw();
-		}
-		else {
-			_buttonUpTexture->Draw();
-		}
-		Render::device.PopMatrix();
+			Render::device.PushMatrix(); //кнопка создания кучи таргетов
+			Render::device.MatrixTranslate(_button30Targets->getPos());
+			Render::device.MatrixScale(_button30Targets->getScale());
+			if (_button30Targets->getPressed()) { 
+				_buttonDownTexture->Draw();
+			}
+			else {
+				_buttonUpTexture->Draw();
+			}
+			Render::device.PopMatrix();
 
-		Render::device.PushMatrix(); //кнопка для эксперимента (пока ковырялся с отражением)
-		Render::device.MatrixTranslate(_buttonExperiment->getPos());
-		Render::device.MatrixScale(_buttonExperiment->getScale());
-		if (_buttonExperiment->getPressed()) { //кнопка нажата отпущена, рисую отсюда
-			_buttonDownTexture->Draw();
-		}
-		else {
-			_buttonUpTexture->Draw();
-		}
-		Render::device.PopMatrix();
-		
+			Render::device.PushMatrix(); //кнопка для эксперимента со столкновениями
+			Render::device.MatrixTranslate(_buttonExperiment->getPos());
+			Render::device.MatrixScale(_buttonExperiment->getScale());
+			if (_buttonExperiment->getPressed()) { 
+				_buttonDownTexture->Draw();
+			}
+			else {
+				_buttonUpTexture->Draw();
+			}
+			Render::device.PopMatrix();
 
-		Render::SetColor(Color(0, 0, 0, 255)); //текст на кнопках
-		Render::PrintString(_button->getTextPos(), _button->getText(), 1.5f, CenterAlign, CenterAlign);
-		Render::PrintString(_button30Targets->getTextPos(), _button30Targets->getText(), 1.5f, CenterAlign, CenterAlign);
-		Render::PrintString(_buttonExperiment->getTextPos(), _buttonExperiment->getText(), 1.5f, CenterAlign, CenterAlign);
-		Render::ResetColor();
+
+			Render::SetColor(_defTextColor); //текст на кнопках
+			Render::PrintString(_button->getTextPos(), _button->getText(), 1.5f, CenterAlign, CenterAlign);
+			Render::PrintString(_button30Targets->getTextPos(), _button30Targets->getText(), 1.5f, CenterAlign, CenterAlign);
+			Render::PrintString(_buttonExperiment->getTextPos(), _buttonExperiment->getText(), 1.5f, CenterAlign, CenterAlign);
+			Render::ResetColor();
+		}
 		break;
 
-	case GameController::GameStates::TO_STOP:
+	case GameController::GameStates::TO_STOP: //игра:: затенение
 		_backgroundTexture->Draw();
+
+		_effCont.Draw();
+
 		Render::device.SetTexturing(false);
 
 		Render::BeginColor(Color{_fadeBackground.red, _fadeBackground.green, _fadeBackground.blue, _fade});
@@ -234,10 +241,15 @@ void TestWidget::Draw()
 		}
 		break;
 
-	case GameController::GameStates::STOP:
+	case GameController::GameStates::STOP: //игра: стоп
+		if (_effParticleSmoke)
+		{
+			_effParticleSmoke->Finish();
+			_effParticleSmoke = NULL;
+		}
 		_backgroundTexture->Draw();
 		Render::device.SetTexturing(false);
-		Render::BeginColor(_fadeBackground);
+		Render::BeginColor(_fadeBackground); //затенение
 		Render::DrawRect(_blockScreen);
 		Render::EndColor();
 		Render::device.SetTexturing(true);
@@ -253,7 +265,7 @@ void TestWidget::Draw()
 		}
 		Render::device.PopMatrix();
 
-		Render::SetColor(Color(0, 0, 0, 255));
+		Render::SetColor(_defTextColor);
 		Render::PrintString(_textEndgameTitlePos, _textEndgameString, 1.5f, CenterAlign, CenterAlign);
 		Render::PrintString(_textEndgamePointsPos, utils::lexical_cast(_gamePoints) + " " + getTitlePoins(), 1.5f, CenterAlign, CenterAlign);
 		Render::PrintString(_buttonRestart->getTextPos(), _buttonRestart->getText(), 1.5f, CenterAlign, CenterAlign);
@@ -264,12 +276,10 @@ void TestWidget::Draw()
 	}
 
 	Render::device.SetTexturing(false);
-
 	Render::BeginColor(_panelBottomStatColor);
 	Render::DrawRect(_panelBottomStatSize);
 	Render::DrawRect(_panelTopStatSize);
 	Render::EndColor();
-
 	Render::device.SetTexturing(true);
 	
 	Render::PrintString(10, _panelTopStatSize.y + _panelTopStatSize.height / 2,
@@ -286,8 +296,7 @@ void TestWidget::Draw()
 
 void TestWidget::Update(float dt)
 {
-	_effContSmoke.Update(dt);
-	//_effContExpl.Update(dt);
+	_effCont.Update(dt);
 
 	switch (_gControl->getGameState())
 	{
@@ -295,47 +304,45 @@ void TestWidget::Update(float dt)
 		_gameTimer -= dt;
 		if (!_gControl->getReadyToShot()) {
 			_cannonball->updPosition(_gControl->getTimer()); //полет ядра
-			FPoint cannonBallPos = _cannonball->getCoordCenter();
-			_effParticleSmoke->posX = cannonBallPos.x;
-			_effParticleSmoke->posY = cannonBallPos.y;
+			_effParticleSmoke->SetPos(_cannonball->getCoordCenter());
 			if (_cannonball->getPos().y < 0) { //прилетело - очищаю
 				_gControl->setReadyToShot(true);
 				_cannonball->splineClear();
 				if (_effParticleSmoke)
 				{
+					_effParticleSmoke->SetPos(FPoint{ -100, -100 }); //чтобы завершился за пределами экрана
 					_effParticleSmoke->Finish();
 					_effParticleSmoke = NULL;
 				}
 			}
 			_gControl->setTimer(_gControl->getTimer() + dt * _cannonball->getFlightTime());
-			while (_gControl->getTimer() > 2 * math::PI) //это какой-то движковый прикол, не понял
+			while (_gControl->getTimer() > 2 * math::PI) 
 			{
 				_gControl->setTimer(_gControl->getTimer() - 2 * math::PI);
 			}
 		}
 		_cannon->setAngle(atan2(_cannon->getCannonCenter().y - _gControl->getMousePos().y, _cannon->getCannonCenter().x - _gControl->getMousePos().x) / math::PI * 180 + 90);
-		if (!_gControl->getReadyToShot()) {
+		if (!_gControl->getReadyToShot()) { //если ядро кого-то может сбить
 			int targetsToDelete = 0;
 			int targetsCount = _targets.size();
 			std::vector<Targets>::iterator it = _targets.begin();
 			for (int i = 0; i < targetsCount; i++)
 			{
 				if (it->isCrossing(_cannonball->getPos(), _cannonball->getRadius())) { //проверка на сбитие мишени
+					ParticleEffectPtr eff = _effCont.AddEffect("Explosion"); //взрыв
+					eff->SetPos(it->getCoordCenter());
+					eff->Reset();
+
 					targetsToDelete++;
 					_gamePoints += it->getPoints();
-					std::iter_swap(it, _targets.end() - targetsToDelete);
-					/*_effParticleExpl = _effContSmoke.AddEffect("Explosion");
-					FPoint cannonPos = it->getPos();
-					_effParticleSmoke->posX = cannonPos.x;
-					_effParticleSmoke->posY = cannonPos.y;
-					_effParticleSmoke->Reset();*/
+					std::iter_swap(it, _targets.end() - targetsToDelete); //закидываем те мишени, что сбиты в конец вектора
 				}
 				else {
 					it++;
 				}
 			}
 			if (targetsCount > 0) {
-				_targets.erase(_targets.end() - targetsToDelete, _targets.end());
+				_targets.erase(_targets.end() - targetsToDelete, _targets.end()); //очищаем от сбитых мишеней
 			}
 		}
 
@@ -351,7 +358,7 @@ void TestWidget::Update(float dt)
 				}
 			}
 		}
-		if ((_gameTimer <= 0.f) & (_gControl->getGameState() == GameController::GameStates::GAME)) {
+		if (((_gameTimer <= 0.f) || (_targets.size() == 0)) & (_gControl->getGameState() == GameController::GameStates::GAME)) {
 			_gameTimer = 0.f;
 			SetGameStatus(GameController::GameStates::TO_STOP);
 		}
@@ -363,32 +370,22 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 {
 	if (Core::mainInput.GetMouseLeftButton())
 	{
-		if (_button->click(_gControl->getMousePos())) { 
-			CreateTarget();
-		}
-		else if (_button30Targets->click(_gControl->getMousePos())) {
-			CreateSomeTarget(_targetsCountToGame);
-		}
-		else if (_buttonExperiment->click(_gControl->getMousePos())) {
-			CreateTarget(FPoint{ 300.f, 400.f }, FPoint{ 1.f, 1.f });
-			CreateTarget(FPoint{ 500.f, 400.f }, FPoint{ -1.f, 1.f });
-			CreateTarget(FPoint{ 300.f, 600.f }, FPoint{ 1.f, -1.f });
-			CreateTarget(FPoint{ 500.f, 600.f }, FPoint{ -1.f, -1.f });
-		}
-		else if (_buttonRestart->click(_gControl->getMousePos())) {
+		if (_buttonRestart->click(_gControl->getMousePos())) {
 			SetGameStatus(GameController::GameStates::GAME);
 		}
-		else if (_gControl->getReadyToShot())
+		else if (_gControl->getReadyToShot()) // можно стрелять
 		{
 			_gControl->setReadyToShot(false);
 			_cannonball->setFlightTime( 1 / LocalFunctions::pointToPointRange(_gControl->getMousePos(), _cannon->getCannonCenter()) * _cannonball->getSpeed() );
 			_cannonball->setSpline(_cannon->getCannonCenter(), _gControl->getMousePos());
 			_gControl->setTimer(0);
-			_effParticleSmoke = _effContSmoke.AddEffect("SmokeCannon");
-			FPoint cannonPos = _cannonball->getPos();
-			_effParticleSmoke->posX = cannonPos.x;
-			_effParticleSmoke->posY = cannonPos.y;
+
+			_effParticleSmoke = _effCont.AddEffect("SmokeCannon");
+			_effParticleSmoke->SetPos(_cannonball->getPos());
 			_effParticleSmoke->Reset();
+		}
+		if (_showTestButtons) {
+			TestButtonsClick();
 		}
 	}
 	return false;
@@ -407,7 +404,7 @@ void TestWidget::MouseUp(const IPoint &mouse_pos)
 	_buttonRestart->noPressed();
 }
 
-void TestWidget::AcceptMessage(const Message& message)
+void TestWidget::AcceptMessage(const Message& message) // не стал удалять с примера
 {
 	//
 	// Виджету могут посылаться сообщения с параметрами.
@@ -417,7 +414,7 @@ void TestWidget::AcceptMessage(const Message& message)
 	const std::string& data = message.getData();
 }
 
-void TestWidget::KeyPressed(int keyCode)
+void TestWidget::KeyPressed(int keyCode) // не стал удалять с примера
 {
 	//
 	// keyCode - виртуальный код клавиши.
@@ -426,11 +423,10 @@ void TestWidget::KeyPressed(int keyCode)
 
 	if (keyCode == VK_A) {
 		// Реакция на нажатие кнопки A
-		// _cannon->getAngle() -= 25;
 	}
 }
 
-void TestWidget::CharPressed(int unicodeChar) 
+void TestWidget::CharPressed(int unicodeChar) // не стал удалять с примера
 {
 	//
 	// unicodeChar - Unicode код введённого символа
@@ -509,7 +505,7 @@ void TestWidget::CreateTarget()
 	_targets.push_back(*newTarget);
 }
 
-void TestWidget::CreateTarget(FPoint& pos, FPoint& moveVec)
+void TestWidget::CreateTarget(FPoint& pos, FPoint& moveVec) // мишень в конкретном месте и с нужным направлением движения
 {
 	Targets* newTarget;
 	newTarget = new Targets(_targetBlueScale
@@ -534,7 +530,7 @@ void TestWidget::CreateSomeTarget(int count)
 	}
 }
 
-void TestWidget::CreateColorTarget(const char color, const int count)
+void TestWidget::CreateColorTarget(const char color, const int count) //создать конкрнетные мишени
 {
 	for (int i = 0; i < count; i++)
 	{
@@ -618,9 +614,12 @@ void TestWidget::SetGameStatus(const GameController::GameStates state) //сме�
 		CreateColorTarget('b', _targetsCountBlue);
 		CreateColorTarget('y', _targetsCountYellow);
 		CreateColorTarget('r', _targetsCountRed);
-		_button->setActive(true);
-		_button30Targets->setActive(true);
-		_buttonExperiment->setActive(true);
+		if (_showTestButtons)
+		{
+			_button->setActive(true);
+			_button30Targets->setActive(true);
+			_buttonExperiment->setActive(true);
+		}
 		_buttonRestart->setActive(false);
 		_fade = 0;
 		_gamePoints = 0;
@@ -637,7 +636,7 @@ void TestWidget::SetGameStatus(const GameController::GameStates state) //сме�
 	}
 }
 
-const std::string TestWidget::getTitlePoins() const noexcept
+const std::string TestWidget::getTitlePoins() const
 {
 	std::string toReturn = "";
 	std::string points = std::to_string(_gamePoints);
@@ -668,5 +667,21 @@ const std::string TestWidget::getTitlePoins() const noexcept
 			return "очков";
 			break;
 		}
+	}
+}
+
+void TestWidget::TestButtonsClick()
+{
+	if (_button->click(_gControl->getMousePos())) {
+		CreateTarget();
+	}
+	else if (_button30Targets->click(_gControl->getMousePos())) {
+		CreateSomeTarget(_targetsCountToGame);
+	}
+	else if (_buttonExperiment->click(_gControl->getMousePos())) {
+		CreateTarget(FPoint{ 300.f, 400.f }, FPoint{ 1.f, 1.f });
+		CreateTarget(FPoint{ 500.f, 400.f }, FPoint{ -1.f, 1.f });
+		CreateTarget(FPoint{ 300.f, 600.f }, FPoint{ 1.f, -1.f });
+		CreateTarget(FPoint{ 500.f, 600.f }, FPoint{ -1.f, -1.f });
 	}
 }
