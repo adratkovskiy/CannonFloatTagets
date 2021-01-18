@@ -110,10 +110,10 @@
     <ClInclude Include="..\..\src\RectObject.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\TargetsBlock.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\Player.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\TargetsBlock.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

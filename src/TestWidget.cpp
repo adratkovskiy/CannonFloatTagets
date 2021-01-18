@@ -25,11 +25,11 @@ void TestWidget::Init()
 {
 	_showTestButtons = false; // включить отладочные кнопки, если нужно поэксперементировать
 	_backgroundTexture = Core::resourceManager.Get<Render::Texture>("Background");
-	_aimTexture = Core::resourceManager.Get<Render::Texture>("Aim");
 	_cannonballTexture = Core::resourceManager.Get<Render::Texture>("Cannonball");
+	/*_aimTexture = Core::resourceManager.Get<Render::Texture>("Aim");
 	_targetYellowTexture = Core::resourceManager.Get<Render::Texture>("Target_yellow");
 	_targetRedTexture = Core::resourceManager.Get<Render::Texture>("Target_red");
-	_targetBlueTexture = Core::resourceManager.Get<Render::Texture>("Target_blue");
+	_targetBlueTexture = Core::resourceManager.Get<Render::Texture>("Target_blue");*/
 	_buttonUpTexture = Core::resourceManager.Get<Render::Texture>("Button_up");
 	_buttonDownTexture = Core::resourceManager.Get<Render::Texture>("Button_down");
 
@@ -37,7 +37,7 @@ void TestWidget::Init()
 
 	_options = new Options();
 	_gControl = new GameController(GameController::GameStates::START_SCREEN, true, _options->getParamFloat("sys_timer"));
-	_aim = new Aim(_options->getParamFloat("aim_scale"), _aimTexture->getBitmapRect());
+	//_aim = new Aim(_options->getParamFloat("aim_scale"), _aimTexture->getBitmapRect());
 	
 	
 
@@ -93,7 +93,7 @@ void TestWidget::Init()
 	_textTitleTimeoutString = _options->getParamString("text_title_timeout_string");
 	_targetsCountToGame = _options->getParamInt("targets_count_to_game");
 
-	_targetRedScale = _options->getParamFloat("target_red_scale");
+	/*_targetRedScale = _options->getParamFloat("target_red_scale");
 	_targetBlueScale = _options->getParamFloat("target_blue_scale");
 	_targetYellowScale = _options->getParamFloat("target_yellow_scale");
 
@@ -107,7 +107,7 @@ void TestWidget::Init()
 
 	_targetsCountRed = _options->getParamInt("targets_count_red");
 	_targetsCountBlue = _options->getParamInt("targets_count_blue");
-	_targetsCountYellow = _options->getParamInt("targets_count_yellow");
+	_targetsCountYellow = _options->getParamInt("targets_count_yellow");*/
 
 	_gameTimeMax = _options->getParamFloat("game_time_max");
 
@@ -162,12 +162,12 @@ void TestWidget::Draw()
 			Render::device.PopMatrix();
 		}
 		else {
-			Render::device.PushMatrix(); // или рисую прицел
+			/*Render::device.PushMatrix(); // или рисую прицел
 			Render::device.MatrixTranslate(static_cast<int>(_gControl->getMousePos().x), static_cast<int>(_gControl->getMousePos().y), 0);
 			Render::device.MatrixTranslate(_aim->getCoordCenter());
 			Render::device.MatrixScale(_aim->getScale());
 			_aimTexture->Draw();
-			Render::device.PopMatrix();
+			Render::device.PopMatrix();*/
 		}
 
 		Render::device.PushMatrix(); //игрок
@@ -368,10 +368,10 @@ void TestWidget::Update(float dt)
 				}
 			}
 		}
-		if (((_gameTimer <= 0.f) || (_targets.size() == 0)) & (_gControl->getGameState() == GameController::GameStates::GAME)) {
+		/*if (((_gameTimer <= 0.f) || (_targets.size() == 0)) & (_gControl->getGameState() == GameController::GameStates::GAME)) {
 			_gameTimer = 0.f;
 			SetGameStatus(GameController::GameStates::TO_STOP);
-		}
+		}*/
 		break;
 	}
 }
@@ -449,7 +449,7 @@ void TestWidget::CharPressed(int unicodeChar) // не стал удалять с
 
 void TestWidget::CreateTarget()
 {
-	int numTarget = math::random(2);
+	/*int numTarget = math::random(2);
 	Targets* newTarget;
 	FPoint randPos({ static_cast<float>(math::random(_rightBorder - _leftBorder) + _leftBorder), static_cast<float>(math::random(_topBorder - _bottomBorder) + _bottomBorder) });
 
@@ -512,12 +512,12 @@ void TestWidget::CreateTarget()
 		);
 		break;
 	}
-	_targets.push_back(newTarget);
+	_targets.push_back(newTarget);*/
 }
 
 void TestWidget::CreateTarget(FPoint& pos, FPoint& moveVec) // мишень в конкретном месте и с нужным направлением движения
 {
-	Targets* newTarget;
+	/*Targets* newTarget;
 	newTarget = new Targets(_targetBlueScale
 		, _targetBlueTexture->getBitmapRect()
 		, pos
@@ -530,7 +530,7 @@ void TestWidget::CreateTarget(FPoint& pos, FPoint& moveVec) // мишень в �
 		, _rightBorder
 		, _targetBluePoints
 	);
-	_targets.push_back(newTarget);
+	_targets.push_back(newTarget);*/
 }
 
 void TestWidget::CreateSomeTarget(int count)
@@ -544,7 +544,7 @@ void TestWidget::CreateColorTarget(const char color, const int count) //созд
 {
 	for (int i = 0; i < count; i++)
 	{
-		Targets* newTarget;
+		/*Targets* newTarget;
 		FPoint randPos({ static_cast<float>(math::random(_rightBorder - _leftBorder) + _leftBorder), static_cast<float>(math::random(_topBorder - _bottomBorder) + _bottomBorder) });
 		switch (color) 
 		{
@@ -605,7 +605,7 @@ void TestWidget::CreateColorTarget(const char color, const int count) //созд
 			);
 			break;
 		}
-		_targets.push_back(newTarget);
+		_targets.push_back(newTarget);*/
 	}
 }
 
@@ -621,9 +621,9 @@ void TestWidget::SetGameStatus(const GameController::GameStates state) //сме�
 		break;
 
 	case GameController::GameStates::GAME:
-		CreateColorTarget('b', _targetsCountBlue);
+		/*CreateColorTarget('b', _targetsCountBlue);
 		CreateColorTarget('y', _targetsCountYellow);
-		CreateColorTarget('r', _targetsCountRed);
+		CreateColorTarget('r', _targetsCountRed);*/
 		if (_showTestButtons)
 		{
 			_button->setActive(true);

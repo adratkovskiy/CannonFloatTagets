@@ -51,12 +51,12 @@ private:
 private:
 	
 	Render::Texture* _backgroundTexture;
-	Render::Texture* _aimTexture;
+	//Render::Texture* _aimTexture;
 	Render::Texture* _pointTexture;
 	Render::Texture* _cannonballTexture;
-	Render::Texture* _targetYellowTexture;
+	/*Render::Texture* _targetYellowTexture;
 	Render::Texture* _targetRedTexture;
-	Render::Texture* _targetBlueTexture;
+	Render::Texture* _targetBlueTexture;*/
 	Render::Texture* _buttonUpTexture;
 	Render::Texture* _buttonDownTexture;
 
@@ -77,7 +77,7 @@ private:
 	int _targetsCountToGame;
 
 	//targets
-	float _targetRedScale;
+	/*float _targetRedScale;
 	float _targetBlueScale;
 	float _targetYellowScale;
 	float _targetRedSpeed;
@@ -88,7 +88,7 @@ private:
 	int _targetYellowPoints;
 	int _targetsCountRed;
 	int _targetsCountBlue;
-	int _targetsCountYellow;
+	int _targetsCountYellow;*/
 	float _gameTimeMax;
 	float _playerScale;
 	FPoint _playerSpawn;
@@ -97,7 +97,7 @@ private:
 	GameController* _gControl;
 	Cannonball* _cannonball;
 	Options* _options;
-	Aim* _aim;
+	//Aim* _aim;
 	Button* _button;
 	Button* _button30Targets;
 	Button* _buttonExperiment;
