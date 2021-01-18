@@ -6,9 +6,7 @@
 		</font>
 	</FreeTypeFonts>
 	<Textures>
-    <texture id="Cannon_front" path="textures/Cannon_front.png" group="Gun" upload="false"/>
-    <texture id="Cannon_back" path="textures/Cannon_back.png" group="Gun" upload="false"/>
-    <texture id="Stand" path="textures/Stand.png" group="Gun" upload="false"/>
+    <texture id="Player" path="textures/Player.png" group="Player" upload="false"/>
     <texture id="Background" path="textures/background.png" group="Back" upload="false"/>
     <texture id="Aim" path="textures/Aim.png" group="Aim" upload="false"/>
     <texture id="Cannonball" path="textures/Cannonball.png" group="Cannonball" upload="false"/>

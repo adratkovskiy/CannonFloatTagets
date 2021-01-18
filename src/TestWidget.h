@@ -1,13 +1,15 @@
 #pragma once
 #include "GameController.h"
 #include "Cannonball.h"
-#include "Cannon.h"
+//#include "Cannon.h"
 #include "Options.h"
 #include "Aim.h"
 #include "Button.h"
 #include "RoundObject.h"
 #include "Targets.h"
 #include "Functions.h"
+#include "Player.h"
+#include "TargetsBlock.h"
 
 ///
 /// Виджет - основной визуальный элемент на экране.
@@ -48,9 +50,6 @@ private:
 
 private:
 	
-	Render::Texture* _cannonBackTexture;
-	Render::Texture* _cannonFrontTexture;
-	Render::Texture* _standTexture;
 	Render::Texture* _backgroundTexture;
 	Render::Texture* _aimTexture;
 	Render::Texture* _pointTexture;
@@ -60,6 +59,8 @@ private:
 	Render::Texture* _targetBlueTexture;
 	Render::Texture* _buttonUpTexture;
 	Render::Texture* _buttonDownTexture;
+
+	Render::Texture* _playerTexture;
 
 	//main screen
 	Color _fadeBackground;
@@ -89,10 +90,12 @@ private:
 	int _targetsCountBlue;
 	int _targetsCountYellow;
 	float _gameTimeMax;
+	float _playerScale;
+	FPoint _playerSpawn;
 
+	Player* _player;
 	GameController* _gControl;
 	Cannonball* _cannonball;
-	Cannon* _cannon;
 	Options* _options;
 	Aim* _aim;
 	Button* _button;
@@ -100,6 +103,7 @@ private:
 	Button* _buttonExperiment;
 	Button* _buttonRestart;
 	std::vector<Targets*> _targets;
+	std::vector<TargetsBlock*> _targetsBlock;
 	int _topBorder;
 	int _bottomBorder;
 	int _leftBorder;

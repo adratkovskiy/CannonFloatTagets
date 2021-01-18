@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <options>
+  <player_scale type="float" val="0.125"/>
+  <player_spawn type="FPoint" x="0" y="50" />
   <gun_scale type="float" val="0.125"/>
   <cannon_rotate_point type="FPoint" x="-40" y="-32" />
   <cannon_stand_pos type="FPoint" x="480" y="10" />

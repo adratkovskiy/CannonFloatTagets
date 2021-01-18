@@ -24,9 +24,6 @@ TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 void TestWidget::Init()
 {
 	_showTestButtons = false; // включить отладочные кнопки, если нужно поэксперементировать
-	_cannonBackTexture = Core::resourceManager.Get<Render::Texture>("Cannon_back");
-	_cannonFrontTexture = Core::resourceManager.Get<Render::Texture>("Cannon_front");
-	_standTexture = Core::resourceManager.Get<Render::Texture>("Stand");
 	_backgroundTexture = Core::resourceManager.Get<Render::Texture>("Background");
 	_aimTexture = Core::resourceManager.Get<Render::Texture>("Aim");
 	_cannonballTexture = Core::resourceManager.Get<Render::Texture>("Cannonball");
@@ -36,16 +33,15 @@ void TestWidget::Init()
 	_buttonUpTexture = Core::resourceManager.Get<Render::Texture>("Button_up");
 	_buttonDownTexture = Core::resourceManager.Get<Render::Texture>("Button_down");
 
+	_playerTexture = Core::resourceManager.Get<Render::Texture>("Player");
+
 	_options = new Options();
 	_gControl = new GameController(GameController::GameStates::START_SCREEN, true, _options->getParamFloat("sys_timer"));
 	_aim = new Aim(_options->getParamFloat("aim_scale"), _aimTexture->getBitmapRect());
 	
-	_cannon = new Cannon(_options->getParamFloat("cannon_angle")
-		, _options->getParamFloat("gun_scale")
-		, _options->getParamFPoint("cannon_stand_pos")
-		, _options->getParamFPoint("cannon_rotate_point")
-		, _options->getParamFPoint("cannon_center"));
-	_cannonball = new Cannonball(_cannon->getScale()
+	
+
+	_cannonball = new Cannonball(_options->getParamFloat("gun_scale")
 		, _cannonballTexture->getBitmapRect()
 		, _options->getParamFPoint("cannon_center")
 		, _options->getParamFloat("cannonball_speed")
@@ -115,6 +111,11 @@ void TestWidget::Init()
 
 	_gameTimeMax = _options->getParamFloat("game_time_max");
 
+	_playerSpawn = _options->getParamFPoint("player_spawn");
+	_playerScale = _options->getParamFloat("player_scale");
+
+	_player = new Player(_playerScale, _playerTexture->getBitmapRect(), _playerSpawn);
+
 	Render::BindFont("arial");
 	SetGameStatus(GameController::GameStates::GAME);
 }
@@ -128,7 +129,7 @@ void TestWidget::Draw()
 	case GameController::GameStates::GAME: // режим: игра
 		_backgroundTexture->Draw();
 
-		Render::device.PushMatrix();		// подставка под пушку
+		/*Render::device.PushMatrix();		// подставка под пушку
 		Render::device.MatrixTranslate(_cannon->getStandPos());
 		Render::device.MatrixScale(_cannon->getScale());
 		_standTexture->Draw();
@@ -140,7 +141,7 @@ void TestWidget::Draw()
 		Render::device.MatrixTranslate(_cannon->getCannonRotatePoint());
 		Render::device.MatrixScale(_cannon->getScale());
 		_cannonBackTexture->Draw();
-		Render::device.PopMatrix();
+		Render::device.PopMatrix();*/
 
 		for (std::vector<Targets*>::iterator it = _targets.begin(); it != _targets.end(); it++) {
 			Render::device.PushMatrix();
@@ -169,13 +170,19 @@ void TestWidget::Draw()
 			Render::device.PopMatrix();
 		}
 
-		Render::device.PushMatrix(); //передняя часть пушки
+		Render::device.PushMatrix(); //игрок
+		Render::device.MatrixTranslate(_player->getPos());
+		Render::device.MatrixScale(_player->getScale());
+		_playerTexture->Draw();
+		Render::device.PopMatrix(); 
+
+		/*Render::device.PushMatrix(); //передняя часть пушки
 		Render::device.MatrixTranslate(_cannon->getCannonCenter());
 		Render::device.MatrixRotate(math::Vector3(0, 0, 1), _cannon->getAngle());
 		Render::device.MatrixTranslate(_cannon->getCannonRotatePoint());
 		Render::device.MatrixScale(_cannon->getScale());
 		_cannonFrontTexture->Draw();
-		Render::device.PopMatrix();
+		Render::device.PopMatrix();*/
 
 		if (_showTestButtons) // отладочные кнопки
 		{
@@ -321,7 +328,9 @@ void TestWidget::Update(float dt)
 				_gControl->setTimer(_gControl->getTimer() - 2 * math::PI);
 			}
 		}
-		_cannon->setAngle(atan2(_cannon->getCannonCenter().y - _gControl->getMousePos().y, _cannon->getCannonCenter().x - _gControl->getMousePos().x) / math::PI * 180 + 90);
+		//_cannon->setAngle(atan2(_cannon->getCannonCenter().y - _gControl->getMousePos().y, _cannon->getCannonCenter().x - _gControl->getMousePos().x) / math::PI * 180 + 90);
+		_player->setPosCenter(_gControl->getMousePos().x);
+
 		if (!_gControl->getReadyToShot()) { //если ядро кого-то может сбить
 			int targetsToDelete = 0;
 			int targetsCount = _targets.size();
@@ -377,8 +386,8 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 		else if (_gControl->getReadyToShot()) // можно стрелять
 		{
 			_gControl->setReadyToShot(false);
-			_cannonball->setFlightTime( 1 / LocalFunctions::pointToPointRange(_gControl->getMousePos(), _cannon->getCannonCenter()) * _cannonball->getSpeed() );
-			_cannonball->setSpline(_cannon->getCannonCenter(), _gControl->getMousePos());
+			_cannonball->setFlightTime(1 / LocalFunctions::pointToPointRange(_gControl->getMousePos(), FPoint{100.f, 100.f} *_cannonball->getSpeed()));
+			_cannonball->setSpline(FPoint{ 100.f, 100.f }, _gControl->getMousePos());
 			_gControl->setTimer(0);
 
 			_effParticleSmoke = _effCont.AddEffect("SmokeCannon");

@@ -127,8 +127,11 @@
     <ClCompile Include="..\..\src\GameController.cpp" />
     <ClCompile Include="..\..\src\Main.cpp" />
     <ClCompile Include="..\..\src\Options.cpp" />
+    <ClCompile Include="..\..\src\Player.cpp" />
+    <ClCompile Include="..\..\src\RectObject.cpp" />
     <ClCompile Include="..\..\src\RoundObject.cpp" />
     <ClCompile Include="..\..\src\Targets.cpp" />
+    <ClCompile Include="..\..\src\TargetsBlock.cpp" />
     <ClCompile Include="..\..\src\TestAppDelegate.cpp" />
     <ClCompile Include="..\..\src\TestWidget.cpp" />
     <ClCompile Include="..\..\src\stdafx.cpp">
@@ -144,8 +147,11 @@
     <ClInclude Include="..\..\src\Functions.h" />
     <ClInclude Include="..\..\src\GameController.h" />
     <ClInclude Include="..\..\src\Options.h" />
+    <ClInclude Include="..\..\src\Player.h" />
+    <ClInclude Include="..\..\src\RectObject.h" />
     <ClInclude Include="..\..\src\RoundObject.h" />
     <ClInclude Include="..\..\src\Targets.h" />
+    <ClInclude Include="..\..\src\TargetsBlock.h" />
     <ClInclude Include="..\..\src\TestAppDelegate.h" />
     <ClInclude Include="..\..\src\TestWidget.h" />
     <ClInclude Include="..\..\src\stdafx.h" />
