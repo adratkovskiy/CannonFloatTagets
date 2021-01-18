@@ -8,8 +8,7 @@
   <cannon_angle type="float" val="90" />
   <cannon_center type="FPoint" x="535" y="62" />
   <aim_scale type="float" val="0.5" />
-  <screen_width type="float" val="1024" />
-  <screen_height type="float" val="768" />
+  <game_screen type="FPoint" x="1024" y="768" />
   <sys_timer type="float" val="0" />
   <cannonball_speed type="float" val="2000" />
   <cannonball_spline_points type="vector" p0="0.0" p1="0.3" p2="0.5" p3="0.7" p4="1.0" />
@@ -56,4 +55,8 @@
   <targets_count_yellow type="int" val="10" />
   <fade_speed type="int" val="2" />
   <def_text_color type="color" R="0" G="0" B="0" A="255" />
+  <target_vert_padding type="float" val="50" />
+  <target_top_padding type="float" val="150" />
+  <target_horiz_padding type="float" val="10" />
+  <target_scale type="float" val="0.125" />
 </options>

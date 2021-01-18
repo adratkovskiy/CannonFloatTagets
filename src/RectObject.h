@@ -4,6 +4,7 @@ class RectObject
 public:
 	RectObject(const float scale
 		, const IRect& textureRect
+		, const FPoint& pos
 	);
 	virtual ~RectObject();
 	float getScale() const;

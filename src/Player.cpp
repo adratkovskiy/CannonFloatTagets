@@ -3,11 +3,10 @@
 
 Player::Player(const float scale
     , const IRect& textureRect
-    , FPoint spawnPos
+    , FPoint pos
 ) :
-    RectObject(scale, textureRect)
+    RectObject(scale, textureRect, pos)
 {
-    setPosCenter(spawnPos);
 }
 
 Player::~Player()

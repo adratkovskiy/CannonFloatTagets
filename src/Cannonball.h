@@ -16,19 +16,19 @@ public:
 	void splineClear();
 
 	float getSpeed() const;
-	float getFlightTime() const;
-	TimedSpline<FPoint>& getSpline();
+	//float getFlightTime() const;
+	//TimedSpline<FPoint>& getSpline();
+	bool isStoped() const;
 
-	void setShow(bool show);
 	void setFlightTime(float cannonTimer);
 	void setSpline(FPoint cannonCenter, FPoint mousePos);
 	
 private:
-	bool _show;
 	FPoint _centerOffset;
 	const float _speed;
 	float _flightTime;
 	TimedSpline<FPoint> _spline;
 	std::vector<float> _splinePoints;
+	bool _stop;
 };
 

@@ -6,13 +6,15 @@
 		</font>
 	</FreeTypeFonts>
 	<Textures>
+    
+    <texture id="Invader_0" path="textures/Invader_0.png" group="Invader" upload="false"/>
+    <texture id="Invader_1" path="textures/Invader_1.png" group="Invader" upload="false"/>
+    <texture id="Invader_2" path="textures/Invader_2.png" group="Invader" upload="false"/>
+    <texture id="Invader_3" path="textures/Invader_3.png" group="Invader" upload="false"/>
+    <texture id="Invader_4" path="textures/Invader_4.png" group="Invader" upload="false"/>
     <texture id="Player" path="textures/Player.png" group="Player" upload="false"/>
     <texture id="Background" path="textures/background.png" group="Back" upload="false"/>
-    <texture id="Aim" path="textures/Aim.png" group="Aim" upload="false"/>
     <texture id="Cannonball" path="textures/Cannonball.png" group="Cannonball" upload="false"/>
-    <texture id="Target_yellow" path="textures/Target_yellow.png" group="Targets" upload="false"/>
-    <texture id="Target_red" path="textures/Target_red.png" group="Targets" upload="false"/>
-    <texture id="Target_blue" path="textures/Target_blue.png" group="Targets" upload="false"/>
     <texture id="Button_up" path="textures/Button_up.png" group="Button" upload="false"/>
     <texture id="Button_down" path="textures/Button_down.png" group="Button" upload="false"/>
 	</Textures>

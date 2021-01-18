@@ -35,10 +35,12 @@ public:
 	void KeyPressed(int keyCode) override;
 	void CharPressed(int unicodeChar) override;
 
-	void CreateTarget();
-	void CreateTarget(FPoint& pos, FPoint& moveVec);
-	void CreateSomeTarget(int count);
-	void CreateColorTarget(const char color, const int count);
+	void CreateTarget(FPoint& pos
+		, int health
+		, float speed
+		, bool* toLeft
+	);
+	void CreateLevel();
 
 	void SetGameStatus(const GameController::GameStates state);
 
@@ -59,11 +61,17 @@ private:
 	Render::Texture* _targetBlueTexture;*/
 	Render::Texture* _buttonUpTexture;
 	Render::Texture* _buttonDownTexture;
+	Render::Texture* _invaderTexture_0;
+	Render::Texture* _invaderTexture_1;
+	Render::Texture* _invaderTexture_2;
+	Render::Texture* _invaderTexture_3;
+	Render::Texture* _invaderTexture_4;
 
 	Render::Texture* _playerTexture;
 
 	//main screen
 	Color _fadeBackground;
+	FPoint _gameScreen;
 	IRect _blockScreen;
 	FPoint _textEndgameTitlePos;
 	FPoint _textEndgamePointsPos;
@@ -77,18 +85,6 @@ private:
 	int _targetsCountToGame;
 
 	//targets
-	/*float _targetRedScale;
-	float _targetBlueScale;
-	float _targetYellowScale;
-	float _targetRedSpeed;
-	float _targetBlueSpeed;
-	float _targetYellowSpeed;
-	int _targetRedPoints;
-	int _targetBluePoints;
-	int _targetYellowPoints;
-	int _targetsCountRed;
-	int _targetsCountBlue;
-	int _targetsCountYellow;*/
 	float _gameTimeMax;
 	float _playerScale;
 	FPoint _playerSpawn;
@@ -97,7 +93,7 @@ private:
 	GameController* _gControl;
 	Cannonball* _cannonball;
 	Options* _options;
-	//Aim* _aim;
+	Options* _levels;
 	Button* _button;
 	Button* _button30Targets;
 	Button* _buttonExperiment;
@@ -114,6 +110,13 @@ private:
 	int _fadeSpeed;
 	float _gameTimer;
 	float _gameTimerMax;
+	float _targetVPadding;
+	float _topPadding;
+	float _targetHPadding;
+	float _targetScale;
+	FRect _targetSize;
+	std::vector<bool*>_targetMoveToLeft;
+	FPoint _cannonballPointOnPlayer;
 
 	EffectsContainer _effCont;
 	ParticleEffectPtr _effParticleSmoke;

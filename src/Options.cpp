@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "Options.h"
 
-Options::Options()
+Options::Options(const char* fileName)
 {
     rapidxml::xml_document<> xmlDoc;
-    rapidxml::file<> xmlFile("base_p/Options.xml");
+    rapidxml::file<> xmlFile(fileName);
     xmlDoc.parse<0>(xmlFile.data());
     for (rapidxml::xml_node<>* node = xmlDoc.first_node()->first_node(); node; node = node->next_sibling())
     {
@@ -21,6 +21,10 @@ Options::Options()
                 std::string paramNumber = "p" + std::to_string(i);
                 _configSplinePoints.push_back(strtof(node->first_attribute(paramNumber.c_str())->value(), NULL));
             }
+        }
+        else if (!strcmp(node->last_attribute("type")->value(), (const char*)"bool")) {
+            _configBool.insert({ node->name(), strtol(node->first_attribute("val")->value(), NULL, 0) });
+            _configBool.insert({ node->name(), false });
         }
         else if (!strcmp(node->last_attribute("type")->value(), (const char*)"string")) {
             _configString.insert({ node->name(), node->first_attribute("val")->value() });
@@ -55,6 +59,18 @@ int Options::getParamInt(const std::string& paramName)
     std::map<std::string, int>::iterator it;
     it = _configInt.find(paramName);
     if (it != _configInt.end())
+    {
+        return it->second;
+    }
+    else
+        return 0;
+}
+
+bool Options::getParamBool(const std::string& paramName)
+{
+    std::map<std::string, bool>::iterator it;
+    it = _configBool.find(paramName);
+    if (it != _configBool.end())
     {
         return it->second;
     }

@@ -160,6 +160,7 @@
     <Xml Include="..\..\bin\base_p\Layers.xml">
       <SubType>Designer</SubType>
     </Xml>
+    <Xml Include="..\..\bin\base_p\Level.xml" />
     <Xml Include="..\..\bin\base_p\Options.xml" />
     <Xml Include="..\..\bin\base_p\Resources.xml" />
   </ItemGroup>

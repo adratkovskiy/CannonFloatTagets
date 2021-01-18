@@ -6,7 +6,7 @@ class Player :
 public:
     Player(const float scale
         , const IRect& textureRect
-        , FPoint spawnPos
+        , FPoint pos
     );
     ~Player();
 };

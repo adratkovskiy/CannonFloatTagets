@@ -26,20 +26,25 @@ void TestWidget::Init()
 	_showTestButtons = false; // включить отладочные кнопки, если нужно поэксперементировать
 	_backgroundTexture = Core::resourceManager.Get<Render::Texture>("Background");
 	_cannonballTexture = Core::resourceManager.Get<Render::Texture>("Cannonball");
-	/*_aimTexture = Core::resourceManager.Get<Render::Texture>("Aim");
-	_targetYellowTexture = Core::resourceManager.Get<Render::Texture>("Target_yellow");
-	_targetRedTexture = Core::resourceManager.Get<Render::Texture>("Target_red");
-	_targetBlueTexture = Core::resourceManager.Get<Render::Texture>("Target_blue");*/
 	_buttonUpTexture = Core::resourceManager.Get<Render::Texture>("Button_up");
 	_buttonDownTexture = Core::resourceManager.Get<Render::Texture>("Button_down");
+	_invaderTexture_0 = Core::resourceManager.Get<Render::Texture>("Invader_0");
+	_invaderTexture_1 = Core::resourceManager.Get<Render::Texture>("Invader_1");
+	_invaderTexture_2 = Core::resourceManager.Get<Render::Texture>("Invader_2");
+	_invaderTexture_3 = Core::resourceManager.Get<Render::Texture>("Invader_3");
+	_invaderTexture_4 = Core::resourceManager.Get<Render::Texture>("Invader_4");
 
 	_playerTexture = Core::resourceManager.Get<Render::Texture>("Player");
 
-	_options = new Options();
+	_options = new Options("base_p/Options.xml");
+	_levels = new Options("base_p/Level.xml");
 	_gControl = new GameController(GameController::GameStates::START_SCREEN, true, _options->getParamFloat("sys_timer"));
-	//_aim = new Aim(_options->getParamFloat("aim_scale"), _aimTexture->getBitmapRect());
-	
-	
+	_targetVPadding = _options->getParamFloat("target_vert_padding");
+	_targetHPadding = _options->getParamFloat("target_horiz_padding");
+	_topPadding = _options->getParamFloat("target_top_padding");
+	_targetScale = _options->getParamFloat("target_scale");
+	_targetSize = (FRect)_invaderTexture_0->getBitmapRect();
+	_gameScreen = _options->getParamFPoint("game_screen");
 
 	_cannonball = new Cannonball(_options->getParamFloat("gun_scale")
 		, _cannonballTexture->getBitmapRect()
@@ -93,28 +98,14 @@ void TestWidget::Init()
 	_textTitleTimeoutString = _options->getParamString("text_title_timeout_string");
 	_targetsCountToGame = _options->getParamInt("targets_count_to_game");
 
-	/*_targetRedScale = _options->getParamFloat("target_red_scale");
-	_targetBlueScale = _options->getParamFloat("target_blue_scale");
-	_targetYellowScale = _options->getParamFloat("target_yellow_scale");
-
-	_targetRedSpeed = _options->getParamFloat("target_red_speed");
-	_targetBlueSpeed = _options->getParamFloat("target_blue_speed");
-	_targetYellowSpeed = _options->getParamFloat("target_yellow_speed");
-
-	_targetRedPoints = _options->getParamInt("target_red_points");
-	_targetBluePoints = _options->getParamInt("target_blue_points");
-	_targetYellowPoints = _options->getParamInt("target_yellow_points");
-
-	_targetsCountRed = _options->getParamInt("targets_count_red");
-	_targetsCountBlue = _options->getParamInt("targets_count_blue");
-	_targetsCountYellow = _options->getParamInt("targets_count_yellow");*/
-
 	_gameTimeMax = _options->getParamFloat("game_time_max");
 
 	_playerSpawn = _options->getParamFPoint("player_spawn");
 	_playerScale = _options->getParamFloat("player_scale");
 
 	_player = new Player(_playerScale, _playerTexture->getBitmapRect(), _playerSpawn);
+	_cannonballPointOnPlayer.x = _playerTexture->getBitmapRect().width * _player->getScale() / 2 - _cannonball->getRadius();
+	_cannonballPointOnPlayer.y = _playerTexture->getBitmapRect().height * _player->getScale();
 
 	Render::BindFont("arial");
 	SetGameStatus(GameController::GameStates::GAME);
@@ -129,60 +120,44 @@ void TestWidget::Draw()
 	case GameController::GameStates::GAME: // режим: игра
 		_backgroundTexture->Draw();
 
-		/*Render::device.PushMatrix();		// подставка под пушку
-		Render::device.MatrixTranslate(_cannon->getStandPos());
-		Render::device.MatrixScale(_cannon->getScale());
-		_standTexture->Draw();
-		Render::device.PopMatrix();
-
-		Render::device.PushMatrix();	//задняя (фоновая часть пушки) 
-		Render::device.MatrixTranslate(_cannon->getCannonCenter());
-		Render::device.MatrixRotate(math::Vector3(0, 0, 1), _cannon->getAngle());
-		Render::device.MatrixTranslate(_cannon->getCannonRotatePoint());
-		Render::device.MatrixScale(_cannon->getScale());
-		_cannonBackTexture->Draw();
-		Render::device.PopMatrix();*/
-
-		for (std::vector<Targets*>::iterator it = _targets.begin(); it != _targets.end(); it++) {
+		for (std::vector<TargetsBlock*>::iterator it = _targetsBlock.begin(); it != _targetsBlock.end(); it++) {
 			Render::device.PushMatrix();
 			Render::device.MatrixTranslate((*it)->getPos());
 			Render::device.MatrixScale((*it)->getScale());
-			(*it)->Draw(); // рисую из объекта, ибо ну не удобно каждый раз проверять, какая цель и какой текстурой ее рисовать
+			switch ((*it)->getHealth())
+			{
+			case 0:
+				_invaderTexture_0->Draw();
+				break;
+			case 1:
+				_invaderTexture_1->Draw();
+				break;
+			case 2:
+				_invaderTexture_2->Draw();
+				break;
+			case 3:
+				_invaderTexture_3->Draw();
+				break;
+			case 4:
+				_invaderTexture_4->Draw();
+				break;
+			}
 			Render::device.PopMatrix();
 		}
 
 		_effCont.Draw();
 
-		if (!_gControl->getReadyToShot()) // рисую полет ядра
-		{
-			Render::device.PushMatrix();
-			Render::device.MatrixTranslate(_cannonball->getPos());
-			Render::device.MatrixScale(_cannonball->getScale());
-			_cannonballTexture->Draw();
-			Render::device.PopMatrix();
-		}
-		else {
-			/*Render::device.PushMatrix(); // или рисую прицел
-			Render::device.MatrixTranslate(static_cast<int>(_gControl->getMousePos().x), static_cast<int>(_gControl->getMousePos().y), 0);
-			Render::device.MatrixTranslate(_aim->getCoordCenter());
-			Render::device.MatrixScale(_aim->getScale());
-			_aimTexture->Draw();
-			Render::device.PopMatrix();*/
-		}
+		Render::device.PushMatrix();
+		Render::device.MatrixTranslate(_cannonball->getPos());
+		Render::device.MatrixScale(_cannonball->getScale());
+		_cannonballTexture->Draw();
+		Render::device.PopMatrix();
 
 		Render::device.PushMatrix(); //игрок
 		Render::device.MatrixTranslate(_player->getPos());
 		Render::device.MatrixScale(_player->getScale());
 		_playerTexture->Draw();
 		Render::device.PopMatrix(); 
-
-		/*Render::device.PushMatrix(); //передняя часть пушки
-		Render::device.MatrixTranslate(_cannon->getCannonCenter());
-		Render::device.MatrixRotate(math::Vector3(0, 0, 1), _cannon->getAngle());
-		Render::device.MatrixTranslate(_cannon->getCannonRotatePoint());
-		Render::device.MatrixScale(_cannon->getScale());
-		_cannonFrontTexture->Draw();
-		Render::device.PopMatrix();*/
 
 		if (_showTestButtons) // отладочные кнопки
 		{
@@ -309,6 +284,12 @@ void TestWidget::Update(float dt)
 	{
 	case GameController::GameStates::GAME:
 		_gameTimer -= dt;
+		_player->setPosCenter(_gControl->getMousePos().x);
+		if (_cannonball->isStoped())
+		{
+			_cannonball->setPos(_player->getPos() + _cannonballPointOnPlayer);
+		}
+		
 		if (!_gControl->getReadyToShot()) {
 			_cannonball->updPosition(_gControl->getTimer()); //полет ядра
 			_effParticleSmoke->SetPos(_cannonball->getCoordCenter());
@@ -329,12 +310,12 @@ void TestWidget::Update(float dt)
 			}
 		}
 		//_cannon->setAngle(atan2(_cannon->getCannonCenter().y - _gControl->getMousePos().y, _cannon->getCannonCenter().x - _gControl->getMousePos().x) / math::PI * 180 + 90);
-		_player->setPosCenter(_gControl->getMousePos().x);
+		
 
 		if (!_gControl->getReadyToShot()) { //если ядро кого-то может сбить
 			int targetsToDelete = 0;
 			int targetsCount = _targets.size();
-			std::vector<Targets*>::iterator it = _targets.begin();
+			/*std::vector<Targets*>::iterator it = _targets.begin();
 			for (int i = 0; i < targetsCount; i++)
 			{
 				if ((*it)->isCrossing(_cannonball->getPos(), _cannonball->getRadius())) { //проверка на сбитие мишени
@@ -353,10 +334,10 @@ void TestWidget::Update(float dt)
 			}
 			if (targetsToDelete > 0) {
 				_targets.erase(_targets.end() - targetsToDelete, _targets.end()); //очищаем от сбитых мишеней
-			}
+			}*/
 		}
 
-		for (std::vector<Targets*>::iterator it_hunt = _targets.begin(); it_hunt != _targets.end(); it_hunt++)
+		/*for (std::vector<Targets*>::iterator it_hunt = _targets.begin(); it_hunt != _targets.end(); it_hunt++)
 		{
 			(*it_hunt)->Tick();
 			for (std::vector<Targets*>::iterator it_vict = _targets.begin(); it_vict != _targets.end(); it_vict++)
@@ -367,6 +348,10 @@ void TestWidget::Update(float dt)
 					(*it_hunt)->tooClose(*(*it_vict)); // столкновение с объектами
 				}
 			}
+		}*/
+		
+		for (std::vector<TargetsBlock*>::iterator it = _targetsBlock.begin(); it != _targetsBlock.end(); it++) {
+			(*it)->move();
 		}
 		/*if (((_gameTimer <= 0.f) || (_targets.size() == 0)) & (_gControl->getGameState() == GameController::GameStates::GAME)) {
 			_gameTimer = 0.f;
@@ -397,6 +382,9 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 		if (_showTestButtons) {
 			TestButtonsClick();
 		}
+	}
+	for (std::vector<TargetsBlock*>::iterator it = _targetsBlock.begin(); it != _targetsBlock.end(); it++) {
+		(*it)->click(_gControl->getMousePos());
 	}
 	return false;
 }
@@ -447,165 +435,31 @@ void TestWidget::CharPressed(int unicodeChar) // не стал удалять с
 	}
 }
 
-void TestWidget::CreateTarget()
+void TestWidget::CreateTarget(FPoint& pos, int health, float speed, bool* toLeft)
 {
-	/*int numTarget = math::random(2);
-	Targets* newTarget;
-	FPoint randPos({ static_cast<float>(math::random(_rightBorder - _leftBorder) + _leftBorder), static_cast<float>(math::random(_topBorder - _bottomBorder) + _bottomBorder) });
+	TargetsBlock* newTarget;
+	newTarget = new TargetsBlock(_targetScale, _invaderTexture_0->getBitmapRect(), pos, health, speed, toLeft, _leftBorder, _rightBorder);
+	_targetsBlock.push_back(newTarget);
+}
 
-	switch (numTarget) 
+void TestWidget::CreateLevel()
+{
+	float vPadding = _gameScreen.y - _topPadding;
+	for (int i = 0; i < _levels->getParamInt("level_count"); i++)
 	{
-	case(0):
-		newTarget = new Targets(_targetYellowScale
-			, _targetYellowTexture->getBitmapRect()
-			, randPos
-			, _targetYellowTexture
-			, LocalFunctions::randomVec(_targetYellowSpeed)
-			, _targetYellowSpeed
-			, _topBorder
-			, _bottomBorder
-			, _leftBorder
-			, _rightBorder
-			, _targetYellowPoints
-		);
-		break;
-	case(1):
-		newTarget = new Targets(_targetRedScale
-			, _targetRedTexture->getBitmapRect()
-			, randPos
-			, _targetRedTexture
-			, LocalFunctions::randomVec(_targetRedSpeed)
-			, _targetRedSpeed
-			, _topBorder
-			, _bottomBorder
-			, _leftBorder
-			, _rightBorder
-			, _targetRedPoints
-		);
-		break;
-	case(2):
-		newTarget = new Targets(_targetBlueScale
-			, _targetBlueTexture->getBitmapRect()
-			, randPos
-			, _targetBlueTexture
-			, LocalFunctions::randomVec(_targetBlueSpeed)
-			, _targetBlueSpeed
-			, _topBorder
-			, _bottomBorder
-			, _leftBorder
-			, _rightBorder
-			, _targetBluePoints
-		);
-		break;
-	default:
-		newTarget = new Targets(_targetYellowScale
-			, _targetYellowTexture->getBitmapRect()
-			, randPos
-			, _targetYellowTexture
-			, LocalFunctions::randomVec(_targetYellowSpeed)
-			, _targetYellowSpeed
-			, _topBorder
-			, _bottomBorder
-			, _leftBorder
-			, _rightBorder
-			, _targetYellowPoints
-		);
-		break;
-	}
-	_targets.push_back(newTarget);*/
-}
-
-void TestWidget::CreateTarget(FPoint& pos, FPoint& moveVec) // мишень в конкретном месте и с нужным направлением движения
-{
-	/*Targets* newTarget;
-	newTarget = new Targets(_targetBlueScale
-		, _targetBlueTexture->getBitmapRect()
-		, pos
-		, _targetBlueTexture
-		, moveVec
-		, _targetBlueSpeed
-		, _topBorder
-		, _bottomBorder
-		, _leftBorder
-		, _rightBorder
-		, _targetBluePoints
-	);
-	_targets.push_back(newTarget);*/
-}
-
-void TestWidget::CreateSomeTarget(int count)
-{
-	for (int i = 0; i < count; i++) {
-		CreateTarget();
-	}
-}
-
-void TestWidget::CreateColorTarget(const char color, const int count) //создать конкрнетные мишени
-{
-	for (int i = 0; i < count; i++)
-	{
-		/*Targets* newTarget;
-		FPoint randPos({ static_cast<float>(math::random(_rightBorder - _leftBorder) + _leftBorder), static_cast<float>(math::random(_topBorder - _bottomBorder) + _bottomBorder) });
-		switch (color) 
+		bool* toLeft;
+		toLeft = new bool(_levels->getParamBool("level_move_to_left_level_" + std::to_string(i)));
+		//_targetMoveToLeft.push_back(toLeft);
+		std::string level = _levels->getParamString("level_" + std::to_string(i));
+		float speed = _levels->getParamFloat("level_speed_" + std::to_string(i));
+		float paddingLeft = (level.length() % 2) * _targetSize.Width() / 2 * _targetScale;
+		float startPos = (level.length() * (_targetSize.Width() * _targetScale + _targetHPadding)) / 2 - (_targetHPadding / 2);
+		for (int targetNum = 0; targetNum < level.length(); targetNum++)
 		{
-		case('y'):
-			newTarget = new Targets(_targetYellowScale
-				, _targetYellowTexture->getBitmapRect()
-				, randPos
-				, _targetYellowTexture
-				, LocalFunctions::randomVec(_targetYellowSpeed)
-				, _targetYellowSpeed 
-				, _topBorder
-				, _bottomBorder
-				, _leftBorder
-				, _rightBorder
-				, _targetYellowPoints
-			);
-			break;
-		case('r'):
-			newTarget = new Targets(_targetRedScale
-				, _targetRedTexture->getBitmapRect()
-				, randPos
-				, _targetRedTexture
-				, LocalFunctions::randomVec(_targetRedSpeed)
-				, _targetRedSpeed
-				, _topBorder
-				, _bottomBorder
-				, _leftBorder
-				, _rightBorder
-				, _targetRedPoints
-			);
-			break;
-		case('b'):
-			newTarget = new Targets(_targetBlueScale
-				, _targetBlueTexture->getBitmapRect()
-				, randPos
-				, _targetBlueTexture
-				, LocalFunctions::randomVec(_targetBlueSpeed)
-				, _targetBlueSpeed
-				, _topBorder
-				, _bottomBorder
-				, _leftBorder
-				, _rightBorder
-				, _targetBluePoints
-			);
-			break;
-		default:
-			newTarget = new Targets(_targetYellowScale 
-				, _targetYellowTexture->getBitmapRect()
-				, randPos
-				, _targetYellowTexture
-				, LocalFunctions::randomVec(_targetYellowSpeed )
-				, _targetYellowSpeed 
-				, _topBorder
-				, _bottomBorder
-				, _leftBorder
-				, _rightBorder
-				, _targetYellowPoints
-			);
-			break;
+			CreateTarget(FPoint{ _gameScreen.x / 2 - startPos , vPadding }, level[targetNum] - '0', speed, toLeft);
+			startPos -= (_targetSize.Width() * _targetScale + _targetHPadding);
 		}
-		_targets.push_back(newTarget);*/
+		vPadding -= _targetVPadding;
 	}
 }
 
@@ -621,9 +475,7 @@ void TestWidget::SetGameStatus(const GameController::GameStates state) //сме�
 		break;
 
 	case GameController::GameStates::GAME:
-		/*CreateColorTarget('b', _targetsCountBlue);
-		CreateColorTarget('y', _targetsCountYellow);
-		CreateColorTarget('r', _targetsCountRed);*/
+		CreateLevel();
 		if (_showTestButtons)
 		{
 			_button->setActive(true);
@@ -685,16 +537,5 @@ const std::string TestWidget::getTitlePoins() const
 
 void TestWidget::TestButtonsClick()
 {
-	if (_button->click(_gControl->getMousePos())) {
-		CreateTarget();
-	}
-	else if (_button30Targets->click(_gControl->getMousePos())) {
-		CreateSomeTarget(_targetsCountToGame);
-	}
-	else if (_buttonExperiment->click(_gControl->getMousePos())) {
-		CreateTarget(FPoint{ 300.f, 400.f }, FPoint{ 1.f, 1.f });
-		CreateTarget(FPoint{ 500.f, 400.f }, FPoint{ -1.f, 1.f });
-		CreateTarget(FPoint{ 300.f, 600.f }, FPoint{ 1.f, -1.f });
-		CreateTarget(FPoint{ 500.f, 600.f }, FPoint{ -1.f, -1.f });
-	}
+
 }

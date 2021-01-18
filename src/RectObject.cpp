@@ -1,9 +1,13 @@
 #include "stdafx.h"
 #include "RectObject.h"
 
-RectObject::RectObject(const float scale, const IRect& textureRect):
+RectObject::RectObject(const float scale
+    , const IRect& textureRect
+    , const FPoint& pos
+) :
     _scale(scale)
     , _textureRect(textureRect)
+    , _pos(pos)
 {
     _centerOffset.x = _textureRect.width * _scale / 2;
     _centerOffset.y = _textureRect.height * _scale / 2;

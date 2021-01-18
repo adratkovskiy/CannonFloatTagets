@@ -12,6 +12,7 @@ Cannonball::Cannonball(const float scale
 	, _flightTime(0)
 {
 	_centerOffset = FPoint({ textureRect.width / 2 * RoundObject::getScale(), textureRect.height / 2 * RoundObject::getScale() });
+	_stop = true;
 }
 
 float Cannonball::getSpeed() const
@@ -29,9 +30,9 @@ TimedSpline<FPoint>& Cannonball::getSpline()
 	return _spline;
 }
 
-void Cannonball::setShow(bool show)
+bool Cannonball::isStoped() const
 {
-	_show = show;
+	return _stop;
 }
 
 void Cannonball::setFlightTime(float cannonTimer)

@@ -127,6 +127,9 @@
     <Xml Include="..\..\bin\base_p\Options.xml">
       <Filter>XML</Filter>
     </Xml>
+    <Xml Include="..\..\bin\base_p\Level.xml">
+      <Filter>XML</Filter>
+    </Xml>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\bin\base_p\start.lua">
