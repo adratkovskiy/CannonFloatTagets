@@ -9,15 +9,13 @@ public:
 		, const IRect& textureRect
 		, const FPoint& pos
 		, const float speed
-		, const std::vector<float>& splinePoints
+		, const int topBorder
+		, const int bottomBorder
+		, const int leftBorder
+		, const int rightBorder
 	);
 
-	void updPosition(const float globalTimer);
-	void splineClear();
-
-	float getSpeed() const;
-	//float getFlightTime() const;
-	//TimedSpline<FPoint>& getSpline();
+	void Tick();
 	bool isStoped() const;
 
 	void setFlightTime(float cannonTimer);

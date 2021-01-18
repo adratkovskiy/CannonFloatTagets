@@ -8,6 +8,6 @@
   <level_move_to_left_level_1 type="bool" val="1" />
   <level_move_to_left_level_2 type="bool" val="0" />
   <level_0 type="string" val="1244421" />
-  <level_1 type="string" val="321123" />
+  <level_1 type="string" val="123321" />
   <level_2 type="string" val="00100" />
 </options>

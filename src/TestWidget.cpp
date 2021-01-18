@@ -50,7 +50,11 @@ void TestWidget::Init()
 		, _cannonballTexture->getBitmapRect()
 		, _options->getParamFPoint("cannon_center")
 		, _options->getParamFloat("cannonball_speed")
-		, _options->getSplinePoints());
+		, _topBorder
+		, _bottomBorder
+		, _leftBorder
+		, _rightBorder
+	);
 
 	_button = new Button(_options->getParamFPoint("button_create_pos")
 		, _options->getParamFloat("button_create_scale")
@@ -291,7 +295,7 @@ void TestWidget::Update(float dt)
 		}
 		
 		if (!_gControl->getReadyToShot()) {
-			_cannonball->updPosition(_gControl->getTimer()); //полет ядра
+			/*_cannonball->updPosition(_gControl->getTimer()); //полет ядра
 			_effParticleSmoke->SetPos(_cannonball->getCoordCenter());
 			if (_cannonball->getPos().y < 0) { //прилетело - очищаю
 				_gControl->setReadyToShot(true);
@@ -307,7 +311,7 @@ void TestWidget::Update(float dt)
 			while (_gControl->getTimer() > 2 * math::PI) 
 			{
 				_gControl->setTimer(_gControl->getTimer() - 2 * math::PI);
-			}
+			}*/
 		}
 		//_cannon->setAngle(atan2(_cannon->getCannonCenter().y - _gControl->getMousePos().y, _cannon->getCannonCenter().x - _gControl->getMousePos().x) / math::PI * 180 + 90);
 		
@@ -370,14 +374,14 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 		}
 		else if (_gControl->getReadyToShot()) // можно стрелять
 		{
-			_gControl->setReadyToShot(false);
+			/*_gControl->setReadyToShot(false);
 			_cannonball->setFlightTime(1 / LocalFunctions::pointToPointRange(_gControl->getMousePos(), FPoint{100.f, 100.f} *_cannonball->getSpeed()));
 			_cannonball->setSpline(FPoint{ 100.f, 100.f }, _gControl->getMousePos());
 			_gControl->setTimer(0);
 
 			_effParticleSmoke = _effCont.AddEffect("SmokeCannon");
 			_effParticleSmoke->SetPos(_cannonball->getPos());
-			_effParticleSmoke->Reset();
+			_effParticleSmoke->Reset();*/
 		}
 		if (_showTestButtons) {
 			TestButtonsClick();
@@ -485,7 +489,7 @@ void TestWidget::SetGameStatus(const GameController::GameStates state) //сме�
 		_buttonRestart->setActive(false);
 		_fade = 0;
 		_gamePoints = 0;
-		_cannonball->splineClear();
+		//_cannonball->splineClear();
 		_gControl->setReadyToShot(true);
 		_gameTimer = _gameTimeMax;
 		break;
