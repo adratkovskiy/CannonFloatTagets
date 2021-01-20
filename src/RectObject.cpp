@@ -11,6 +11,9 @@ RectObject::RectObject(const float scale
 {
     _centerOffset.x = _textureRect.width * _scale / 2;
     _centerOffset.y = _textureRect.height * _scale / 2;
+    _size.x = _textureRect.width * _scale;
+    _size.y = _textureRect.height * _scale;
+    setPosCenter();
 }
 
 RectObject::~RectObject()
@@ -30,6 +33,11 @@ const FPoint& RectObject::getPos() const
 const FPoint& RectObject::getCoordCenter() const
 {
     return _posCenter;
+}
+
+const FPoint& RectObject::getSize() const
+{
+    return _size;
 }
 
 void RectObject::setPos(const FPoint& pos)

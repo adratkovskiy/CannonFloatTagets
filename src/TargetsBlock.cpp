@@ -17,8 +17,6 @@ TargetsBlock::TargetsBlock(const float scale
 	, _leftBorder(leftBorder)
 	, _rightBorder(rightBorder)
 {
-	_size.x = textureRect.width * _scale;
-	_size.y = textureRect.height * _scale;
 }
 
 TargetsBlock::~TargetsBlock()
@@ -63,3 +61,23 @@ void TargetsBlock::move()
 	if (_pos.x + _size.x >= _rightBorder)
 		*_toLeft = !*_toLeft;
 }
+
+void TargetsBlock::hit()
+{
+	_health--;
+}
+
+/*void TargetsBlock::hit(FPoint& cannonball, float radius)
+{
+	_health--; // сделать уничтожение объекта
+	if ((cannonball.x + radius >= _pos.x)
+		&& (cannonball.x - radius <= _pos.x + _size.x)
+		&& (cannonball.y + radius >= _pos.y)
+		&& (cannonball.y - radius <= _pos.y + _size.y)
+		) {
+		
+		return true;
+	}
+	return false;
+	
+}*/

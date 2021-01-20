@@ -1,5 +1,7 @@
 #pragma once
 #include "RoundObject.h"
+#include "TargetsBlock.h"
+#include "Functions.h"
 
 class Cannonball : 
 	public RoundObject
@@ -17,9 +19,14 @@ public:
 
 	void Tick();
 	bool isStoped() const;
+	void Collision(const FPoint& normal);
+	void setMoveVec(const FPoint& moveVec);
+	void setStopped(const bool stopped);
 
-	void setFlightTime(float cannonTimer);
-	void setSpline(FPoint cannonCenter, FPoint mousePos);
+	const FPoint& getMoveVec() const;
+	bool crossAsSphere(TargetsBlock& victim);
+	void tooClose(TargetsBlock& victim);
+	void shiftBack(FPoint& pointOfCollision);
 	
 private:
 	FPoint _centerOffset;
@@ -28,5 +35,10 @@ private:
 	TimedSpline<FPoint> _spline;
 	std::vector<float> _splinePoints;
 	bool _stop;
+	int _topBorder;
+	int _bottomBorder;
+	int _leftBorder;
+	int _rightBorder;
+	FPoint _moveVec;
 };
 

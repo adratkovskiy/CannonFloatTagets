@@ -10,6 +10,7 @@ public:
 	float getScale() const;
 	const FPoint& getPos() const;
 	const FPoint& getCoordCenter() const;
+	const FPoint& getSize() const;
 
 	void setPos(const FPoint& pos);
 	void setPosCenter(const FPoint& pos);
@@ -17,6 +18,7 @@ public:
 
 protected:
 	float _scale;
+	FPoint _size;
 	FPoint _centerOffset;
 	IRect _textureRect;
 	FPoint _pos;

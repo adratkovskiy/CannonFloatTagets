@@ -45,6 +45,14 @@ void TestWidget::Init()
 	_targetScale = _options->getParamFloat("target_scale");
 	_targetSize = (FRect)_invaderTexture_0->getBitmapRect();
 	_gameScreen = _options->getParamFPoint("game_screen");
+	_topBorder = _options->getParamInt("target_create_place_top");
+	_bottomBorder = _options->getParamInt("target_create_place_bottom");
+	_leftBorder = _options->getParamInt("target_create_place_left");
+	_rightBorder = _options->getParamInt("target_create_place_right");
+	_gamePoints = _options->getParamInt("game_points_default");
+	_gameTimer = _options->getParamFloat("game_time_max");
+	_fadeSpeed = _options->getParamInt("fade_speed");
+	_defTextColor = _options->getColor("def_text_color");
 
 	_cannonball = new Cannonball(_options->getParamFloat("gun_scale")
 		, _cannonballTexture->getBitmapRect()
@@ -76,14 +84,6 @@ void TestWidget::Init()
 		, _options->getParamString("button_restart_string")
 		, _buttonUpTexture->getBitmapRect());
 
-	_topBorder = _options->getParamInt("target_create_place_top");
-	_bottomBorder = _options->getParamInt("target_create_place_bottom");
-	_leftBorder = _options->getParamInt("target_create_place_left");
-	_rightBorder = _options->getParamInt("target_create_place_right");
-	_gamePoints = _options->getParamInt("game_points_default");
-	_gameTimer = _options->getParamFloat("game_time_max");
-	_fadeSpeed = _options->getParamInt("fade_speed");
-	_defTextColor = _options->getColor("def_text_color");
 	_fadeBackground = Color{ _options->getColor("block_screen_color").red //затемнение фона
 			, _options->getColor("block_screen_color").green
 			, _options->getColor("block_screen_color").blue
@@ -278,6 +278,7 @@ void TestWidget::Draw()
 	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_gControl->getMousePos().x) + ", Y:" + utils::lexical_cast(_gControl->getMousePos().y), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 65, "gameState:" + utils::lexical_cast(static_cast<int>(_gControl->getGameState())), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 95, "target count:" + utils::lexical_cast(_targets.size()), 1.f, CenterAlign);
+	Render::PrintString(924 + 100 / 2, 125, "move vec:" + utils::lexical_cast(_cannonball->getMoveVec().x) + " " + utils::lexical_cast(_cannonball->getMoveVec().y), 1.f, CenterAlign);
 }
 
 void TestWidget::Update(float dt)
@@ -292,6 +293,20 @@ void TestWidget::Update(float dt)
 		if (_cannonball->isStoped())
 		{
 			_cannonball->setPos(_player->getPos() + _cannonballPointOnPlayer);
+			//_cannonball->setMoveVec(_cannonball->getPos() + FPoint{ _gameScreen.x / 2, _gameScreen.y });
+			_cannonball->setMoveVec(FPoint{ 2, 7 });
+		}
+		else
+		{
+			_cannonball->Tick();
+			for (std::vector<TargetsBlock*>::iterator it = _targetsBlock.begin(); it != _targetsBlock.end(); it++) {
+				FPoint coord = (*it)->getCoordCenter();
+				if (_cannonball->crossAsSphere(*(*it))) // отсекаем мишени, которые явно не рядом (
+				{
+					_cannonball->tooClose(*(*it)); // проверка на попадание по мишеням
+				}
+
+			}
 		}
 		
 		if (!_gControl->getReadyToShot()) {
@@ -386,6 +401,10 @@ bool TestWidget::MouseDown(const IPoint &mouse_pos)
 		if (_showTestButtons) {
 			TestButtonsClick();
 		}
+		if (_cannonball->isStoped())
+		{
+			_cannonball->setStopped(false);
+		}
 	}
 	for (std::vector<TargetsBlock*>::iterator it = _targetsBlock.begin(); it != _targetsBlock.end(); it++) {
 		(*it)->click(_gControl->getMousePos());
@@ -452,7 +471,7 @@ void TestWidget::CreateLevel()
 	for (int i = 0; i < _levels->getParamInt("level_count"); i++)
 	{
 		bool* toLeft;
-		toLeft = new bool(_levels->getParamBool("level_move_to_left_level_" + std::to_string(i)));
+		toLeft = new bool(_levels->getParamBool("level_move_to_left_level_" + std::to_string(i))); //сделать уничтожение
 		//_targetMoveToLeft.push_back(toLeft);
 		std::string level = _levels->getParamString("level_" + std::to_string(i));
 		float speed = _levels->getParamFloat("level_speed_" + std::to_string(i));

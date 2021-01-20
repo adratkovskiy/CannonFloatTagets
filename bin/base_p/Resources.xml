@@ -7,15 +7,15 @@
 	</FreeTypeFonts>
 	<Textures>
     
-    <texture id="Invader_0" path="textures/Invader_0.png" group="Invader" upload="false"/>
-    <texture id="Invader_1" path="textures/Invader_1.png" group="Invader" upload="false"/>
-    <texture id="Invader_2" path="textures/Invader_2.png" group="Invader" upload="false"/>
-    <texture id="Invader_3" path="textures/Invader_3.png" group="Invader" upload="false"/>
-    <texture id="Invader_4" path="textures/Invader_4.png" group="Invader" upload="false"/>
-    <texture id="Player" path="textures/Player.png" group="Player" upload="false"/>
+    <texture id="Invader_0" path="textures/invader_0.png" group="Invader" upload="false"/>
+    <texture id="Invader_1" path="textures/invader_1.png" group="Invader" upload="false"/>
+    <texture id="Invader_2" path="textures/invader_2.png" group="Invader" upload="false"/>
+    <texture id="Invader_3" path="textures/invader_3.png" group="Invader" upload="false"/>
+    <texture id="Invader_4" path="textures/invader_4.png" group="Invader" upload="false"/>
+    <texture id="Player" path="textures/player.png" group="Player" upload="false"/>
     <texture id="Background" path="textures/background.png" group="Back" upload="false"/>
-    <texture id="Cannonball" path="textures/Cannonball.png" group="Cannonball" upload="false"/>
-    <texture id="Button_up" path="textures/Button_up.png" group="Button" upload="false"/>
-    <texture id="Button_down" path="textures/Button_down.png" group="Button" upload="false"/>
+    <texture id="Cannonball" path="textures/cannonball.png" group="Cannonball" upload="false"/>
+    <texture id="Button_up" path="textures/button_up.png" group="Button" upload="false"/>
+    <texture id="Button_down" path="textures/button_down.png" group="Button" upload="false"/>
 	</Textures>
 </Resources>

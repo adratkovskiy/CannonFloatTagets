@@ -21,12 +21,13 @@ public:
     void setHealth(const int health);
     void click(const IPoint& mouse_pos);
     void move();
+    //void hit(FPoint& cannonball, float radius);
+    void hit();
 
 private:
     int _health;
     float _speed;
     bool* _toLeft;
-    FPoint _size;
     int _leftBorder;
     int _rightBorder;
 };
