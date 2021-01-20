@@ -15,18 +15,20 @@ public:
 		, const int bottomBorder
 		, const int leftBorder
 		, const int rightBorder
+		, const float moveVectorShiftX
 	);
 
 	void Tick();
 	bool isStoped() const;
-	void Collision(const FPoint& normal);
+	void collision(const FPoint& normal);
 	void setMoveVec(const FPoint& moveVec);
 	void setStopped(const bool stopped);
 
 	const FPoint& getMoveVec() const;
 	bool crossAsSphere(TargetsBlock& victim);
-	void tooClose(TargetsBlock& victim);
+	void tooClose(RectObject& victim, float moveVecShiftX);
 	void shiftBack(FPoint& pointOfCollision);
+	void changeMoveVec(const float x);
 	
 private:
 	FPoint _centerOffset;
@@ -40,5 +42,6 @@ private:
 	int _leftBorder;
 	int _rightBorder;
 	FPoint _moveVec;
+	float _moveVecShiftX;
 };
 

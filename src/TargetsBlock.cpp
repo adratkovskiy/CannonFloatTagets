@@ -10,8 +10,7 @@ TargetsBlock::TargetsBlock(const float scale
 	, const int leftBorder
 	, const int rightBorder
 ):
-	RectObject(scale, textureRect, pos)
-	, _health(health)
+	RectObject(scale, textureRect, pos, health)
 	, _speed(speed)
 	, _toLeft(toLeft)
 	, _leftBorder(leftBorder)
@@ -33,17 +32,13 @@ bool* TargetsBlock::getToLeft()
 	return _toLeft;
 }
 
-void TargetsBlock::setHealth(const int health)
-{
-	_health = health;
-}
-
 void TargetsBlock::click(const IPoint& mouse_pos)
 {
-	if ((mouse_pos.x >= _pos.x)
-		&& (mouse_pos.x <= _pos.x + _size.x)
-		&& (mouse_pos.y >= _pos.y)
-		&& (mouse_pos.y <= _pos.y + _size.y)
+	FPoint pos = getPos();
+	if ((mouse_pos.x >= pos.x)
+		&& (mouse_pos.x <= pos.x + _size.x)
+		&& (mouse_pos.y >= pos.y)
+		&& (mouse_pos.y <= pos.y + _size.y)
 		) {
 		*_toLeft = !*_toLeft;
 	}
@@ -51,19 +46,18 @@ void TargetsBlock::click(const IPoint& mouse_pos)
 
 void TargetsBlock::move()
 {
-	*_toLeft ? _pos.x -= _speed : _pos.x += _speed;
-	if (_pos.x <= _leftBorder)
+	FPoint pos = getPos();
+	*_toLeft ? pos.x -= _speed : pos.x += _speed;
+	if (pos.x <= _leftBorder)
 	{
 		*_toLeft = !*_toLeft;
-		_pos.x += _speed * 2; //компенсация порядка разворота движения
+		pos.x += _speed * 2; //компенсация порядка разворота движения
 	}
 		
-	if (_pos.x + _size.x >= _rightBorder)
+	if (pos.x + _size.x >= _rightBorder)
 		*_toLeft = !*_toLeft;
+	setPos(pos);
+
 }
 
-void TargetsBlock::hit()
-{
-	_health--;
-}
 

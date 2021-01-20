@@ -45,7 +45,6 @@ public:
 	void SetGameStatus(const GameController::GameStates state);
 
 	const std::string getTitlePoins() const;
-	void TestButtonsClick();
 
 private:
 	void Init();
@@ -53,12 +52,8 @@ private:
 private:
 	
 	Render::Texture* _backgroundTexture;
-	//Render::Texture* _aimTexture;
 	Render::Texture* _pointTexture;
 	Render::Texture* _cannonballTexture;
-	/*Render::Texture* _targetYellowTexture;
-	Render::Texture* _targetRedTexture;
-	Render::Texture* _targetBlueTexture;*/
 	Render::Texture* _buttonUpTexture;
 	Render::Texture* _buttonDownTexture;
 	Render::Texture* _invaderTexture_0;
@@ -80,8 +75,7 @@ private:
 	Color _defTextColor;
 	IRect _panelBottomStatSize;
 	IRect _panelTopStatSize;
-	std::string _textTitlePointsString;
-	std::string _textTitleTimeoutString;
+	std::string _textTitleTimerString;
 	int _targetsCountToGame;
 
 	//targets
@@ -94,11 +88,7 @@ private:
 	Cannonball* _cannonball;
 	Options* _options;
 	Options* _levels;
-	Button* _button;
-	Button* _button30Targets;
-	Button* _buttonExperiment;
 	Button* _buttonRestart;
-	std::vector<Targets*> _targets;
 	std::vector<TargetsBlock*> _targetsBlock;
 	int _topBorder;
 	int _bottomBorder;
@@ -122,4 +112,6 @@ private:
 	ParticleEffectPtr _effParticleSmoke;
 
 	bool _showTestButtons;
+	float _shiftMultiplier;
+	std::vector<bool*> _levelDirection;
 };

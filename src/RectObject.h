@@ -5,6 +5,7 @@ public:
 	RectObject(const float scale
 		, const IRect& textureRect
 		, const FPoint& pos
+		, const int health
 	);
 	virtual ~RectObject();
 	float getScale() const;
@@ -14,17 +15,20 @@ public:
 
 	void setPos(const FPoint& pos);
 	void setPosCenter(const FPoint& pos);
-	void setPosCenter(const float posCenter);
+	void setPosCenter(const float posCenterX);
+
+	void hit();
 
 protected:
 	float _scale;
 	FPoint _size;
 	FPoint _centerOffset;
 	IRect _textureRect;
-	FPoint _pos;
-	FPoint _posCenter;
+	int _health;
 
 private:
 	void setPosCenter();
+	FPoint _pos;
+	FPoint _posCenter;
 };
 

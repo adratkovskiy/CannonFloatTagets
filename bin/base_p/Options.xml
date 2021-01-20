@@ -43,11 +43,10 @@
   <game_points_max type="int" val="12" />
   <block_screen_size type="rect" x="0" y="0" width="1024" height="768" />
   <block_screen_color type="color" R="0" G="0" B="0" A="100" />
-  <text_endgame_string type="string" val="ваш результат" />
+  <text_endgame_string type="string" val="все мишени сбиты" />
   <text_endgame_title_pos type="FPoint" x="512" y="450" />
   <text_endgame_points_pos type="FPoint" x="512" y="420" />
-  <text_title_points_string type="string" val="очки: " />
-  <text_title_timeout_string type="string" val="времени осталось: " />
+  <text_title_timer_string type="string" val="результат: " />
   <game_time_max type="float" val="30" />
   <targets_count_to_game type="int" val="30" />
   <targets_count_red type="int" val="10" />
@@ -59,4 +58,6 @@
   <target_top_padding type="float" val="150" />
   <target_horiz_padding type="float" val="10" />
   <target_scale type="float" val="0.125" />
+  <player_health type="int" val="-1" />
+  <player_shift_multiplier type="float" val="0.05" />
 </options>

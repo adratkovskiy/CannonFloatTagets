@@ -18,14 +18,10 @@ public:
     int getHealth() const;
     bool* getToLeft();
 
-    void setHealth(const int health);
     void click(const IPoint& mouse_pos);
     void move();
-    //void hit(FPoint& cannonball, float radius);
-    void hit();
 
 private:
-    int _health;
     float _speed;
     bool* _toLeft;
     int _leftBorder;

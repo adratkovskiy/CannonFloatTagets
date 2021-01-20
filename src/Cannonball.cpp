@@ -9,6 +9,7 @@ Cannonball::Cannonball(const float scale
 	, const int bottomBorder
 	, const int leftBorder
 	, const int rightBorder
+	, const float moveVectorShiftX
 ) : RoundObject(scale, textureRect, pos)
 	, _speed(speed)
 	, _flightTime(0)
@@ -16,6 +17,7 @@ Cannonball::Cannonball(const float scale
 	, _bottomBorder(bottomBorder)
 	, _leftBorder(leftBorder)
 	, _rightBorder(rightBorder)
+	, _moveVecShiftX(moveVectorShiftX)
 {
 	_centerOffset = FPoint({ textureRect.width / 2 * RoundObject::getScale(), textureRect.height / 2 * RoundObject::getScale() });
 	_stop = true;
@@ -26,20 +28,20 @@ void Cannonball::Tick()
 {
 	if (RoundObject::getCoordCenter().x < _leftBorder) {
 		setPos(FPoint{ _leftBorder - getRadius() , getPos().y });
-		Collision(FPoint{ 1,0 });
+		collision(FPoint{ 1,0 });
 	}
 	else if (RoundObject::getCoordCenter().x > _rightBorder) {
 		setPos(FPoint{ _rightBorder - getRadius() , getPos().y });
-		Collision(FPoint{ -1,0 });
+		collision(FPoint{ -1,0 });
 	}
 	else if (RoundObject::getCoordCenter().y > _topBorder) {
 		setPos(FPoint{ getPos().x , _topBorder - getRadius() });
-		Collision(FPoint{ 0,-1 });
+		collision(FPoint{ 0,-1 });
 	}
 	else if (RoundObject::getCoordCenter().y < 0) {
 		setStopped(true);
 		/*setPos(FPoint{ getPos().x , _bottomBorder - getRadius() });
-		Collision(FPoint{ 0,1 });*/
+		collision(FPoint{ 0,1 });*/
 	}
 	RoundObject::addVecToPos(_moveVec);
 }
@@ -49,7 +51,7 @@ bool Cannonball::isStoped() const
 	return _stop;
 }
 
-void Cannonball::Collision(const FPoint& normal)
+void Cannonball::collision(const FPoint& normal)
 {
 	float coff = ((_moveVec.x * normal.x + _moveVec.y * normal.y) / (normal.x * normal.x + normal.y * normal.y));
 	FPoint nextMove;
@@ -75,10 +77,10 @@ const FPoint& Cannonball::getMoveVec() const
 
 bool Cannonball::crossAsSphere(TargetsBlock& victim)
 {
-	return LocalFunctions::pointToPointRange(_posCenter, victim.getCoordCenter()) <= victim.getSize().x / 2 + _radius;
+	return LocalFunctions::pointToPointRange(_posCenter, victim.getCoordCenter()) <= victim.getSize().x + _radius;
 }
 
-void Cannonball::tooClose(TargetsBlock& victim)
+void Cannonball::tooClose(RectObject& victim, float moveVecShiftX)
 {
 	FPoint vicPos = victim.getPos();
 	FPoint vicTopRightPoint = vicPos + victim.getSize();
@@ -93,12 +95,12 @@ void Cannonball::tooClose(TargetsBlock& victim)
 				if (vicPos.x - _posCenter.x < vicPos.y - _posCenter.y) //отражение от торца, или от нижней части цели
 				{
 					shiftBack(FPoint{ _posCenter.x , vicPos.y }); //нижняя часть
-					Collision(FPoint{ 0, -1 });
+					collision(FPoint{ 0, -1 });
 				}
 				else
 				{
 					shiftBack(FPoint{ vicPos.x , _posCenter.y }); //торец
-					Collision(FPoint{ -1, 0 });
+					collision(FPoint{ -1, 0 });
 				}
 			}
 				
@@ -109,7 +111,7 @@ void Cannonball::tooClose(TargetsBlock& victim)
 			{
 				victim.hit();
 				shiftBack(FPoint{ vicPos.x , _posCenter.y });
-				Collision(FPoint{ -1, 0 });
+				collision(FPoint{ -1, 0 });
 			}
 		}
 		else if (_posCenter.y > vicTopRightPoint.y) //левый верхний угол
@@ -120,12 +122,12 @@ void Cannonball::tooClose(TargetsBlock& victim)
 				if (vicPos.x - _posCenter.x < vicPos.y - _posCenter.y) //отражение от торца, или от верхней части цели
 				{
 					shiftBack(FPoint{ _posCenter.x , vicTopRightPoint.y }); //верхняя часть
-					Collision(FPoint{ 0, 1 });
+					collision(FPoint{ 0 + moveVecShiftX, 1 });
 				}
 				else
 				{
 					shiftBack(FPoint{ vicPos.x , _posCenter.y }); //левый торец
-					Collision(FPoint{ -1, 0 });
+					collision(FPoint{ -1, 0 });
 				}
 			}
 		}
@@ -138,7 +140,7 @@ void Cannonball::tooClose(TargetsBlock& victim)
 			{
 				victim.hit();
 				shiftBack(FPoint{ _posCenter.x , vicPos.y });
-				Collision(FPoint{ 0, -1 });
+				collision(FPoint{ 0, -1 });
 			}
 		}
 		else if (_posCenter.y >= vicTopRightPoint.y) //над целью
@@ -147,7 +149,7 @@ void Cannonball::tooClose(TargetsBlock& victim)
 			{
 				victim.hit();
 				shiftBack(FPoint{ _posCenter.x , vicTopRightPoint.y });
-				Collision(FPoint{ 0, 1 });
+				collision(FPoint{ 0 + moveVecShiftX, 1 });
 			}
 		}
 	}
@@ -161,12 +163,12 @@ void Cannonball::tooClose(TargetsBlock& victim)
 				if (vicPos.x - _posCenter.x < vicPos.y - _posCenter.y) //отражение от торца, или от нижней части цели
 				{
 					shiftBack(FPoint{ _posCenter.x , vicPos.y }); //нижняя часть
-					Collision(FPoint{ 0, -1 });
+					collision(FPoint{ 0, -1 });
 				}
 				else
 				{
 					shiftBack(FPoint{ vicTopRightPoint.x , _posCenter.y }); //правый торец
-					Collision(FPoint{ 1, 0 });
+					collision(FPoint{ 1, 0 });
 				}
 			}
 		}
@@ -176,7 +178,7 @@ void Cannonball::tooClose(TargetsBlock& victim)
 			{
 				victim.hit();
 				shiftBack(FPoint{ vicTopRightPoint.x , _posCenter.y });
-				Collision(FPoint{ 1, 0 });
+				collision(FPoint{ 1, 0 });
 			}
 				
 		}
@@ -187,19 +189,20 @@ void Cannonball::tooClose(TargetsBlock& victim)
 				victim.hit();
 				if (vicTopRightPoint.x - _posCenter.x < vicTopRightPoint.y - _posCenter.y) //отражение от торца, или от верхней части цели
 				{
-					Collision(FPoint{ 0, 1 });
+					shiftBack(FPoint{ _posCenter.x , vicTopRightPoint.y }); //верхняя часть
+					collision(FPoint{ 0 + moveVecShiftX, 1 });
 				}
 				else
 				{
 					shiftBack(FPoint{ vicTopRightPoint.x , _posCenter.y });
-					Collision(FPoint{ 1, 0 });
+					collision(FPoint{ 1, 0 });
 				}
 			}
 		}
 	}
 }
 
-void Cannonball::shiftBack(FPoint& pointOfCollision)
+void Cannonball::shiftBack(FPoint& pointOfcollision)
 {
 	//отодвигаю назад, чтобы не было пересечения
 	//можно было бы посчитать, насколько точно отодвинуть, 
@@ -207,12 +210,17 @@ void Cannonball::shiftBack(FPoint& pointOfCollision)
 	//но мне кажется, что это даст нагрузку на fps
 	//(нужно будет считать арксинус и еще три синуса)
 	//не уверен, что это надо. Тут при их скоростях потери в пиксель
-	float range = LocalFunctions::vecLen(_posCenter - pointOfCollision);
+	float range = LocalFunctions::vecLen(_posCenter - pointOfcollision);
 	while (_radius > range)
 	{
 		setPos(_pos + -_moveVec * 0.2); //отодвигаем по чуть-чуть
-		range = LocalFunctions::vecLen(_posCenter - pointOfCollision);
+		range = LocalFunctions::vecLen(_posCenter - pointOfcollision);
 	}
+}
+
+void Cannonball::changeMoveVec(const float x)
+{
+	_moveVec.x += x;
 }
 
 /*void Cannonball::setFlightTime(float cannonTimer)

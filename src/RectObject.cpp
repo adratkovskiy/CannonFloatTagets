@@ -4,10 +4,12 @@
 RectObject::RectObject(const float scale
     , const IRect& textureRect
     , const FPoint& pos
+    , const int health
 ) :
     _scale(scale)
     , _textureRect(textureRect)
     , _pos(pos)
+    , _health(health)
 {
     _centerOffset.x = _textureRect.width * _scale / 2;
     _centerOffset.y = _textureRect.height * _scale / 2;
@@ -52,10 +54,16 @@ void RectObject::setPosCenter(const FPoint& pos)
     _posCenter = pos;
 }
 
-void RectObject::setPosCenter(const float posCenter)
+void RectObject::setPosCenter(const float posCenterX)
 {
-    _pos.x = posCenter - _centerOffset.x;
-    _posCenter.x = posCenter;
+    _pos.x = posCenterX - _centerOffset.x;
+    _posCenter.x = posCenterX;
+}
+
+void RectObject::hit()
+{
+    if (_health > -1)
+        _health--;
 }
 
 void RectObject::setPosCenter()
