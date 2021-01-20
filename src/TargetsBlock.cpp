@@ -67,17 +67,3 @@ void TargetsBlock::hit()
 	_health--;
 }
 
-/*void TargetsBlock::hit(FPoint& cannonball, float radius)
-{
-	_health--; // сделать уничтожение объекта
-	if ((cannonball.x + radius >= _pos.x)
-		&& (cannonball.x - radius <= _pos.x + _size.x)
-		&& (cannonball.y + radius >= _pos.y)
-		&& (cannonball.y - radius <= _pos.y + _size.y)
-		) {
-		
-		return true;
-	}
-	return false;
-	
-}*/

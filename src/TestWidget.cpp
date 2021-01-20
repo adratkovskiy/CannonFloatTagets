@@ -372,6 +372,28 @@ void TestWidget::Update(float dt)
 		for (std::vector<TargetsBlock*>::iterator it = _targetsBlock.begin(); it != _targetsBlock.end(); it++) {
 			(*it)->move();
 		}
+		int targetsToDelete = 0;
+		int targetsCount = _targetsBlock.size();
+		std::vector<TargetsBlock*>::iterator it = _targetsBlock.begin();
+			for (int i = 0; i < targetsCount; i++)
+			{
+				if ((*it)->getHealth() < 0) { //проверка на сбитие мишени
+					ParticleEffectPtr eff = _effCont.AddEffect("Explosion"); //взрыв
+					eff->SetPos((*it)->getCoordCenter());
+					eff->Reset();
+
+					targetsToDelete++;
+					//_gamePoints += (*it)->getPoints();
+					delete* it;
+					std::iter_swap(it, _targetsBlock.end() - targetsToDelete); //закидываем те мишени, что сбиты в конец вектора
+				}
+				else {
+					it++;
+				}
+			}
+			if (targetsToDelete > 0) {
+				_targetsBlock.erase(_targetsBlock.end() - targetsToDelete, _targetsBlock.end()); //очищаем от сбитых мишеней
+			}
 		/*if (((_gameTimer <= 0.f) || (_targets.size() == 0)) & (_gControl->getGameState() == GameController::GameStates::GAME)) {
 			_gameTimer = 0.f;
 			SetGameStatus(GameController::GameStates::TO_STOP);
