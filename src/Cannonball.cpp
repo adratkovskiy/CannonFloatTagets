@@ -4,27 +4,28 @@
 Cannonball::Cannonball(const float scale
 	, const IRect& textureRect
 	, const FPoint& pos
-	, const float speed
+	, const FPoint& moveVec
 	, const int topBorder
 	, const int bottomBorder
 	, const int leftBorder
 	, const int rightBorder
-	, const float moveVectorShiftX
+	, const float normalSpeed
 ) : RoundObject(scale, textureRect, pos)
-	, _speed(speed)
-	, _flightTime(0)
+	, _moveVec(moveVec)
 	, _topBorder(topBorder)
 	, _bottomBorder(bottomBorder)
 	, _leftBorder(leftBorder)
 	, _rightBorder(rightBorder)
-	, _moveVecShiftX(moveVectorShiftX)
+	, _moveVecShiftX(0)
+	, _normalSpeed(normalSpeed)
 {
+	
 	_centerOffset = FPoint({ textureRect.width / 2 * RoundObject::getScale(), textureRect.height / 2 * RoundObject::getScale() });
 	_stop = true;
 }
 
 
-void Cannonball::Tick()
+bool Cannonball::Tick()
 {
 	if (RoundObject::getCoordCenter().x < _leftBorder) {
 		setPos(FPoint{ _leftBorder - getRadius() , getPos().y });
@@ -40,8 +41,10 @@ void Cannonball::Tick()
 	}
 	else if (RoundObject::getCoordCenter().y < 0) {
 		setStopped(true);
+		return true;
 	}
 	RoundObject::addVecToPos(_moveVec);
+	return false;
 }
 
 bool Cannonball::isStoped() const
@@ -55,11 +58,18 @@ void Cannonball::collision(const FPoint& normal)
 	FPoint nextMove;
 	nextMove.x = _moveVec.x - 2.0f * normal.x * coff;
 	nextMove.y = _moveVec.y - 2.0f * normal.y * coff;
-	_moveVec = nextMove;
+	setMoveVec(nextMove);
 }
 
-void Cannonball::setMoveVec(const FPoint& moveVec)
+void Cannonball::setMoveVec(FPoint& moveVec)
 {
+	if ((_pos.y < _bottomBorder) && (moveVec.y > 0) && (abs(moveVec.x) > moveVec.y))  //чтобы не ушло ядро под большим углом
+	{
+		moveVec.x = moveVec.x / abs(moveVec.x) * moveVec.y;
+	}
+	float coff = _normalSpeed / LocalFunctions::vecLen(moveVec); //выравнивание по скорости полета
+	moveVec = FPoint{ moveVec.x * coff , moveVec.y * coff };
+	FPoint moveVecCorrected = FPoint{ moveVec.x * coff , moveVec.y * coff };
 	_moveVec = moveVec;
 }
 

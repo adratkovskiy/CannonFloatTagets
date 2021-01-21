@@ -23,7 +23,6 @@ TestWidget::TestWidget(const std::string& name, rapidxml::xml_node<>* elem)
 
 void TestWidget::Init()
 {
-	_showTestButtons = false; // включить отладочные кнопки, если нужно поэксперементировать
 	_backgroundTexture = Core::resourceManager.Get<Render::Texture>("Background");
 	_cannonballTexture = Core::resourceManager.Get<Render::Texture>("Cannonball");
 	_buttonUpTexture = Core::resourceManager.Get<Render::Texture>("Button_up");
@@ -45,24 +44,26 @@ void TestWidget::Init()
 	_targetScale = _options->getParamFloat("target_scale");
 	_targetSize = (FRect)_invaderTexture_0->getBitmapRect();
 	_gameScreen = _options->getParamFPoint("game_screen");
-	_topBorder = _options->getParamInt("target_create_place_top");
-	_bottomBorder = _options->getParamInt("target_create_place_bottom");
-	_leftBorder = _options->getParamInt("target_create_place_left");
-	_rightBorder = _options->getParamInt("target_create_place_right");
+	_topBorder = _options->getParamInt("border_top");
+	_bottomBorder = _options->getParamInt("border_bottom");
+	_leftBorder = _options->getParamInt("border_left");
+	_rightBorder = _options->getParamInt("border_right");
 	_gamePoints = _options->getParamInt("game_points_default");
 	_gameTimer = _options->getParamFloat("game_time_max");
 	_fadeSpeed = _options->getParamInt("fade_speed");
 	_defTextColor = _options->getColor("def_text_color");
+	_textTitleLivesString = _options->getParamString("text_title_lives_string");
+	_textTitleTimeString = _options->getParamString("text_title_time_string");
 
 	_cannonball = new Cannonball(_options->getParamFloat("gun_scale")
 		, _cannonballTexture->getBitmapRect()
 		, _options->getParamFPoint("cannon_center")
-		, _options->getParamFloat("cannonball_speed")
-		, _topBorder
+		, _options->getParamFPoint("cannonball_moveVec")
+		, _topBorder 
 		, _bottomBorder
 		, _leftBorder
 		, _rightBorder
-		, 0
+		, _options->getParamFloat("cannonball_normalSpeed")
 	);
 
 	_buttonRestart = new Button(_options->getParamFPoint("button_restart_pos")
@@ -80,7 +81,8 @@ void TestWidget::Init()
 
 	_textEndgameTitlePos = _options->getParamFPoint("text_endgame_title_pos");
 	_textEndgameResultPos = _options->getParamFPoint("text_endgame_result_pos");
-	_textEndgameString = _options->getParamString("text_endgame_string");
+	_textEndgameWinString = _options->getParamString("text_endgame_win_string");
+	_textEndgameLoseString = _options->getParamString("text_endgame_lose_string");
 
 	_panelBottomStatColor = _options->getColor("panel_bottom_stat_color");
 	_panelBottomStatSize = _options->getRect("panel_bottom_stat_size");
@@ -197,8 +199,10 @@ void TestWidget::Draw()
 		Render::device.PopMatrix();
 
 		Render::SetColor(_defTextColor);
-		Render::PrintString(_textEndgameTitlePos, _textEndgameString, 1.5f, CenterAlign, CenterAlign);
-		Render::PrintString(_textEndgameResultPos, _textTitleResultString + " " + utils::lexical_cast(math::round(_gameTimer)) + " " + _textTitleSecString, 1.5f, CenterAlign, CenterAlign);
+		_lives > 0 ?
+			Render::PrintString(_textEndgameTitlePos, _textEndgameWinString, 1.5f, CenterAlign, CenterAlign) :
+			Render::PrintString(_textEndgameTitlePos, _textEndgameLoseString, 1.5f, CenterAlign, CenterAlign);
+		Render::PrintString(_textEndgameResultPos, _textTitleResultString + " " + utils::lexical_cast(math::round(_gameTimer)) + " " + getTitlePoins(), 1.5f, CenterAlign, CenterAlign);
 		Render::PrintString(_buttonRestart->getTextPos(), _buttonRestart->getText(), 1.5f, CenterAlign, CenterAlign);
 		Render::ResetColor();
 
@@ -206,24 +210,25 @@ void TestWidget::Draw()
 		break;
 	}
 
-	Render::device.SetTexturing(false);
+	/*Render::device.SetTexturing(false);
 	Render::BeginColor(_panelBottomStatColor);
 	Render::DrawRect(_panelBottomStatSize);
 	Render::DrawRect(_panelTopStatSize);
 	Render::EndColor();
-	Render::device.SetTexturing(true);
-	
-	/*Render::PrintString(10, _panelTopStatSize.y + _panelTopStatSize.height / 2,
-		_textTitlePointsString
-		+ utils::lexical_cast(_gamePoints)
+	Render::device.SetTexturing(true);*/
+	Render::device.SetTexturing(false);
+	Render::PrintString(10, _panelTopStatSize.y + _panelTopStatSize.height / 2,
+		_textTitleLivesString
+		+ utils::lexical_cast(_lives)
 		+ " "
-		+ _textTitleTimeoutString
-		+ utils::lexical_cast(math::round(_gameTimer))
-		, 1.0f, LeftAlign, CenterAlign);*/
-	Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_gControl->getMousePos().x) + ", Y:" + utils::lexical_cast(_gControl->getMousePos().y), 1.f, CenterAlign);
+		+ _textTitleTimeString
+		+ utils::lexical_cast(trunc(_gameTimer))
+		, 1.0f, LeftAlign, CenterAlign);
+	Render::device.SetTexturing(true);
+	/*Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_gControl->getMousePos().x) + ", Y:" + utils::lexical_cast(_gControl->getMousePos().y), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 65, "gameState:" + utils::lexical_cast(static_cast<int>(_gControl->getGameState())), 1.f, CenterAlign);
 	Render::PrintString(924 + 100 / 2, 95, "target count:" + utils::lexical_cast(_targetsBlock.size()), 1.f, CenterAlign);
-	//Render::PrintString(924 + 100 / 2, 125, "move vec:" + utils::lexical_cast(_cannonball->getMoveVec().x) + " " + utils::lexical_cast(_cannonball->getMoveVec().y), 1.f, CenterAlign);
+	Render::PrintString(924 + 100 / 2, 125, "move vec:" + utils::lexical_cast(_cannonball->getMoveVec().x) + " " + utils::lexical_cast(_cannonball->getMoveVec().y), 1.f, CenterAlign);*/
 }
 
 void TestWidget::Update(float dt)
@@ -234,8 +239,9 @@ void TestWidget::Update(float dt)
 	{
 	case GameController::GameStates::GAME:
 		_gameTimer += dt;
-		_player->setPrevPosX(_player->getPos().x);
+		_player->setPrevPosX(_player->getPos().x); //
 		_player->setPosCenter(_gControl->getMousePos().x);
+		_moveVecShiftX = (_player->getPos().x - _player->getPrevPosX()) * _shiftMultiplier;
 		if (_cannonball->isStoped())
 		{
 			if (_effParticleSmoke)
@@ -244,12 +250,12 @@ void TestWidget::Update(float dt)
 				_effParticleSmoke = NULL;
 			}
 			_cannonball->setPos(_player->getPos() + _cannonballPointOnPlayer);
-			//_cannonball->setMoveVec(_cannonball->getPos() + FPoint{ _gameScreen.x / 2, _gameScreen.y });
-			//_cannonball->setMoveVec(FPoint{ 2, 7 });
+			_cannonball->setMoveVec(FPoint{ _player->getPos().x - _player->getPrevPosX(), 7 });
 		}
 		else
 		{
-			_cannonball->Tick();
+			if (_cannonball->Tick())
+				_lives--;
 			if (_effParticleSmoke)
 			{
 				_effParticleSmoke->SetPos(_cannonball->getCoordCenter());
@@ -263,8 +269,8 @@ void TestWidget::Update(float dt)
 				}
 
 			}
-			float moveVecShiftX = (_player->getPos().x - _player->getPrevPosX()) * _shiftMultiplier;
-			_cannonball->tooClose(*_player, moveVecShiftX);
+			
+			_cannonball->tooClose(*_player, _moveVecShiftX);
 		}
 		
 		for (std::vector<TargetsBlock*>::iterator it = _targetsBlock.begin(); it != _targetsBlock.end(); it++) {
@@ -295,6 +301,8 @@ void TestWidget::Update(float dt)
 		if ((_targetsBlock.size() == 0) && (_gControl->getGameState() == GameController::GameStates::GAME)) {
 			SetGameStatus(GameController::GameStates::TO_STOP);
 		}
+		if (_lives <= 0)
+			SetGameStatus(GameController::GameStates::TO_STOP);
 		break;
 	}
 }
@@ -401,6 +409,7 @@ void TestWidget::SetGameStatus(const GameController::GameStates state) //сме�
 
 	case GameController::GameStates::GAME:
 		CreateLevel();
+		_lives = _options->getParamInt("max_lives_count");
 		_gameTimer = 0.f;
 		_buttonRestart->setActive(false);
 		_fade = 0;
@@ -426,8 +435,8 @@ void TestWidget::SetGameStatus(const GameController::GameStates state) //сме�
 const std::string TestWidget::getTitlePoins() const
 {
 	std::string toReturn = "";
-	std::string points = std::to_string(_gamePoints);
-	if ((points.length() == 2) & (points[0] == '1')) {
+	std::string points = std::to_string(static_cast<int>(trunc(_gameTimer)));
+	if ((points.length() == 2) && (points[0] == '1')) {
 		return "секунд";
 	}
 	else {

@@ -10,18 +10,18 @@ public:
 	Cannonball(const float scale
 		, const IRect& textureRect
 		, const FPoint& pos
-		, const float speed
+		, const FPoint& moveVec
 		, const int topBorder
 		, const int bottomBorder
 		, const int leftBorder
 		, const int rightBorder
-		, const float moveVectorShiftX
+		, const float normalSpeed
 	);
 
-	void Tick();
+	bool Tick();
 	bool isStoped() const;
 	void collision(const FPoint& normal);
-	void setMoveVec(const FPoint& moveVec);
+	void setMoveVec(FPoint& moveVec);
 	void setStopped(const bool stopped);
 
 	const FPoint& getMoveVec() const;
@@ -32,16 +32,13 @@ public:
 	
 private:
 	FPoint _centerOffset;
-	const float _speed;
-	float _flightTime;
-	TimedSpline<FPoint> _spline;
-	std::vector<float> _splinePoints;
 	bool _stop;
-	int _topBorder;
-	int _bottomBorder;
-	int _leftBorder;
-	int _rightBorder;
+	const int _topBorder;
+	const int _bottomBorder;
+	const int _leftBorder;
+	const int _rightBorder;
 	FPoint _moveVec;
 	float _moveVecShiftX;
+	float _normalSpeed;
 };
 

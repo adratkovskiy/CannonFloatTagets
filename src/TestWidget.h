@@ -70,9 +70,13 @@ private:
 	IRect _blockScreen;
 	FPoint _textEndgameTitlePos;
 	FPoint _textEndgameResultPos;
-	std::string _textEndgameString;
+	std::string _textEndgameWinString;
+	std::string _textEndgameLoseString;
 	std::string _textTitleResultString;
 	std::string _textTitleSecString;
+	std::string _textTitleLivesString;
+	std::string _textTitleTimeString;
+	int _lives;
 
 	Color _panelBottomStatColor;
 	Color _defTextColor;
@@ -110,6 +114,7 @@ private:
 	FRect _targetSize;
 	std::vector<bool*>_targetMoveToLeft;
 	FPoint _cannonballPointOnPlayer;
+	float _moveVecShiftX;
 
 	EffectsContainer _effCont;
 	ParticleEffectPtr _effParticleSmoke;

@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <options>
+  <border_top type="int" val="700" />
+  <border_bottom type="int" val="300" />
+  <border_left type="int" val="50" />
+  <border_right type="int" val="950" />
   <player_scale type="float" val="0.125"/>
   <player_spawn type="FPoint" x="0" y="50" />
   <gun_scale type="float" val="0.125"/>
@@ -9,7 +13,8 @@
   <cannon_center type="FPoint" x="535" y="62" />
   <game_screen type="FPoint" x="1024" y="768" />
   <sys_timer type="float" val="0" />
-  <cannonball_speed type="float" val="7" />
+  <cannonball_moveVec type="FPoint" x="0" y="7" />
+  <cannonball_normalSpeed type="float" val="7" />
   <cannonball_spline_points type="vector" p0="0.0" p1="0.3" p2="0.5" p3="0.7" p4="1.0" />
   <button_create_scale type="float" val="0.125" />
   <button_create_pos type="FPoint" x="100" y="100" />
@@ -29,11 +34,14 @@
   <game_points_max type="int" val="12" />
   <block_screen_size type="rect" x="0" y="0" width="1024" height="768" />
   <block_screen_color type="color" R="0" G="0" B="0" A="100" />
-  <text_endgame_string type="string" val="все мишени сбиты" />
+  <text_endgame_win_string type="string" val="все мишени сбиты" />
+  <text_endgame_lose_string type="string" val="к сожалению, жизни кончились" />
   <text_endgame_title_pos type="FPoint" x="512" y="450" />
   <text_endgame_result_pos type="FPoint" x="512" y="420" />
   <text_title_result_string type="string" val="результат:" />
   <text_title_sec_string type="string" val="секунды" />
+  <text_title_lives_string type="string" val="жизни:" />
+  <text_title_time_string type="string" val="сек." />
   <game_time_max type="float" val="30" />
   <targets_count_to_game type="int" val="30" />
   <targets_count_red type="int" val="10" />
@@ -47,4 +55,6 @@
   <target_scale type="float" val="0.125" />
   <player_health type="int" val="-1" />
   <player_shift_multiplier type="float" val="0.05" />
+  <cannonball_def_move_vector_shift type="float" val="0" />
+  <max_lives_count type="int" val="3" />
 </options>
