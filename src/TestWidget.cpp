@@ -48,7 +48,6 @@ void TestWidget::Init()
 	_bottomBorder = _options->getParamInt("border_bottom");
 	_leftBorder = _options->getParamInt("border_left");
 	_rightBorder = _options->getParamInt("border_right");
-	_gamePoints = _options->getParamInt("game_points_default");
 	_gameTimer = _options->getParamFloat("game_time_max");
 	_fadeSpeed = _options->getParamInt("fade_speed");
 	_defTextColor = _options->getColor("def_text_color");
@@ -84,15 +83,10 @@ void TestWidget::Init()
 	_textEndgameWinString = _options->getParamString("text_endgame_win_string");
 	_textEndgameLoseString = _options->getParamString("text_endgame_lose_string");
 
-	_panelBottomStatColor = _options->getColor("panel_bottom_stat_color");
-	_panelBottomStatSize = _options->getRect("panel_bottom_stat_size");
 	_panelTopStatSize = _options->getRect("panel_top_stat_size");
 	_textTitleResultString = _options->getParamString("text_title_result_string");
-	_textTitleSecString = _options->getParamString("text_title_sec_string");
 	_targetsCountToGame = _options->getParamInt("targets_count_to_game");
 	_shiftMultiplier = _options->getParamFloat("player_shift_multiplier");
-
-	_gameTimeMax = _options->getParamFloat("game_time_max");
 
 	_playerSpawn = _options->getParamFPoint("player_spawn");
 	_playerScale = _options->getParamFloat("player_scale");
@@ -210,12 +204,6 @@ void TestWidget::Draw()
 		break;
 	}
 
-	/*Render::device.SetTexturing(false);
-	Render::BeginColor(_panelBottomStatColor);
-	Render::DrawRect(_panelBottomStatSize);
-	Render::DrawRect(_panelTopStatSize);
-	Render::EndColor();
-	Render::device.SetTexturing(true);*/
 	Render::device.SetTexturing(false);
 	Render::PrintString(10, _panelTopStatSize.y + _panelTopStatSize.height / 2,
 		_textTitleLivesString
@@ -225,10 +213,6 @@ void TestWidget::Draw()
 		+ utils::lexical_cast(trunc(_gameTimer))
 		, 1.0f, LeftAlign, CenterAlign);
 	Render::device.SetTexturing(true);
-	/*Render::PrintString(924 + 100 / 2, 35, "x:" + utils::lexical_cast(_gControl->getMousePos().x) + ", Y:" + utils::lexical_cast(_gControl->getMousePos().y), 1.f, CenterAlign);
-	Render::PrintString(924 + 100 / 2, 65, "gameState:" + utils::lexical_cast(static_cast<int>(_gControl->getGameState())), 1.f, CenterAlign);
-	Render::PrintString(924 + 100 / 2, 95, "target count:" + utils::lexical_cast(_targetsBlock.size()), 1.f, CenterAlign);
-	Render::PrintString(924 + 100 / 2, 125, "move vec:" + utils::lexical_cast(_cannonball->getMoveVec().x) + " " + utils::lexical_cast(_cannonball->getMoveVec().y), 1.f, CenterAlign);*/
 }
 
 void TestWidget::Update(float dt)
@@ -413,7 +397,6 @@ void TestWidget::SetGameStatus(const GameController::GameStates state) //сме�
 		_gameTimer = 0.f;
 		_buttonRestart->setActive(false);
 		_fade = 0;
-		_gamePoints = 0;
 		_cannonball->setStopped(true);
 		break;
 	case GameController::GameStates::STOP:

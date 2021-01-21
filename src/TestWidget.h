@@ -1,12 +1,9 @@
 #pragma once
 #include "GameController.h"
 #include "Cannonball.h"
-//#include "Cannon.h"
 #include "Options.h"
-#include "Aim.h"
 #include "Button.h"
 #include "RoundObject.h"
-#include "Targets.h"
 #include "Functions.h"
 #include "Player.h"
 #include "TargetsBlock.h"
@@ -52,7 +49,6 @@ private:
 private:
 	
 	Render::Texture* _backgroundTexture;
-	//Render::Texture* _pointTexture;
 	Render::Texture* _cannonballTexture;
 	Render::Texture* _buttonUpTexture;
 	Render::Texture* _buttonDownTexture;
@@ -73,20 +69,15 @@ private:
 	std::string _textEndgameWinString;
 	std::string _textEndgameLoseString;
 	std::string _textTitleResultString;
-	std::string _textTitleSecString;
 	std::string _textTitleLivesString;
 	std::string _textTitleTimeString;
 	int _lives;
 
-	Color _panelBottomStatColor;
 	Color _defTextColor;
-	IRect _panelBottomStatSize;
 	IRect _panelTopStatSize;
-	std::string _textTitleTimerString;
 	int _targetsCountToGame;
 
 	//targets
-	float _gameTimeMax;
 	float _playerScale;
 	FPoint _playerSpawn;
 
@@ -101,12 +92,10 @@ private:
 	int _bottomBorder;
 	int _leftBorder;
 	int _rightBorder;
-	int _gamePoints;
 	uint8_t _fade;
 	uint8_t _fadeMax;
 	int _fadeSpeed;
 	float _gameTimer;
-	float _gameTimerMax;
 	float _targetVPadding;
 	float _topPadding;
 	float _targetHPadding;
@@ -119,7 +108,6 @@ private:
 	EffectsContainer _effCont;
 	ParticleEffectPtr _effParticleSmoke;
 
-	bool _showTestButtons;
 	float _shiftMultiplier;
 	std::vector<bool*> _levelDirection;
 };

@@ -30,8 +30,6 @@
   <panel_bottom_stat_color type="color" R="255" G="128" B="0" A="255" />
   <panel_bottom_stat_size type="rect" x="924" y="0" width="100" height="100" />
   <panel_top_stat_size type="rect" x="0" y="738" width="200" height="30" />
-  <game_points_default type="int" val="0" />
-  <game_points_max type="int" val="12" />
   <block_screen_size type="rect" x="0" y="0" width="1024" height="768" />
   <block_screen_color type="color" R="0" G="0" B="0" A="100" />
   <text_endgame_win_string type="string" val="все мишени сбиты" />
@@ -39,7 +37,6 @@
   <text_endgame_title_pos type="FPoint" x="512" y="450" />
   <text_endgame_result_pos type="FPoint" x="512" y="420" />
   <text_title_result_string type="string" val="результат:" />
-  <text_title_sec_string type="string" val="секунды" />
   <text_title_lives_string type="string" val="жизни:" />
   <text_title_time_string type="string" val="сек." />
   <game_time_max type="float" val="30" />
