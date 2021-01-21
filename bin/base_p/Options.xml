@@ -7,28 +7,14 @@
   <player_scale type="float" val="0.125"/>
   <player_spawn type="FPoint" x="0" y="50" />
   <gun_scale type="float" val="0.125"/>
-  <cannon_rotate_point type="FPoint" x="-40" y="-32" />
-  <cannon_stand_pos type="FPoint" x="480" y="10" />
-  <cannon_angle type="float" val="90" />
-  <cannon_center type="FPoint" x="535" y="62" />
   <game_screen type="FPoint" x="1024" y="768" />
   <sys_timer type="float" val="0" />
   <cannonball_moveVec type="FPoint" x="0" y="7" />
   <cannonball_normalSpeed type="float" val="7" />
-  <cannonball_spline_points type="vector" p0="0.0" p1="0.3" p2="0.5" p3="0.7" p4="1.0" />
-  <button_create_scale type="float" val="0.125" />
-  <button_create_pos type="FPoint" x="100" y="100" />
-  <button_create_string type="string" val="таргет" />
-  <button_create30x_pos type="FPoint" x="100" y="50" />
-  <button_create30x_string type="string" val="таргет 30x" />
-  <button_experiment_pos type="FPoint" x="100" y="20" />
-  <button_experiment_string type="string" val="эксперимент" />
   <button_restart_scale type="float" val="0.125" />
   <button_restart_pos type="FPoint" x="460" y="370" />
   <button_restart_string type="string" val="рестарт" />
   <panel_top_color type="color" R="100" G="100" B="100" A="255" />
-  <panel_bottom_stat_color type="color" R="255" G="128" B="0" A="255" />
-  <panel_bottom_stat_size type="rect" x="924" y="0" width="100" height="100" />
   <panel_top_stat_size type="rect" x="0" y="738" width="200" height="30" />
   <block_screen_size type="rect" x="0" y="0" width="1024" height="768" />
   <block_screen_color type="color" R="0" G="0" B="0" A="100" />
@@ -39,11 +25,6 @@
   <text_title_result_string type="string" val="результат:" />
   <text_title_lives_string type="string" val="жизни:" />
   <text_title_time_string type="string" val="сек." />
-  <game_time_max type="float" val="30" />
-  <targets_count_to_game type="int" val="30" />
-  <targets_count_red type="int" val="10" />
-  <targets_count_blue type="int" val="10" />
-  <targets_count_yellow type="int" val="10" />
   <fade_speed type="int" val="2" />
   <def_text_color type="color" R="0" G="0" B="0" A="255" />
   <target_vert_padding type="float" val="50" />

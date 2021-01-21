@@ -171,6 +171,7 @@ void TestWidget::Draw()
 	case GameController::GameStates::STOP: //игра: стоп
 		if (_effParticleSmoke)
 		{
+			_effParticleSmoke->Reset();
 			_effParticleSmoke->Finish();
 			_effParticleSmoke = NULL;
 		}
