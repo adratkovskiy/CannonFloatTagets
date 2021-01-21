@@ -7,10 +7,9 @@
   <cannon_stand_pos type="FPoint" x="480" y="10" />
   <cannon_angle type="float" val="90" />
   <cannon_center type="FPoint" x="535" y="62" />
-  <aim_scale type="float" val="0.5" />
   <game_screen type="FPoint" x="1024" y="768" />
   <sys_timer type="float" val="0" />
-  <cannonball_speed type="float" val="2000" />
+  <cannonball_speed type="float" val="7" />
   <cannonball_spline_points type="vector" p0="0.0" p1="0.3" p2="0.5" p3="0.7" p4="1.0" />
   <button_create_scale type="float" val="0.125" />
   <button_create_pos type="FPoint" x="100" y="100" />
@@ -22,19 +21,6 @@
   <button_restart_scale type="float" val="0.125" />
   <button_restart_pos type="FPoint" x="460" y="370" />
   <button_restart_string type="string" val="рестарт" />
-  <target_yellow_scale type="float" val="0.125" />
-  <target_blue_scale type="float" val="0.2" />
-  <target_red_scale type="float" val="0.08" />
-  <target_yellow_speed type="float" val="2" />
-  <target_blue_speed type="float" val="1" />
-  <target_red_speed type="float" val="3" />
-  <target_yellow_points type="int" val="2" />
-  <target_blue_points type="int" val="1" />
-  <target_red_points type="int" val="3" />
-  <target_create_place_top type="int" val="700" />
-  <target_create_place_bottom type="int" val="300" />
-  <target_create_place_left type="int" val="50" />
-  <target_create_place_right type="int" val="950" />
   <panel_top_color type="color" R="100" G="100" B="100" A="255" />
   <panel_bottom_stat_color type="color" R="255" G="128" B="0" A="255" />
   <panel_bottom_stat_size type="rect" x="924" y="0" width="100" height="100" />
@@ -45,8 +31,9 @@
   <block_screen_color type="color" R="0" G="0" B="0" A="100" />
   <text_endgame_string type="string" val="все мишени сбиты" />
   <text_endgame_title_pos type="FPoint" x="512" y="450" />
-  <text_endgame_points_pos type="FPoint" x="512" y="420" />
-  <text_title_timer_string type="string" val="результат: " />
+  <text_endgame_result_pos type="FPoint" x="512" y="420" />
+  <text_title_result_string type="string" val="результат:" />
+  <text_title_sec_string type="string" val="секунды" />
   <game_time_max type="float" val="30" />
   <targets_count_to_game type="int" val="30" />
   <targets_count_red type="int" val="10" />

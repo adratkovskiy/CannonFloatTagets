@@ -52,7 +52,7 @@ private:
 private:
 	
 	Render::Texture* _backgroundTexture;
-	Render::Texture* _pointTexture;
+	//Render::Texture* _pointTexture;
 	Render::Texture* _cannonballTexture;
 	Render::Texture* _buttonUpTexture;
 	Render::Texture* _buttonDownTexture;
@@ -69,8 +69,11 @@ private:
 	FPoint _gameScreen;
 	IRect _blockScreen;
 	FPoint _textEndgameTitlePos;
-	FPoint _textEndgamePointsPos;
+	FPoint _textEndgameResultPos;
 	std::string _textEndgameString;
+	std::string _textTitleResultString;
+	std::string _textTitleSecString;
+
 	Color _panelBottomStatColor;
 	Color _defTextColor;
 	IRect _panelBottomStatSize;

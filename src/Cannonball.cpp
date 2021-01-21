@@ -40,8 +40,6 @@ void Cannonball::Tick()
 	}
 	else if (RoundObject::getCoordCenter().y < 0) {
 		setStopped(true);
-		/*setPos(FPoint{ getPos().x , _bottomBorder - getRadius() });
-		collision(FPoint{ 0,1 });*/
 	}
 	RoundObject::addVecToPos(_moveVec);
 }

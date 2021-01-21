@@ -79,12 +79,14 @@ void TestWidget::Init()
 	_blockScreen = _options->getRect("block_screen_size");
 
 	_textEndgameTitlePos = _options->getParamFPoint("text_endgame_title_pos");
-	_textEndgamePointsPos = _options->getParamFPoint("text_endgame_points_pos");
+	_textEndgameResultPos = _options->getParamFPoint("text_endgame_result_pos");
 	_textEndgameString = _options->getParamString("text_endgame_string");
+
 	_panelBottomStatColor = _options->getColor("panel_bottom_stat_color");
 	_panelBottomStatSize = _options->getRect("panel_bottom_stat_size");
 	_panelTopStatSize = _options->getRect("panel_top_stat_size");
-	_textTitleTimerString = _options->getParamString("text_title_timer_string");
+	_textTitleResultString = _options->getParamString("text_title_result_string");
+	_textTitleSecString = _options->getParamString("text_title_sec_string");
 	_targetsCountToGame = _options->getParamInt("targets_count_to_game");
 	_shiftMultiplier = _options->getParamFloat("player_shift_multiplier");
 
@@ -196,7 +198,7 @@ void TestWidget::Draw()
 
 		Render::SetColor(_defTextColor);
 		Render::PrintString(_textEndgameTitlePos, _textEndgameString, 1.5f, CenterAlign, CenterAlign);
-		Render::PrintString(_textEndgamePointsPos, utils::lexical_cast(math::round(_gameTimer)), 1.5f, CenterAlign, CenterAlign);
+		Render::PrintString(_textEndgameResultPos, _textTitleResultString + " " + utils::lexical_cast(math::round(_gameTimer)) + " " + _textTitleSecString, 1.5f, CenterAlign, CenterAlign);
 		Render::PrintString(_buttonRestart->getTextPos(), _buttonRestart->getText(), 1.5f, CenterAlign, CenterAlign);
 		Render::ResetColor();
 
@@ -238,18 +240,20 @@ void TestWidget::Update(float dt)
 		{
 			if (_effParticleSmoke)
 			{
-				_effParticleSmoke->SetPos(FPoint{ -100, -100 }); //чтобы завершился за пределами экрана
 				_effParticleSmoke->Finish();
 				_effParticleSmoke = NULL;
 			}
 			_cannonball->setPos(_player->getPos() + _cannonballPointOnPlayer);
 			//_cannonball->setMoveVec(_cannonball->getPos() + FPoint{ _gameScreen.x / 2, _gameScreen.y });
-			_cannonball->setMoveVec(FPoint{ 2, 7 });
+			//_cannonball->setMoveVec(FPoint{ 2, 7 });
 		}
 		else
 		{
 			_cannonball->Tick();
-			_effParticleSmoke->SetPos(_cannonball->getCoordCenter());
+			if (_effParticleSmoke)
+			{
+				_effParticleSmoke->SetPos(_cannonball->getCoordCenter());
+			}
 			// проверка на попадание по мишеням
 			for (std::vector<TargetsBlock*>::iterator it = _targetsBlock.begin(); it != _targetsBlock.end(); it++) {
 				FPoint coord = (*it)->getCoordCenter();
@@ -401,6 +405,7 @@ void TestWidget::SetGameStatus(const GameController::GameStates state) //сме�
 		_buttonRestart->setActive(false);
 		_fade = 0;
 		_gamePoints = 0;
+		_cannonball->setStopped(true);
 		break;
 	case GameController::GameStates::STOP:
 		_buttonRestart->setActive(true);

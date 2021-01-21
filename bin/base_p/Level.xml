@@ -4,10 +4,10 @@
   <level_speed_0 type="float" val="0" />
   <level_speed_1 type="float" val="1" />
   <level_speed_2 type="float" val="2" />
-  <level_move_to_left_level_0 type="bool" val="2" />
-  <level_move_to_left_level_1 type="bool" val="3" />
+  <level_move_to_left_level_0 type="bool" val="1" />
+  <level_move_to_left_level_1 type="bool" val="0" />
   <level_move_to_left_level_2 type="bool" val="1" />
-  <level_0 type="string" val="0" />
-  <level_1 type="string" val="1" />
-  <level_2 type="string" val="1" />
+  <level_0 type="string" val="12221" />
+  <level_1 type="string" val="222322" />
+  <level_2 type="string" val="1001" />
 </options>
