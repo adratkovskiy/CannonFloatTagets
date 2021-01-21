@@ -85,7 +85,6 @@ void TestWidget::Init()
 
 	_panelTopStatSize = _options->getRect("panel_top_stat_size");
 	_textTitleResultString = _options->getParamString("text_title_result_string");
-	_targetsCountToGame = _options->getParamInt("targets_count_to_game");
 	_shiftMultiplier = _options->getParamFloat("player_shift_multiplier");
 
 	_playerSpawn = _options->getParamFPoint("player_spawn");

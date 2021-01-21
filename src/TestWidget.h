@@ -75,7 +75,6 @@ private:
 
 	Color _defTextColor;
 	IRect _panelTopStatSize;
-	int _targetsCountToGame;
 
 	//targets
 	float _playerScale;
