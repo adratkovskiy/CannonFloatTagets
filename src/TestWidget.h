@@ -48,6 +48,7 @@ private:
 
 private:
 	
+	//текстуры
 	Render::Texture* _backgroundTexture;
 	Render::Texture* _cannonballTexture;
 	Render::Texture* _buttonUpTexture;
@@ -57,7 +58,6 @@ private:
 	Render::Texture* _invaderTexture_2;
 	Render::Texture* _invaderTexture_3;
 	Render::Texture* _invaderTexture_4;
-
 	Render::Texture* _playerTexture;
 
 	//main screen
@@ -71,22 +71,9 @@ private:
 	std::string _textTitleResultString;
 	std::string _textTitleLivesString;
 	std::string _textTitleTimeString;
-	int _lives;
-
 	Color _defTextColor;
 	IRect _panelTopStatSize;
-
-	//targets
-	float _playerScale;
-	FPoint _playerSpawn;
-
-	Player* _player;
-	GameController* _gControl;
-	Cannonball* _cannonball;
-	Options* _options;
-	Options* _levels;
 	Button* _buttonRestart;
-	std::vector<TargetsBlock*> _targetsBlock;
 	int _topBorder;
 	int _bottomBorder;
 	int _leftBorder;
@@ -95,18 +82,32 @@ private:
 	uint8_t _fadeMax;
 	int _fadeSpeed;
 	float _gameTimer;
+	int _lives;
+
+	//player, cannonball
+	float _playerScale;
+	FPoint _playerSpawn;
+	Player* _player;
+	Cannonball* _cannonball;
+	FPoint _cannonballPointOnPlayer;
+	float _moveVecShiftX;
+	float _shiftMultiplier;
+	
+	//targets
+	std::vector<TargetsBlock*> _targetsBlock;
 	float _targetVPadding;
 	float _topPadding;
 	float _targetHPadding;
 	float _targetScale;
 	FRect _targetSize;
+	std::vector<bool*> _levelDirection;
 	std::vector<bool*>_targetMoveToLeft;
-	FPoint _cannonballPointOnPlayer;
-	float _moveVecShiftX;
-
+	
+	//effects
 	EffectsContainer _effCont;
 	ParticleEffectPtr _effParticleSmoke;
 
-	float _shiftMultiplier;
-	std::vector<bool*> _levelDirection;
+	Options* _options;
+	Options* _levels;
+	GameController* _gControl;
 };
